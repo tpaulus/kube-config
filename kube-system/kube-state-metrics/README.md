@@ -1,0 +1,1 @@
+Source: https://github.com/kubernetes/kube-state-metrics/tree/main#kubernetes-deployment

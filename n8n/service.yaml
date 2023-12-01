@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: n8n-service
+  namespace: n8n
+  labels:
+    app: n8n
+    component: service
+spec:
+  selector:
+    app: n8n
+    component: deployment
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 5678
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n-ingress
+  namespace: n8n
+spec:
+  rules:
+  - host: n8n.ing.k3s.brickyard.whitestar.systems
+    http: &ingress-rule
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: n8n-service
+            port:
+              number: 80
+  - host: n8n.brickyard.whitestar.systems
+    http: *ingress-rule

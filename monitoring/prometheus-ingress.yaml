@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-ui
+  namespace: monitoring
+spec:
+  rules:
+  - host: prometheus.ing.k3s.brickyard.whitestar.systems
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix

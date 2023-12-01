@@ -1,0 +1,40 @@
+apiVersion: metallb.io/v1beta1
+kind: BFDProfile
+metadata:
+  name: testbfdprofile
+  namespace: metallb-system
+spec:
+  receiveInterval: 380
+  transmitInterval: 270
+
+---
+
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: beaconhill
+  namespace: metallb-system
+spec:
+  myASN: 64500
+  peerASN: 64500
+  peerAddress: 10.0.1.1
+  bfdProfile: testbfdprofile
+
+---
+
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: main-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 10.30.0.1/16
+
+---
+
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: main
+  namespace: metallb-system
