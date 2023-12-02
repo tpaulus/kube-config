@@ -5,7 +5,7 @@ metadata:
   namespace: traefik
 spec:
   ports:
-    - name: traefik-ext
+    - name: web-ext
       port: 9200
       protocol: TCP
       targetPort: web-ext
