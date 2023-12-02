@@ -38,7 +38,7 @@ metadata:
   namespace: monitoring
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext
-    traefik.ingress.kubernetes.io/router.middlewares: jwt-verification
+    traefik.ingress.kubernetes.io/router.middlewares: monitoring-jwt-verification@kubernetescrd
 spec:
   rules:
   - host: alertmanager.auth-ing.k3s.brickyard.whitestar.systems
