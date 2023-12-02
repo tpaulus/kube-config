@@ -7,7 +7,7 @@ spec:
   ports:
     - name: traefik-ext
       port: 9200
-      portocol: TCP
+      protocol: TCP
       targetPort: web-ext
   selector:
     app.kubernetes.io/instance: traefik-traefik
