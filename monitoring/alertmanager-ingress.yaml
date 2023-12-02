@@ -37,6 +37,7 @@ metadata:
   name: alertmanager-ui-ext
   namespace: monitoring
   annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
     traefik.ingress.kubernetes.io/router.middlewares: jwt-verification
 spec:
   rules:
