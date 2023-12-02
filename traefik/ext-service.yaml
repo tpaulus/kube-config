@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-ext
+  namespace: traefik
+spec:
+  ports:
+    - name: traefik-ext
+      port: 9200
+      portcol: TCP
+      taregetPort: web-ext
+  selector:
+    app.kubernetes.io/instance: traefik-traefik
+    app.kubernetes.io/name: traefik
+  type: LoadBalancer

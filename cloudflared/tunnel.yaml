@@ -89,7 +89,7 @@ data:
 
     no-autoupdate: true
     ingress:
-    - service: http://traefik-auth.traefik-auth.svc
+    - service: http://traefik-ext.traefik.svc
 
 ---
 apiVersion: onepassword.com/v1

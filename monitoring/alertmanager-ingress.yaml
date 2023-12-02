@@ -39,7 +39,6 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: jwt-verification
 spec:
-  ingressClassName: traefik-auth
   rules:
   - host: alertmanager.auth-ing.k3s.brickyard.whitestar.systems
     http:
