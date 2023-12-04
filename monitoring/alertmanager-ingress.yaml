@@ -27,6 +27,7 @@ spec:
     jwt:
       issuers:
         - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
+      headerName: 'Cf-Access-Jwt-Assertion'
       require:
         aud: 5d3ead708d3639809c0b20fcff4a0294b73d483cdddd3cdf663dc82ef7bde503
 ---
