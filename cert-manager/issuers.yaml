@@ -23,7 +23,7 @@ metadata:
 type: Opaque
 
 ---
-apiVersion: onepasword.com/v1
+apiVersion: onepassword.com/v1
 kind: OnePassswordItem
 metadata:
   name: cf-acme-secret
