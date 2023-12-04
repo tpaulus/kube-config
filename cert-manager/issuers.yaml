@@ -16,15 +16,8 @@ spec:
             key: api-token
 
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: letsencrypt-issuer-account-key
-type: Opaque
-
----
 apiVersion: onepassword.com/v1
-kind: OnePassswordItem
+kind: OnePasswordItem
 metadata:
   name: cf-acme-secret
 spec:
