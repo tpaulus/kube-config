@@ -1,0 +1,11 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: access-jwt-present
+spec:
+  plugin:
+    jwt:
+      issuers:
+        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
+      headerName: 'Cf-Access-Jwt-Assertion'
