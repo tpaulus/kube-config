@@ -9,6 +9,12 @@ metadata:
   namespace: argocd
 data:
   url: https://argocd.ing.k3s.brickyard.whitestar.systems
+  resource.customizations: |
+    extensions/Ingress:
+      health.lua: |
+        hs = {}
+        hs.status = "Healthy"
+        return hs
 
 ---
 apiVersion: v1
