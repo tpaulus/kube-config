@@ -34,6 +34,7 @@ spec:
             - "--storage.tsdb.retention.time=4w"
             - "--enable-feature=auto-gomaxprocs,new-service-discovery-manager,memory-snapshot-on-shutdown"
             - "--web.external-url=https://prometheus.ing.k3s.brickyard.whitestar.systems"
+            - "--web.enable-lifecycle"
           ports:
             - containerPort: 9090
           volumeMounts:
@@ -41,6 +42,8 @@ spec:
               mountPath: /etc/prometheus/
             - name: prometheus-storage-volume
               mountPath: /prometheus/
+            - name: rules-volume
+              mountPath: /run/prometheus-rules
           resources:
             requests:
               memory: "6144Mi"
@@ -56,6 +59,22 @@ spec:
             httpGet:
               path: /-/healthy
               port: 9090
+        - name: rules-git-sync
+          image: registry.k8s.io/git-sync/git-sync:v4.1.0
+          args:
+            - "--repo=https://github.com/kubernetes/git-sync"
+            - "--root=/run/prometheus-rules"
+            - "--period=1m"
+            - "--webhook-url=http://127.0.0.1:9090/-/reload"
+            - "--webhook-method=POST"
+            - "--http-metrics"
+            - "--http-bind=:1234"
+          ports:
+            - containerPort: 1234
+              name: metrics
+          volumeMounts:
+            - name: rules-volume
+              mountPath: /run/prometheus-rules
       volumes:
         - name: prometheus-config-volume
           configMap:
@@ -64,6 +83,8 @@ spec:
         - name: prometheus-storage-volume
           persistentVolumeClaim:
             claimName: tsdb
+        - name: rules-volume
+          emptyDir:
 
 ---
 apiVersion: v1

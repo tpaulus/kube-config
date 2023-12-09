@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-nut-exporter
+  labels:
+    app: prometheus-nut-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-nut-exporter
+  template:
+    metadata:
+      labels:
+        app: prometheus-nut-exporter
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port:   '9199'
+        prometheus.io/path:   '/ups_metrics'
+    spec:
+      containers:
+        - name: prometheus-nut-exporter
+          image: ghcr.io/druggeri/nut_exporter:3.1.1
+          ports:
+            - containerPort: 9199
+              name: metrics
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "64m"
+            limits:
+              memory: "256Mi"
+              cpu: "64m"
+          envFrom:
+            - secretRef:
+                name: nut-config
+                
+---
+
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: nut-config
+spec:
+  itemPath: "vaults/K3S/items/NUT-Exporter"
