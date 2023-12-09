@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: netbox
+  namespace: netbox
+spec:
+  rules:
+  - host: netbox.ing.k3s.brickyard.whitestar.systems
+    http:
+      paths:
+      - backend:
+          service:
+            name: netbox
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: jwt-verification
+  namespace: netbox
+spec:
+  plugin:
+    jwt:
+      issuers:
+        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
+      headerName: 'Cf-Access-Jwt-Assertion'
+      require:
+        aud: 268fe8ea853dbd153ec9023eb2187d88b33c0a45be66dea14a9113a26292c0cb
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: netbox-ext
+  namespace: netbox
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.middlewares: netbox-jwt-verification@kubernetescrd
+spec:
+  rules:
+  - host: netbox.auth-ing.k3s.brickyard.whitestar.systems
+    http: &rules
+      paths:
+      - backend:
+          service:
+            name: netbox
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  - host: netbox.whitestar.systems
+    http: *rules
+    

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: startup-configmap
+  namespace: netbox
+data:
+  # NetBox plugins definition and configuration
+  netbox-plugins.py: |
+    # Enter every plugin to be enabled by NetBox
+    # Uncomment 'django3_saml2_nbplugin' if you want to enable SSO
+    PLUGINS = []
+    #PLUGINS = ['django3_saml2_nbplugin']
+    # NetBox plugins configuration definition
+    PLUGINS_CONFIG = {}
+
+  # Script for installing NetBox plugins packages
+  install-plugins.sh: |
+    source /opt/netbox/venv/bin/activate
+    # SSO implementation plugin packages
+    # apk add xmlsec
+    # pip install django3_auth_saml2
+    # pip install netbox-plugin-auth-saml2
+
+  # Script for starting rqworker, which handles reports
+  start-rqworker.sh: |
+    /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py rqworker &>/dev/null &disown;
+
+  # Script for fixing permission issue in unit temporary folder
+  nginx-caching-fix.sh: |
+    chown unit:root -R /opt/unit/tmp/
+
+    cp /etc/ssl/postgres/* /root/.postgresql/
+    chown unit:root -R /root/
+    chmod 770 /root/
+    chmod 0400 /root/.postgresql/postgresql.key
+    chmod 0555 /root/.postgresql/postgresql.crt
