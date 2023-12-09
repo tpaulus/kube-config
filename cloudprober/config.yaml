@@ -1,0 +1,231 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudprober-config
+data:
+  cloudprober.cfg: |
+    # Internal Services
+    probe {
+      name: "Router DNS - Internal Query"
+      type: DNS
+      targets {
+        host_names: "10.0.10.1"
+      }
+      dns_probe {
+        resolved_domain: "consul.service.seaview.consul"
+        query_type: A
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "dns"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Router DNS - External Query"
+      type: DNS
+      targets {
+        host_names: "10.0.10.1"
+      }
+      dns_probe {
+        resolved_domain: "tompaulus.com"
+        query_type: A
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "dns"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Home Assistant"
+      type: HTTP
+      targets {
+        host_names: "home.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        
+        header {
+          key: "CF-Access-Client-Id"
+          value: "{{env "CF_ACCESS_ID" }}"
+        }
+        header {
+          key: "CF-Access-Client-Secret"
+          value: "{{env "CF_ACCESS_SECRET" }}"
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      validator {
+          name: "expected_content"
+          regex: "Home Assistant"
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Protect NVR"
+      type: HTTP
+      targets {
+        host_names: "protect.brickyard.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        tls_config {
+          disable_cert_validation: true
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Blog"
+      type: HTTP
+      targets {
+        host_names: "blog.tompaulus.com"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      validator {
+          name: "expected_content"
+          regex: "[Jj]ournal"
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    # External Services
+
+    probe {
+      name: "Cloudflare"
+      type: HTTP
+      targets {
+        host_names: "www.cloudflare.com"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "external"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Google Homepage"
+      type: HTTP
+      targets {
+        host_names: "www.google.com"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "external"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Apple Homepage"
+      type: HTTP
+      targets {
+        host_names: "www.apple.com"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "external"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: cf-access-keys
+spec:
+  itemPath: "vaults/K3S/items/CloudProber"

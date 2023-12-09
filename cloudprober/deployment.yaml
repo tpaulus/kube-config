@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudprober
+  labels:
+    app: cloudprober
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudprober
+  template:
+    metadata:
+      labels:
+        app: cloudprober
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port:   '9313'
+    spec:
+      containers:
+        - name: cloudprober
+          image: cloudprober/cloudprober:v0.13.1
+          args:
+            - "--config_file"
+            - "/config/cloudprober.cfg"
+          ports:
+            - containerPort: 9313
+              name: metrics
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          envFrom:
+           - secretRef:
+               name: cf-access-keys
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          readinessProbe: # will mark the pod as ready once the initialization script is completed and will probe every 20 seconds
+            httpGet:
+              path: /status
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 3
+      volumes:
+        - name: config
+          configMap:
+            name: cloudprober-config

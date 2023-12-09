@@ -1,0 +1,14 @@
+---
+groups:
+- name: Cloudprober
+  rules:
+  - alert: Internal Service Down
+    expr: sum(rate(success{kubernetes_app_name="cloudprober", location="internal"}[1m])) by (probe) / sum(rate(total{kubernetes_app_name="cloudprober", location="internal"}[1m])) by (probe) < 0.50
+    for: 3m
+    labels:
+      severity: high
+    annotations:
+      summary: "{{ $labels.probe }} Is Down"
+      description: "{{ $labels.probe }} is failing Cloudprober Healthchecks"
+      dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
+  
