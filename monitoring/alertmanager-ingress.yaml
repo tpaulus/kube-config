@@ -20,7 +20,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: jwt-verification
+  name: am-jwt-verification
   namespace: monitoring
 spec:
   plugin:
@@ -39,7 +39,7 @@ metadata:
   namespace: monitoring
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext
-    traefik.ingress.kubernetes.io/router.middlewares: monitoring-jwt-verification@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: monitoring-am-jwt-verification@kubernetescrd
 spec:
   rules:
   - host: alertmanager.auth-ing.k3s.brickyard.whitestar.systems
