@@ -62,7 +62,7 @@ spec:
         - name: rules-git-sync
           image: registry.k8s.io/git-sync/git-sync:v4.1.0
           args:
-            - "--repo=https://github.com/kubernetes/git-sync"
+            - "--repo=https://github.com/tpaulus/kube-config.git"
             - "--root=/run/prometheus-rules"
             - "--period=1m"
             - "--webhook-url=http://127.0.0.1:9090/-/reload"
