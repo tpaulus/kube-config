@@ -139,7 +139,7 @@ data:
           - url: https://netbox.ing.k3s.brickyard.whitestar.systems/api/plugins/prometheus-sd/devices/?status=active
             authorization:
               type: 'Token'
-              credentials_file: /run/secrets/netbox-token
+              credentials_file: /run/secrets/netbox-token/netbox-token
 ---
 apiVersion: v1
 kind: ConfigMap
