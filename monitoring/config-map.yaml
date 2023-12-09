@@ -136,10 +136,10 @@ data:
           action: replace
           target_label: netbox_device_name
         http_sd_configs:
-          url: https://netbox.ing.k3s.brickyard.whitestar.systems/api/plugins/prometheus-sd/devices/?status=active
-          authorization:
-            type: 'Token'
-            credentials_file: /run/secrets/netbox-token
+          - url: https://netbox.ing.k3s.brickyard.whitestar.systems/api/plugins/prometheus-sd/devices/?status=active
+            authorization:
+              type: 'Token'
+              credentials_file: /run/secrets/netbox-token
 ---
 apiVersion: v1
 kind: ConfigMap
