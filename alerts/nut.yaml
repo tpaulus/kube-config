@@ -11,7 +11,7 @@ groups:
       description: UPS is on battery power
       dashboard: https://grafana.brickyard.whitestar.systems/d/j4a-DMWRk/ups-statistics?orgId=1
   - alert: Unable to Scrape UPS Metrics
-    expr: up{job="prometheus-nut-exporter-main-ups"} == 0
+    expr: up{kubernetes_app_name="prometheus-nut-exporter"} == 0
     for: 5m
     labels:
       severity: critical
