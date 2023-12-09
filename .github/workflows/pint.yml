@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - alerts/**
+      - _alerts/**
   pull_request:
     branches:
       - main
     paths:
-      - alerts/**
+      - _alerts/**
 
 permissions:
   pull-requests: write
@@ -27,7 +27,7 @@ jobs:
         uses: prymitive/pint-action@d7a880c4c83e779431ad77fdf1f3354dde600962 # v1.34.0
         with:
           token: ${{ github.token }}
-          workdir: 'alerts'
+          workdir: '_alerts'
         env:
           PINT_BRICKYARD_CLIENT_ID: ${{ secrets.PINT_BRICKYARD_CLIENT_ID }}
           PINT_BRICKYARD_CLIENT_SECRET: ${{ secrets.PINT_BRICKYARD_CLIENT_SECRET }}

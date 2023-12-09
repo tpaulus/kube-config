@@ -7,6 +7,6 @@ prometheus "Brickyard" {
 }
 
 ci {
-  include    = [ "alerts/*" ]
+  include    = [ "_alerts/*" ]
   baseBranch = "main"
 }
