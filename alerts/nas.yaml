@@ -1,3 +1,5 @@
+---
+groups:
 - name: ShareBackups
   rules:
   - alert: Share Backup Missing
@@ -17,3 +19,4 @@
     annotations:
       summary: "{{ $labels.share }} Not Being Cleaned Up"
       description: "It has been over 6 hours since {{ $labels.share }} has been cleaned up against the B2 Bucket {{ $labels.bucket_name }}"
+      dashboard: https://grafana.brickyard.whitestar.systems/d/p1er_aLVk/backups?orgId=1

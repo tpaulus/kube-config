@@ -1,3 +1,5 @@
+---
+groups:
 - name: UPSAlerts
   rules:
   - alert: UPS On Batt

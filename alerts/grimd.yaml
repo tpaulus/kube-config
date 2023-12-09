@@ -1,3 +1,5 @@
+---
+groups:
 - name: Grimd
   rules:
   - alert: Grimd Not Running

@@ -1,3 +1,5 @@
+---
+groups:
 - name: OPNSense
   rules:
   - alert: Internet Down
