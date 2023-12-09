@@ -132,6 +132,9 @@ data:
           target_label: __address__
           replacement: ${1}:$2
           action: replace
+        - source_labels: [__address__]
+          action: keep
+          regex: ([0-9A-Z.:]+[0-9]+)
         - source_labels: [__meta_netbox_name]
           action: replace
           target_label: netbox_device_name
