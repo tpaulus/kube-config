@@ -182,4 +182,4 @@ spec:
             path: postgresql.key
             mode: 0640
       - name: django-psql-certs
-        emptyDir:
+        emptyDir: {}

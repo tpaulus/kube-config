@@ -125,6 +125,20 @@ data:
         - source_labels: [__meta_kubernetes_service_name]
           action: replace
           target_label: kubernetes_name
+      - job_name: 'netbox-devices'
+        - source_labels: [__meta_netbox_primary_ip, __address__]
+          regex: ([0-9A-Z.:]+);[^:]+:([0-9]+)
+          target_label: __address__
+          replacement: ${1}:$2
+          action: replace
+        - source_labels: [__meta_netbox_name]
+          action: replace
+          target_label: netbox_device_name
+        http_sd_configs:
+          url: https://netbox.ing.k3s.brickyard.whitestar.systems/api/plugins/prometheus-sd/devices/?status=active
+          authorization:
+            type: 'Token'
+            credentials_file: /run/secrets/netbox-token
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -159,3 +173,12 @@ metadata:
   namespace: monitoring
 spec:
   itemPath: "vaults/K3S/items/SMTP"
+
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: netbox-token
+  namespace: monitoring
+spec:
+  itemPath: "vaults/K3S/items/Prometheus-Netbox-Token"

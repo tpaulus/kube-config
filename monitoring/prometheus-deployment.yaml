@@ -76,6 +76,16 @@ spec:
           volumeMounts:
             - name: rules-volume
               mountPath: /run/prometheus-rules
+            - name: netbox-token
+              mountPath: /run/secrets/netbox-token
+              subpath: netbox-token
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "50m"
+            limits:
+              memory: "512Mi"
+              cpu: "100m"
       volumes:
         - name: prometheus-config-volume
           configMap:
@@ -85,7 +95,13 @@ spec:
           persistentVolumeClaim:
             claimName: tsdb
         - name: rules-volume
-          emptyDir:
+          emptyDir: {}
+        - name: netbox-token
+          secret:
+            secretName: netbox-token
+            items:
+            - key: password
+              path: netbox-token
 
 ---
 apiVersion: v1
