@@ -64,6 +64,7 @@ spec:
           args:
             - "--repo=https://github.com/tpaulus/kube-config.git"
             - "--root=/run/prometheus-rules"
+            - "--link=kube-config"
             - "--period=1m"
             - "--webhook-url=http://127.0.0.1:9090/-/reload"
             - "--webhook-method=POST"
