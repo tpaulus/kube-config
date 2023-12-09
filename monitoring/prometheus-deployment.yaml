@@ -44,6 +44,9 @@ spec:
               mountPath: /prometheus/
             - name: rules-volume
               mountPath: /run/prometheus-rules
+            - name: netbox-token
+              mountPath: /run/secrets/netbox-token
+              subpath: netbox-token
           resources:
             requests:
               memory: "6144Mi"
@@ -76,9 +79,6 @@ spec:
           volumeMounts:
             - name: rules-volume
               mountPath: /run/prometheus-rules
-            - name: netbox-token
-              mountPath: /run/secrets/netbox-token
-              subpath: netbox-token
           resources:
             requests:
               memory: "256Mi"
