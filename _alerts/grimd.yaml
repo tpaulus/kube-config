@@ -3,7 +3,7 @@ groups:
 - name: Grimd
   rules:
   - alert: Grimd Not Running
-    expr: sum(up{job="grimd"}) == 0
+    expr: sum(up{instance=~"[0-9.]+:10005"}) == 0
     for: 10m
     labels:
       severity: warning
