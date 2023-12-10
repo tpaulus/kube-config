@@ -25,11 +25,11 @@ groups:
     annotations:
       title: "Node {{ $labels.instance }} {{ $labels.device }} is over 95% utilized"
   - alert: Node down
-    expr: up{job="node_exporter"} == 0
+    expr: up{instance=~"[0-9.]+:9100", netbox_device_name!=""} == 0
     for: 3m
     labels:
       severity: high
     annotations:
-      title: "Node {{ $labels.instance }} is down"
-      description: "Failed to scrape {{ $labels.job }} on {{ $labels.instance }} for more than 3 minutes. Node seems down."
+      title: "Node {{ $labels.netbox_device_name }} is down"
+      description: "Failed to scrape Node Exporter on {{ $labels.netbox_device_name }} for more than 3 minutes. Node seems down."
  
