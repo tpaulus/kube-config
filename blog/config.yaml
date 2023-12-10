@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ghost-conf
+data:
+  config.production.json: |
+    {
+      "url": "https://blog.tompaulus.com/",
+      "server": {
+        "port": 2368,
+        "host": "0.0.0.0"
+      },
+      "comments": {
+        "url": false
+      },
+
+      "mail": {
+        "from": "Tom's Journal <blog@tompaulus.com>",
+        "transport": "SMTP",
+        "options": {
+          "host": "email-smtp.us-west-2.amazonaws.com",
+          "port": 587,
+          "service": "AWS SES"
+        }
+      },
+      "database": {
+        "client": "mysql",
+        "connection": {
+          "host": "mysql.blog",
+          "port": 3306,
+          "database": "ghost"
+        },
+        "pool": {
+          "min": 2,
+          "max": 20
+        }
+      },
+      "logging": {
+        "transports": [
+          "file",
+          "stdout"
+        ]
+      },
+      "process": "systemd",
+      "paths": {
+        "contentPath": "/var/lib/ghost/content"
+      }
+    }
+
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: smtp
+spec:
+  itemPath: "vaults/K3S/items/SMTP"

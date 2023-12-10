@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+spec:
+  selector:
+    matchLabels:
+      app: ghost
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      containers:
+        - name: ghost
+          image: ghost:5.75.0
+          resources:
+            limits:
+              memory: "1024Mi"
+              cpu: "1024m"
+          ports:
+            - containerPort: 2368
+          volumeMounts:
+            - name: media
+              mountPath: /var/lib/ghost/content
+            - name: config
+              mountPath: /var/lib/ghost/config.production.json
+              subPath: config.production.json
+          env:
+            - name: mail__options__auth__user
+              valueFrom:
+                secretKeyRef:
+                  name: smtp
+                  key: username
+            - name: mail__options__auth__pass
+              valueFrom:
+                secretKeyRef:
+                  name: smtp
+                  key: password
+            - name: database__connection__user
+              valueFrom:
+                secretKeyRef:
+                  name: ghost-db
+                  key: username
+            - name: database__connection__password
+              valueFrom:
+                secretKeyRef:
+                  name: ghost-db
+                  key: password
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: media-pvc
+            readOnly: false
+        - name: config
+          configMap:
+            name: ghost-conf
+            items:
+            - key: config.production.json
+              path: config.production.json
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghost
+spec:
+  ports:
+  - port: 2368
+  selector:
+    app: ghost
