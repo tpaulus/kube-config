@@ -1,0 +1,36 @@
+---
+groups:
+- name: Container Uptime
+  rules:
+    - alert: Home Assistant Down
+      expr: time() - max(container_last_seen{name="homeassistant", job="netbox-devices"}) > 600
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Home Assistant Is Down"
+        description: "The Home Assistant Container has not been running for over 10 minutes."
+    - alert: Traefik Down
+      expr: time() - max(container_last_seen{name="traefik", job="netbox-devices"}) > 600
+      for: 1m
+      labels:
+        severity: high
+      annotations:
+        summary: "Traefik Is Down"
+        description: "The Traefik Container has not been running for over 10 minutes."
+    - alert: cloudflared Down
+      expr: time() - max(container_last_seen{name="cloudflared", job="netbox-devices"}) > 600
+      for: 1m
+      labels:
+        severity: high
+      annotations:
+        summary: "Cloudflared Is Down"
+        description: "The cloudflared Container has not been running for over 10 minutes."
+    - alert: Watchtower Down
+      expr: time() - max(container_last_seen{name="watchtower", job="netbox-devices"}) > 3600
+      for: 1m
+      labels:
+        severity: low
+      annotations:
+        summary: "Watchtower Is Down"
+        description: "The Traefik Container has not been running for over 1 hour."
