@@ -30,7 +30,7 @@ groups:
       description: "The rate of DNS queries on CoreDNS has dropped below 10 requests per minute in the last 5 minutes."
       link: https://grafana.brickyard.whitestar.systems/d/wY4blRMGz/coredns
   - alert: CoreDNSUnavailable
-    expr: up{job="coredns"} == 0
+    expr: up{instance=~".*:9253", job="netbox-devices"} == 0
     for: 1m
     labels:
       severity: critical
