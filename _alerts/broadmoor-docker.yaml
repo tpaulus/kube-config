@@ -34,3 +34,14 @@ groups:
       annotations:
         summary: "Watchtower Is Down"
         description: "The Traefik Container has not been running for over 1 hour."
+
+- name: Cron Jobs
+  rules:
+    - alert: Home Assistant Backup Missing
+      expr: time() - max(home_assistant_backup_completed{}) > 9000
+      for: 1m
+      labels:
+        severity: moderate
+      annotations:
+        summary: "Home Assistant Backup Missing"
+        description: "It has been over 2.5 hours since Home Assistant was backed up, when it should be backed up hourly."
