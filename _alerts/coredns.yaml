@@ -12,7 +12,7 @@ groups:
       description: "The rate of failed DNS queries on CoreDNS is above 5% in the last 5 minutes."
       link: https://grafana.brickyard.whitestar.systems/d/wY4blRMGz/coredns
   - alert: CoreDNSHighLatency
-    expr: histogram_quantile(0.50, sum(rate(coredns_forward_request_duration_seconds_bucket{instance=~".*"}[2m])) by (to, le)) > 0.5
+    expr: histogram_quantile(0.50, sum(rate(coredns_forward_request_duration_seconds_bucket{}[2m])) by (to, le)) > 0.5
     for: 2m
     labels:
       severity: warning
