@@ -40,8 +40,8 @@ metadata:
     app.kubernetes.io/version: v1.5.3
 data:
   default-setting.yaml: |-
-    backup-target: nfs://woodlandpark.brickyard.whitestar.systems:/mnt/tank/longhorn
-    #backup-target-credential-secret: minio-secret
+    backup-target: cifs://woodlandpark.brickyard.whitestar.systems/longhorn
+    backup-target-credential-secret: cifs-secret
     #allow-recurring-job-while-volume-detached:
     #create-default-disk-labeled-nodes:
     default-data-path: /var/lib/longhorn/
