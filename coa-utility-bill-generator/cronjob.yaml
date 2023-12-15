@@ -36,6 +36,14 @@ spec:
               - secretRef:
                   name: bill-generation-secrets
 
+            resources:
+              requests:
+                memory: 256Mi"
+                cpu: "500m"
+              limits:
+                memory: "256Mi"
+                cpu: "500m"
+
                 
           restartPolicy: OnFailure
 ---
