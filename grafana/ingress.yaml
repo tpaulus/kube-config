@@ -46,7 +46,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: alertmanager-ui-ext
+  name: grafana-ext
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext
     traefik.ingress.kubernetes.io/router.middlewares: grafana-jwt-verification@kubernetescrd
@@ -57,9 +57,9 @@ spec:
       paths:
       - backend:
           service:
-            name: alertmanager
+            name: grafana
             port:
-              number: 8080
+              number: 3000
         path: /
         pathType: Prefix
   - host: grafana.brickyard.whitestar.systems
