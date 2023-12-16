@@ -41,8 +41,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: am-jwt-verification
-  namespace: monitoring
+  name: jwt-verification
 spec:
   plugin:
     jwt:

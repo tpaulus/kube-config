@@ -1,1 +1,0 @@
-Metrics Server Source: https://github.com/kubernetes-sigs/metrics-server
