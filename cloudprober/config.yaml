@@ -7,28 +7,6 @@ data:
   cloudprober.cfg: |
     # Internal Services
     probe {
-      name: "Router DNS - Internal Query"
-      type: DNS
-      targets {
-        host_names: "10.0.10.1"
-      }
-      dns_probe {
-        resolved_domain: "consul.service.seaview.consul"
-        query_type: A
-      }
-      additional_label {
-        key: "location"
-        value: "internal"
-      }
-      additional_label {
-        key: "type"
-        value: "dns"
-      }
-      interval_msec: 5000  # 5s
-      timeout_msec: 1000   # 1s
-    }
-
-    probe {
       name: "Router DNS - External Query"
       type: DNS
       targets {
