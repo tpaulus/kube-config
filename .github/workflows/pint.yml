@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run pint
-        uses: prymitive/pint-action@bcdfc896c798217555fd6881b163f395ea12d1c0 # v1.36.0
+        uses: prymitive/pint-action@f61ee6a7b1b95206cd3cf689b6931f69503df28d # v1.38.0
         with:
           token: ${{ github.token }}
           workdir: '_alerts'
