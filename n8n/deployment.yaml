@@ -77,7 +77,7 @@ spec:
         nameservers: 
           - 1.1.1.1
           - 1.0.0.1
-        dnsPolicy: None
+      dnsPolicy: None
 
 ---
 apiVersion: v1
