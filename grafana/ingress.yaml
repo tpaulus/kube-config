@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  selector:
+    app: grafana
+  ports:
+  - port: 3000
+    targetPort: 3000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+spec:
+  rules:
+  - host: grafana.ing.k3s.brickyard.whitestar.systems
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: grafana
+            port: 
+              number: 3000
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: jwt-verification
+spec:
+  plugin:
+    jwt:
+      issuers:
+        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
+      headerName: 'Cf-Access-Jwt-Assertion'
+      require:
+        aud: 383cd50986ddcddc0018638011ea367e4a2dc57dd0b59635b18b9f8be0c144f7
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager-ui-ext
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.middlewares: grafana-jwt-verification@kubernetescrd
+spec:
+  rules:
+  - host: grafana.auth-ing.k3s.brickyard.whitestar.systems
+    http: &rules
+      paths:
+      - backend:
+          service:
+            name: alertmanager
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+  - host: grafana.brickyard.whitestar.systems
+    http: *rules
