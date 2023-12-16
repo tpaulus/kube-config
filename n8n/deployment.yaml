@@ -73,6 +73,10 @@ spec:
         volumeMounts:
           - name: storage
             mountPath: /home/node/.n8n/
+      dnsConfig:
+        nameservers: 
+          - 1.1.1.1
+          - 1.0.0.1
 
 ---
 apiVersion: v1
