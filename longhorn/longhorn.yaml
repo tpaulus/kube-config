@@ -46,7 +46,7 @@ data:
     #create-default-disk-labeled-nodes:
     default-data-path: /var/lib/longhorn/
     #replica-soft-anti-affinity:
-    #replica-auto-balance:
+    replica-auto-balance: best-effort
     #storage-over-provisioning-percentage:
     #storage-minimal-available-percentage:
     #upgrade-checker:
