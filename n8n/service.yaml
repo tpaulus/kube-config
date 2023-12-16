@@ -36,5 +36,41 @@ spec:
             name: n8n-service
             port:
               number: 80
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: am-jwt-verification
+  namespace: monitoring
+spec:
+  plugin:
+    jwt:
+      issuers:
+        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
+      headerName: 'Cf-Access-Jwt-Assertion'
+      require:
+        aud: ef26a6100d89e6f3fa04694054ea9b865369ae2e0579a02fb7e95ee751d8d0e7
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n-ext
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.middlewares: n8n-jwt-verification@kubernetescrd
+spec:
+  rules:
+  - host: n8n.auth-ing.k3s.brickyard.whitestar.systems
+    http: &ingress-rule
+      paths:
+      - backend:
+          service:
+            name: n8n-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
   - host: n8n.brickyard.whitestar.systems
     http: *ingress-rule
