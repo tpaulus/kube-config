@@ -37,7 +37,7 @@ spec:
               mountPath: /data
       containers:
         - name: grafana
-          image: grafana/grafana:10.2.2
+          image: grafana/grafana:10.2.3
           resources:
             limits:
               memory: "1024Mi"
