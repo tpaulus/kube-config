@@ -42,7 +42,7 @@ metadata:
   namespace: argocd
 spec:
   entryPoints:
-    - websecure
+    - web-ext
   middlewares:
       - name: argocd-jwt-verification@kubernetescrd
   routes:
