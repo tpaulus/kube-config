@@ -28,5 +28,6 @@ jobs:
         with:
           token: ${{ github.token }}
         env:
+          WORKDIR: "_alerts/"
           PINT_BRICKYARD_CLIENT_ID: ${{ secrets.PINT_BRICKYARD_CLIENT_ID }}
           PINT_BRICKYARD_CLIENT_SECRET: ${{ secrets.PINT_BRICKYARD_CLIENT_SECRET }}
