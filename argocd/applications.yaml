@@ -25,12 +25,8 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  creationTimestamp: "2023-12-16T06:58:39Z"
-  generation: 1905
   name: traefik
   namespace: argocd
-  resourceVersion: "2018262"
-  uid: ae718a7a-99db-446c-a340-c60f3728c2e1
 spec:
   destination:
     namespace: traefik
