@@ -1,15 +1,14 @@
+---
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
 metadata:
   name: beaconhill
   namespace: metallb-system
 spec:
-  myASN: 64500
-  peerASN: 64500
+  myASN: 64828
+  peerASN: 64829
   peerAddress: 10.0.1.1
-
 ---
-
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -18,17 +17,10 @@ metadata:
 spec:
   addresses:
   - 10.30.0.0/16
-
 ---
-
 apiVersion: metallb.io/v1beta1
 kind: BGPAdvertisement
 metadata:
   name: main
   namespace: metallb-system
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: main-l2-advertisement
-  namespace: metallb-system
+
