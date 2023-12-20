@@ -8,6 +8,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: unifi-protect-backup-sqllite
   namespace: backup-unifi-protect
+  uid: abd885ff-9ba8-4d65-8df3-d1c29510cd7b
 spec:
   resources:
     requests:
@@ -15,6 +16,7 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
+  volumeName: pvc-d84f5c73-a129-4866-bb5d-10dcff58b493
 
 ---
 apiVersion: apps/v1
