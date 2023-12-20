@@ -33,8 +33,8 @@ spec:
               - "$(ICLOUD_USERNAME)"
               - "--password"
               - "$(ICLOUD_PASSWORD)"
-              # - "--until-found"
-              # - '10'
+              - "--until-found"
+              - '10'
               - "--auto-delete"
               - "--smtp-username"
               - "$(SMTP_USERNAME)"
