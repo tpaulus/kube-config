@@ -217,6 +217,24 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: icloudpd
+  namespace: argocd
+spec:
+  destination:
+    namespace: icloudpd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: icloudpd
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: kube-system
   namespace: argocd
 spec:
