@@ -27,7 +27,6 @@ jobs:
         uses: prymitive/pint-action@f61ee6a7b1b95206cd3cf689b6931f69503df28d # v1.38.0
         with:
           token: ${{ github.token }}
-          workdir: '_alerts'
         env:
           PINT_BRICKYARD_CLIENT_ID: ${{ secrets.PINT_BRICKYARD_CLIENT_ID }}
           PINT_BRICKYARD_CLIENT_SECRET: ${{ secrets.PINT_BRICKYARD_CLIENT_SECRET }}

@@ -3975,6 +3975,9 @@ metadata:
     app: longhorn-manager
   name: longhorn-backend
   namespace: longhorn-system
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port:   '9500'
 spec:
   type: ClusterIP
   sessionAffinity: ClientIP
