@@ -25,6 +25,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: jwt-verification
+  namespace: argocd
 spec:
   plugin:
     jwt:
@@ -34,7 +35,6 @@ spec:
       require:
         aud: f2d6259e0bc9268137d8382a2b145834130153c17ddefae081fa8e4c60603998
 ---
-
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
