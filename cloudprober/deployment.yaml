@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: cloudprober
-          image: cloudprober/cloudprober:v0.13.1
+          image: cloudprober/cloudprober:v0.13.2
           args:
             - "--config_file"
             - "/config/cloudprober.cfg"
