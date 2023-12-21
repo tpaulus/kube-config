@@ -57,6 +57,11 @@ spec:
             jwt:
               moduleName: github.com/tpaulus/jwt-middleware
               version: v1.1.10
+        
+        providers:
+          kubernetesIngress:
+            publishedService:
+              enabled: true
     repoURL: https://traefik.github.io/charts
     targetRevision: 26.0.0
   syncPolicy:
