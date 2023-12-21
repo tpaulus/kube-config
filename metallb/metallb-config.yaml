@@ -1,4 +1,13 @@
 ---
+apiVersion: metallb.io/v1beta1
+kind: BFDProfile
+metadata:
+  name: bfdprofile
+  namespace: metallb-system
+spec:
+  receiveInterval: 380
+  transmitInterval: 270
+---
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
 metadata:
@@ -8,6 +17,8 @@ spec:
   myASN: 64828
   peerASN: 64829
   peerAddress: 10.0.1.1
+  bfdProfile: bfdprofile
+  ebgpMultiHop: true
 ---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
