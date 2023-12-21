@@ -42,8 +42,8 @@ spec:
         experimental.plugins.enabled: true
 
         ports:
-          web: # This isn't working
-            redirect:
+          web:
+            redirectTo:
               port: websecure
               priority: 10
 
