@@ -67,12 +67,12 @@ spec:
               path: smtp_pass
         - name: alertmanager-storage-volume
           persistentVolumeClaim:
-            claimName: tsdb
+            claimName: am-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tsdb
+  name: am-pvc
   namespace: monitoring
 spec:
   resources:
