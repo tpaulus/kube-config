@@ -43,17 +43,19 @@ metadata:
 spec:
   entryPoints:
     - web-ext
-  middlewares:
-      - name: argocd-jwt-verification@kubernetescrd
   routes:
     - kind: Rule
       match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`)
+      middlewares:
+      - name: argocd-jwt-verification@kubernetescrd
       priority: 10
       services:
         - name: argocd-server
           port: 80
     - kind: Rule
       match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`) && Headers(`Content-Type`, `application/grpc`)
+      middlewares:
+      - name: argocd-jwt-verification@kubernetescrd
       priority: 11
       services:
         - name: argocd-server
