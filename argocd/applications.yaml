@@ -52,14 +52,11 @@ spec:
             exposedPort: 9200
             protocol: TCP
 
-        experimental:  # This isn't working, hence the additional args
+        experimental:
           plugins:
-            - jwt:
-                moduleName: github.com/tpaulus/jwt-middleware
-                version: v1.1.10
-        additionalArguments:
-          - '--experimental.plugins.jwt.modulename=github.com/tpaulus/jwt-middleware'
-          - '--experimental.plugins.jwt.version=v1.1.10'
+            jwt:
+              moduleName: github.com/tpaulus/jwt-middleware
+              version: v1.1.10
     repoURL: https://traefik.github.io/charts
     targetRevision: 26.0.0
   syncPolicy:
