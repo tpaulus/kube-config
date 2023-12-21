@@ -41,27 +41,11 @@ spec:
       values: |
         experimental.plugins.enabled: true
 
-        certResolvers:
-          cf_wss:
-            email: admin@whitestar.systems
-            storage: /data/acme.json
-            dnschallenge: true
-            dnschallenge.provider: cloudflare
-
-        deployment.initContainers:
-        - name: volume-permissions
-          image: busybox:1.36
-          command: ["sh", "-c", "chown 65532:65532 /data"]
-          volumeMounts:
-            - name: data
-              mountPath: /data
-
         ports:
           web: # This isn't working
             redirect:
               port: websecure
-              prirority: 10
-
+              priority: 10
 
           web-ext:
             port: 9200
@@ -70,9 +54,9 @@ spec:
 
         experimental:  # This isn't working, hence the additional args
           plugins:
-            jwt:
-              moduleName: github.com/tpaulus/jwt-middleware
-              version: v1.1.10
+            - jwt:
+                moduleName: github.com/tpaulus/jwt-middleware
+                version: v1.1.10
         additionalArguments:
           - '--experimental.plugins.jwt.modulename=github.com/tpaulus/jwt-middleware'
           - '--experimental.plugins.jwt.version=v1.1.10'
