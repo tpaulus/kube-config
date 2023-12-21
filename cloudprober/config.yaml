@@ -10,7 +10,7 @@ data:
       name: "Router DNS - External Query"
       type: DNS
       targets {
-        host_names: "10.0.10.1"
+        host_names: "10.0.40.1"
       }
       dns_probe {
         resolved_domain: "tompaulus.com"
