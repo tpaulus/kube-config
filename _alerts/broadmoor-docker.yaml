@@ -38,7 +38,7 @@ groups:
 - name: Cron Jobs
   rules:
     - alert: Home Assistant Backup Missing
-      expr: time() - max(home_assistant_backup_completed{}) > 9000
+      expr: time() - max(home_assistant_backup_completed{}) > 9000  # 2.5 Hours
       for: 1m
       labels:
         severity: moderate

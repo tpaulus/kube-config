@@ -1,0 +1,12 @@
+---
+groups:
+- name: Cron Jobs
+  rules:
+    - alert: K3s etcd Snapshot
+      expr: time() - max(k3s_etcd_backup_completed{}) by (netbox_device_name) > 86400  # 1 day
+      for: 1m
+      labels:
+        severity: moderate
+      annotations:
+        summary: "K3s Snapshot Backup Missing for {{ $labels.netbox_device_name }}"
+        description: "It has been over a day since a k3s etcd snapshot was backed up to the NAS on {{ $labels.netbox_device_name }}."
