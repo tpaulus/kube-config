@@ -4,7 +4,7 @@ groups:
   rules:
   - alert: CoreDNSHighQueryFailureRate
     expr: sum(rate(coredns_dns_requests_total{}[1m])) - sum(rate(coredns_dns_responses_total{rcode=~"SERVFAIL|REFUSED"}[1m])) / sum(rate(coredns_dns_responses_total{}[1m])) * 100 > 25
-    for: 5m
+    for: 30m
     labels:
       severity: critical
     annotations:
