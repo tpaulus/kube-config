@@ -22,7 +22,7 @@ spec:
 
           containers:
           - name: backup-photos
-            image: icloudpd/icloudpd:1.17.2
+            image: icloudpd/icloudpd:1.17.3
             args:
               - "icloudpd"
               - "--directory"
