@@ -21,6 +21,8 @@ spec:
       containers:
         - name: prometheus-nut-exporter
           image: ghcr.io/druggeri/nut_exporter:3.1.1
+          args: 
+            - --nut.vars_enable="battery.charge,battery.voltage,battery.voltage.nominal,ups.status,battery.runtime"
           ports:
             - containerPort: 9199
               name: metrics
