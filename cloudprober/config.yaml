@@ -72,7 +72,7 @@ data:
       name: "Grafana"
       type: HTTP
       targets {
-        host_names: "grafana.whitestar.systems"
+        host_names: "grafana.brickyard.whitestar.systems"
       }
       http_probe {
         protocol: HTTPS
