@@ -206,7 +206,6 @@ data:
     probe {
       name: "Cloudflare"
       type: HTTP
-      interval: "10s"
       targets {
         host_names: "www.cloudflare.com"
       }
@@ -230,7 +229,6 @@ data:
     probe {
       name: "Google Homepage"
       type: HTTP
-      interval: "10s"
       targets {
         host_names: "www.google.com"
       }
@@ -254,7 +252,6 @@ data:
     probe {
       name: "Apple Homepage"
       type: HTTP
-      interval: "10s"
       targets {
         host_names: "www.apple.com"
       }
