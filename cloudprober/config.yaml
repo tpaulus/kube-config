@@ -69,6 +69,78 @@ data:
     }
 
     probe {
+      name: "Grafana"
+      type: HTTP
+      targets {
+        host_names: "grafana.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        
+        header {
+          key: "CF-Access-Client-Id"
+          value: "{{env "CF_ACCESS_ID" }}"
+        }
+        header {
+          key: "CF-Access-Client-Secret"
+          value: "{{env "CF_ACCESS_SECRET" }}"
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Netbox"
+      type: HTTP
+      targets {
+        host_names: "netbox.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        
+        header {
+          key: "CF-Access-Client-Id"
+          value: "{{env "CF_ACCESS_ID" }}"
+        }
+        header {
+          key: "CF-Access-Client-Secret"
+          value: "{{env "CF_ACCESS_SECRET" }}"
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
       name: "Protect NVR"
       type: HTTP
       targets {
@@ -134,6 +206,7 @@ data:
     probe {
       name: "Cloudflare"
       type: HTTP
+      interval: "10s"
       targets {
         host_names: "www.cloudflare.com"
       }
@@ -157,6 +230,7 @@ data:
     probe {
       name: "Google Homepage"
       type: HTTP
+      interval: "10s"
       targets {
         host_names: "www.google.com"
       }
@@ -180,6 +254,7 @@ data:
     probe {
       name: "Apple Homepage"
       type: HTTP
+      interval: "10s"
       targets {
         host_names: "www.apple.com"
       }
