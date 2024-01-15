@@ -200,6 +200,46 @@ data:
       timeout_msec: 1000   # 1s
     }
 
+    # Host Checks
+    probe {
+      name: "IPMI Ping"
+      type: PING
+
+      interval: 10s
+
+      targets {
+        endpoint {
+          name: "ravenna"
+          ip: "10.0.199.2"
+        }
+        endpoint {
+          name: "roosevelt"
+          ip: "10.0.199.3"
+        }
+        endpoint {
+          name: "woodlandpark"
+          ip: "10.0.199.4"
+        }
+        endpoint {
+          name: "beaconhill"
+          ip: "10.0.199.5"
+        }
+        endpoint {
+          name: "laurelhurst"
+          ip: "10.0.199.6"
+        }
+      }
+
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "node"
+      }
+    }
+
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
