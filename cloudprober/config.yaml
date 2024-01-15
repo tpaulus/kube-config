@@ -205,7 +205,7 @@ data:
       name: "IPMI Ping"
       type: PING
 
-      interval: 10s
+      interval: 10
 
       targets {
         endpoint {
