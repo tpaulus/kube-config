@@ -35,7 +35,7 @@ spec:
         args:
             - -c
             - sleep 5; n8n start
-        image: n8nio/n8n:1.24.1
+        image: n8nio/n8n:1.25.0
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
