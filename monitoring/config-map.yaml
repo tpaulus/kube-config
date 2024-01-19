@@ -157,6 +157,15 @@ data:
       group_interval: 5m
       repeat_interval: 4h
       receiver: 'email-tom'  # Default Receiver
+      routes:
+      - receiver: 'email-tom'
+        group_wait: 30s
+        matchers:
+        - notify=~"(.+ )?email-tom( .+)?"
+      - receiver: 'email-mel'
+        group_wait: 30s
+        matchers:
+        - notify=~"(.+ )?email-mel( .+)?"
     receivers:
     - name: 'email-tom'
       email_configs:
