@@ -30,7 +30,9 @@ data:
         type: prometheus
         access: proxy
         url: http://prometheus.monitoring.svc:8080
+        isDefault: true
       - name: AlertManager
         type: alertmanager
         access: proxy
         url: http://alertmanager.monitoring.svc:8080
+        implementation: prometheus
