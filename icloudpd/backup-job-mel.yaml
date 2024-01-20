@@ -59,6 +59,8 @@ spec:
             envFrom:
               - secretRef: 
                   name: mel-icloud
+              - secretRef:
+                  name: smtp
             
             volumeMounts:
               - name: storage

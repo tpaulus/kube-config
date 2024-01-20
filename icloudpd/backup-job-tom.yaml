@@ -59,6 +59,8 @@ spec:
             envFrom:
               - secretRef: 
                   name: tom-icloud
+              - secretRef:
+                  name: smtp
             
             volumeMounts:
               - name: storage
