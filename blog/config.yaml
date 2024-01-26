@@ -16,12 +16,12 @@ data:
       },
 
       "mail": {
-        "from": "Tom's Journal <blog@tompaulus.com>",
+        "from": "Tom's Journal <blog-tompaulus@whitestar.systems>",
         "transport": "SMTP",
         "options": {
-          "host": "email-smtp.us-west-2.amazonaws.com",
-          "port": 587,
-          "service": "AWS SES"
+          "host": "smtp-relay.smtp-relay.svc.cluster.local",
+          "port": 25,
+          "service": "K3s Relay"
         }
       },
       "database": {
