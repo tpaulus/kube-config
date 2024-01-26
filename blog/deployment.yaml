@@ -40,6 +40,18 @@ spec:
                 secretKeyRef:
                   name: ghost-db
                   key: password
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 2368
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 2368
+            initialDelaySeconds: 5
+            periodSeconds: 10
       volumes:
         - name: media
           persistentVolumeClaim:

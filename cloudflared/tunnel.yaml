@@ -49,6 +49,10 @@ spec:
         - name: origin-cert
           mountPath: /usr/local/etc/cloudflared
           readOnly: true
+        resources:
+          limits:
+            memory: "1024Mi"
+            cpu: "1024m"
       volumes:
       - name: creds
         secret:

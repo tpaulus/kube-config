@@ -45,6 +45,12 @@ spec:
               port: metrics
             initialDelaySeconds: 5
             periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 3
       volumes:
         - name: config
           configMap:

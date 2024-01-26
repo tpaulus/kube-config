@@ -64,7 +64,18 @@ spec:
             - name: grafana-datasources
               mountPath: /local/grafana/provisioning/datasources/datasources.yaml
               subPath: datasources.yaml
-
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
       volumes:
         - name: grafana-config
           configMap:
