@@ -44,12 +44,19 @@ spec:
             httpGet:
               path: /
               port: 2368
+              httpHeaders:
+                - name: X-Forwarded-Proto
+                  value: https
             initialDelaySeconds: 5
             periodSeconds: 10
+            
           livenessProbe:
             httpGet:
               path: /
               port: 2368
+              httpHeaders:
+                - name: X-Forwarded-Proto
+                  value: https
             initialDelaySeconds: 5
             periodSeconds: 10
       volumes:
