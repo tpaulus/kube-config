@@ -18,7 +18,7 @@ spec:
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "256m"
         ports:
         - containerPort: 25
         env:
@@ -40,7 +40,16 @@ spec:
           value: "whitestar.systems"
         - name: SMTP_NETWORKS
           value: "0.0.0.0/0"
-
+        readinessProbe:
+          tcpSocket:
+            port: 25
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 25
+          initialDelaySeconds: 5
+          periodSeconds: 10
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
