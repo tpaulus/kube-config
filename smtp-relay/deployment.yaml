@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: relay
+spec:
+  selector:
+    matchLabels:
+      app: relay
+  template:
+    metadata:
+      labels:
+        app: relay
+    spec:
+      containers:
+      - name: relay
+        image: juanluisbaptiste/postfix:1.7.1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 25
+        env:
+        - name: SMTP_PORT
+          value: "25"
+        - name: SMTP_SERVER
+          value: "email-smtp.us-west-2.amazonaws.com"
+        - name: SMTP_USERNAME
+          valueFrom:
+            secret:
+              key: username
+              name: smtp
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secret:
+              key: password
+              name: smtp
+        - name: SERVER_HOSTNAME
+          value: "whitestar.systems"
+        - name: SMTP_NETWORKS
+          value: "0.0.0.0/0"
+
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: smtp
+spec:
+  itemPath: "vaults/K3S/items/SMTP"

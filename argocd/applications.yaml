@@ -429,3 +429,23 @@ spec:
   syncPolicy:
     automated:
       prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: smtp-relay
+  namespace: argocd
+spec:
+  destination:
+    namespace: smtp-relay
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: smtp-relay
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
