@@ -73,10 +73,6 @@ spec:
           mountPath: /run/secrets/db_password
           subPath: db_password
           readOnly: true
-        - name: email-password
-          mountPath: /run/secrets/email_password
-          subPath: email_password
-          readOnly: true
         - name: napalm-password
           mountPath: /run/secrets/napalm_password
           subPath: napalm_password
