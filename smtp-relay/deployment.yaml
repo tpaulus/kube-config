@@ -28,12 +28,12 @@ spec:
           value: "email-smtp.us-west-2.amazonaws.com"
         - name: SMTP_USERNAME
           valueFrom:
-            secret:
+            secretKeyRef:
               key: username
               name: smtp
         - name: SMTP_PASSWORD
           valueFrom:
-            secret:
+            secretKeyRef:
               key: password
               name: smtp
         - name: SERVER_HOSTNAME
