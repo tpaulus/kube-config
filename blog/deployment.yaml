@@ -30,16 +30,6 @@ spec:
               mountPath: /var/lib/ghost/config.production.json
               subPath: config.production.json
           env:
-            - name: mail__options__auth__user
-              valueFrom:
-                secretKeyRef:
-                  name: smtp
-                  key: username
-            - name: mail__options__auth__pass
-              valueFrom:
-                secretKeyRef:
-                  name: smtp
-                  key: password
             - name: database__connection__user
               valueFrom:
                 secretKeyRef:

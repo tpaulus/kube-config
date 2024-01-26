@@ -35,8 +35,6 @@ spec:
           volumeMounts:
             - name: alertmanager-config-volume
               mountPath: /etc/alertmanager/
-            - name: alertmanager-smtp-pass
-              mountPath: /etc/alertmanager-config/
             - name: alertmanager-storage-volume
               mountPath: /alertmanager
           resources:
@@ -59,12 +57,6 @@ spec:
           configMap:
             defaultMode: 420
             name: alertmanager-server-conf
-        - name: alertmanager-smtp-pass
-          secret:
-            secretName: smtp
-            items:
-            - key: password
-              path: smtp_pass
         - name: alertmanager-storage-volume
           persistentVolumeClaim:
             claimName: am-pvc

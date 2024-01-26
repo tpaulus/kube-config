@@ -18,19 +18,13 @@ spec:
               - name: TZ
                 value: "America/Los_Angeles"
               - name: SMTP_SERVER
-                value: email-smtp.us-west-2.amazonaws.com
+                value: smtp-relay.smtp-relay.svc.cluster.local
               - name: SMTP_USERNAME
-                valueFrom:
-                  secretKeyRef:
-                    key: username
-                    name: smtp
+                value: ""
               - name: SMTP_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    key: password
-                    name: smtp
+                value: ""
               - name: SMTP_PORT
-                value: "587"
+                value: "25"
               
             envFrom:
               - secretRef:
@@ -45,13 +39,6 @@ spec:
                 cpu: "500m"
 
           restartPolicy: OnFailure
----
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-metadata:
-  name: smtp
-spec:
-  itemPath: "vaults/K3S/items/SMTP"
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem

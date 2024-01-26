@@ -177,19 +177,8 @@ data:
         send_resolved: false
     global:
       smtp_from: alertmanager@whitestar.systems
-      smtp_smarthost: "email-smtp.us-west-2.amazonaws.com:587"
-      smtp_auth_username: AKIAJ6SLTZFOHHZSTUKQ
-      smtp_auth_password_file: /etc/alertmanager-config/smtp_pass
-      smtp_require_tls: true
-
----
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-metadata:
-  name: smtp
-  namespace: monitoring
-spec:
-  itemPath: "vaults/K3S/items/SMTP"
+      smtp_smarthost: "smtp-relay.smtp-relay.svc.cluster.local:25"
+      smtp_require_tls: false
 
 ---
 apiVersion: onepassword.com/v1

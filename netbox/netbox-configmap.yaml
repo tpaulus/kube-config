@@ -12,10 +12,11 @@ data:
   CHANGELOG_RETENTION: "90"
   DB_SSLMODE: require
   EMAIL_FROM: netbox@whitestar.systems
-  EMAIL_PORT: "587"
-  EMAIL_SERVER: email-smtp.us-west-2.amazonaws.com:587
+  EMAIL_PORT: "25"
+  EMAIL_SERVER: smtp-relay.smtp-relay.svc.cluster.local
   EMAIL_TIMEOUT: "10"
-  EMAIL_USERNAME: AKIAJ6SLTZFOHHZSTUKQ
+  EMAIL_USERNAME: ""
+  EMAIL_PASSWORD: ""
   # EXEMPT_VIEW_PERMISSIONS: ''
   # LOGIN_REQUIRED: "true"
   MEDIA_ROOT: /opt/netbox/netbox/media

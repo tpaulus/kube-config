@@ -141,12 +141,6 @@ spec:
           items:
           - key: password
             path: db_password
-      - name: email-password
-        secret:
-          secretName: smtp
-          items:
-          - key: password
-            path: email_password
       - name: napalm-password
         secret:
           secretName: netbox-secret
