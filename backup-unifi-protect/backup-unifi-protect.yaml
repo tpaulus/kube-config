@@ -44,8 +44,8 @@ spec:
             memory: "1024Mi"
             cpu: "1024m"
           limits:
-            memory: "1024Mi"
-            cpu: "1024m"
+            memory: "2048Mi"
+            cpu: "2048m"
         env:
           - name: SQLITE_PATH
             value: '/data/backup-events'
