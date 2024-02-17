@@ -19,6 +19,13 @@
         "automergeMinor": true,
         "automergePatch": true,
         "stabilityDays": 1
+      },
+      {
+        "matchPackageNames": ["ghost"],
+        "automergeMajor": false,
+        "automergeMinor": true,
+        "automergePatch": true,
+        "stabilityDays": 5
       }
     ],
       "hostRules": [
