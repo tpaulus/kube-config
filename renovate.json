@@ -21,7 +21,7 @@
         "stabilityDays": 1
       },
       {
-        "matchPackageNames": ["ghost"],
+        "matchDepNames": ["ghost"],
         "automergeMajor": false,
         "automergeMinor": true,
         "automergePatch": true,
