@@ -14,19 +14,19 @@
     "ignoreTests": true,
     "packageRules": [
       {
+        "matchManagers": ["kubernetes"],
+        "automergeMajor": false,
+        "automergeMinor": true,
+        "automergePatch": true,
+        "stabilityDays": 1
+      },
+      {
         "matchDatasources": ["docker"],
         "matchPackageNames": ["ghost"],
         "automergeMajor": false,
         "automergeMinor": true,
         "automergePatch": true,
         "stabilityDays": 5
-      },
-      {
-        "matchManagers": ["kubernetes"],
-        "automergeMajor": false,
-        "automergeMinor": true,
-        "automergePatch": true,
-        "stabilityDays": 1
       }
     ],
       "hostRules": [
