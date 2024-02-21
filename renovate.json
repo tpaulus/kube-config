@@ -19,14 +19,6 @@
         "automergeMinor": true,
         "automergePatch": true,
         "stabilityDays": 1
-      },
-      {
-        "matchDatasources": ["docker"],
-        "matchPackageNames": ["ghost"],
-        "automergeMajor": false,
-        "automergeMinor": true,
-        "automergePatch": true,
-        "stabilityDays": 5
       }
     ],
       "hostRules": [
