@@ -30,3 +30,11 @@ data:
   REDIS_CACHE_DATABASE: "1"
   MAINTENANCE_MODE: 'False'
   DEBUG: 'False'
+  # Enable python-social-auth
+  REMOTE_AUTH_ENABLED: 'true'
+  REMOTE_AUTH_BACKEND: 'social_core.backends.open_id_connect.OpenIdConnectAuth'
+
+  # python-social-auth config
+  SOCIAL_AUTH_OIDC_ENDPOINT: 'https://auth.whitestar.systems/application/o/netbox/'
+  SOCIAL_AUTH_OIDC_KEY: 'mjc8mhFfMXW9nqDqyW8NYcMCV18I8eFVNTsXMBeI'
+  LOGOUT_REDIRECT_URL: 'https://auth.whitestar.systems/application/o/netbox/end-session/'

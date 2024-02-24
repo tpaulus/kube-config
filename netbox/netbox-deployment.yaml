@@ -49,6 +49,11 @@ spec:
                 key: user
           - name: DB_WAIT_DEBUG
             value: "1"
+          - name: SOCIAL_AUTH_OIDC_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: netbox-secret
+                key: SOCIAL_AUTH_OIDC_SECRET
 
         lifecycle: # Will run the post-startup scripts detailed in netbox-startup-configmap.yaml
           postStart:
@@ -99,6 +104,12 @@ spec:
         - mountPath: /home/nginx-caching-fix.sh
           name: nginx-caching-fix
           subPath: nginx-caching-fix.sh
+        - mountPath: /opt/netbox/netbox/netbox/custom_pipeline.py
+          name: custom_pipeline
+          subPath: custom_pipeline.py
+        - mountPath: /opt/netbox/netbox/netbox/authentik.py
+          name: authentik
+          subPath: authentik.py
       restartPolicy: Always
       volumes:
       # Reference to configmaps and PVs
@@ -130,6 +141,18 @@ spec:
           items:
           - key: "nginx-caching-fix.sh"
             path: "nginx-caching-fix.sh"
+      - name: custom_pipeline
+        configMap:
+          name: startup-configmap
+          items:
+          - key: "custom_pipeline.py"
+            path: "custom_pipeline.py"
+      - name: authentik
+        configMap:
+          name: startup-configmap
+          items:
+          - key: "authentik.py"
+            path: "authentik.py"
       # Populate via secret
       - name: db-password
         secret:
