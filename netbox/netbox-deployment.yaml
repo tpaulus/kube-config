@@ -105,7 +105,7 @@ spec:
           name: nginx-caching-fix
           subPath: nginx-caching-fix.sh
         - mountPath: /opt/netbox/netbox/netbox/custom_pipeline.py
-          name: custom_pipeline
+          name: custom-pipeline
           subPath: custom_pipeline.py
         - mountPath: /opt/netbox/netbox/netbox/authentik.py
           name: authentik
@@ -141,7 +141,7 @@ spec:
           items:
           - key: "nginx-caching-fix.sh"
             path: "nginx-caching-fix.sh"
-      - name: custom_pipeline
+      - name: custom-pipeline
         configMap:
           name: startup-configmap
           items:
