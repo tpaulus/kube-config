@@ -15,7 +15,20 @@ data:
         hs = {}
         hs.status = "Healthy"
         return hs
-
+  dex.config: |
+    connectors:
+    - config:
+        issuer: https://auth.whitestar.systems/application/o/argocd/
+        clientID: 2nt1MrotMukmRC0xbNbJyUGVqa0G12RionEdrjJ7
+        clientSecret: $dex.authentik.clientSecret
+        insecureEnableGroups: true
+        scopes:
+          - openid
+          - profile
+          - email
+      name: authentik
+      type: oidc
+      id: authentik
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -27,3 +40,23 @@ metadata:
   namespace: argocd
 data:
   server.insecure: "true"
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: argocd-secret
+  namespace: argocd
+spec:
+  itemPath: "vaults/K3S/items/argocd"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-rbac-cm
+    app.kubernetes.io/part-of: argocd
+  name: argocd-rbac-cm
+data:
+  policy.csv: |
+    g, DevOps-ArgoCD-Admins, role:admin
+    g, DevOps-ArgoCD-RO, role:readonly
