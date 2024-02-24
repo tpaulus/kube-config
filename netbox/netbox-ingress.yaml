@@ -30,7 +30,15 @@ spec:
       require:
         aud: 268fe8ea853dbd153ec9023eb2187d88b33c0a45be66dea14a9113a26292c0cb
 ---
-
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: inject-headers
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -38,7 +46,7 @@ metadata:
   namespace: netbox
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext
-    traefik.ingress.kubernetes.io/router.middlewares: netbox-jwt-verification@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: netbox-inject-headers@kubernetescrd,netbox-jwt-verification@kubernetescrd
 spec:
   rules:
   - host: netbox.auth-ing.k3s.brickyard.whitestar.systems
