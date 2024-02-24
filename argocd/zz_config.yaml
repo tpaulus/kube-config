@@ -29,6 +29,7 @@ data:
       name: authentik
       type: oidc
       id: authentik
+  admin.enabled: "false"
 ---
 apiVersion: v1
 kind: ConfigMap
