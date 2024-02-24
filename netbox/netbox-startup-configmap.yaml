@@ -159,6 +159,6 @@ data:
             pass
 
         # Set roles is role (superuser or staff) is in groups
-        user.is_superuser = True if 'superusers' in groups else False
-        user.is_staff = True if 'staff' in groups else False
+        user.is_superuser = True if 'InfOps-Netbox-Admin' in groups else False
+        user.is_staff = True if 'InfOps-Netbox-Staff' in groups else False
         user.save()
