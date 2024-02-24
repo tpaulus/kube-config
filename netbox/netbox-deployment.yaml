@@ -107,7 +107,7 @@ spec:
         - mountPath: /opt/netbox/netbox/netbox/custom_pipeline.py
           name: custom-pipeline
           subPath: custom_pipeline.py
-        - mountPath: /opt/netbox/netbox/netbox/authentik.py
+        - mountPath: /etc/netbox/config/authentik.py
           name: authentik
           subPath: authentik.py
       restartPolicy: Always
