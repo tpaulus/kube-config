@@ -26,7 +26,7 @@ spec:
               mountPath: /data
       containers:
         - name: alertmanager
-          image: prom/alertmanager:v0.26.0
+          image: prom/alertmanager:v0.27.0
           args:
             - "--config.file=/etc/alertmanager/alertmanager.yml"
             - "--web.external-url=https://alertmanager.ing.k3s.brickyard.whitestar.systems"
