@@ -84,9 +84,11 @@ spec:
             - host: zitadel.auth-ing.k3s.brickyard.whitestar.systems
               paths: 
                 - path: "/"
+                  pathType: Prefix
             - host: auth.whitestar.systems
               paths: 
                 - path: "/"
+                  pathType: Prefix
 
         metrics:
           enabled: true
