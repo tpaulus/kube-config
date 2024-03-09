@@ -26,6 +26,7 @@ data:
           - profile
           - email
           - groups
+      id: zitadel
       name: Zitadel
       type: oidc
       logoutURL: https://auth.whitestar.systems/oidc/v1/end_session
