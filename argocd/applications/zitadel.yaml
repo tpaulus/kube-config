@@ -38,42 +38,42 @@ spec:
                   SSL:
                     Mode: require
             
-          Env:
-            - name: "ZITADEL_DATABASE_POSTGRES_HOST"
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-pguser-zitadel
-                  key: host
-            - name: "ZITADEL_DATABASE_POSTGRES_PORT"
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-pguser-zitadel
-                  key: port
-            - name: "ZITADEL_DATABASE_POSTGRES_DATABASE"
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-pguser-zitadel
-                  key: dbname
-            - name: "ZITADEL_DATABASE_POSTGRES_USER_USERNAME"
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-pguser-zitadel
-                  key: user
-            - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME"
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-pguser-zitadel
-                  key: user
-            - name: "ZITADEL_DATABASE_POSTGRES_USER_PASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-pguser-zitadel
-                  key: password
-            - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-pguser-zitadel
-                  key: password
+        env:
+          - name: "ZITADEL_DATABASE_POSTGRES_HOST"
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-pguser-zitadel
+                key: host
+          - name: "ZITADEL_DATABASE_POSTGRES_PORT"
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-pguser-zitadel
+                key: port
+          - name: "ZITADEL_DATABASE_POSTGRES_DATABASE"
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-pguser-zitadel
+                key: dbname
+          - name: "ZITADEL_DATABASE_POSTGRES_USER_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-pguser-zitadel
+                key: user
+          - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-pguser-zitadel
+                key: user
+          - name: "ZITADEL_DATABASE_POSTGRES_USER_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-pguser-zitadel
+                key: password
+          - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-pguser-zitadel
+                key: password
 
         ingress:
           annotations:
