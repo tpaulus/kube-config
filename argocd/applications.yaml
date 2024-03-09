@@ -361,24 +361,6 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: offset-tracker
-  namespace: argocd
-spec:
-  destination:
-    namespace: offset-tracker
-    server: https://kubernetes.default.svc
-  project: default
-  source:
-    path: offset-tracker
-    repoURL: git@github.com:tpaulus/kube-config.git
-    targetRevision: HEAD
-  syncPolicy:
-    automated:
-      prune: true
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
   name: postgres
   namespace: argocd
 spec:
