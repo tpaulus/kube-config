@@ -15,21 +15,17 @@ data:
         hs = {}
         hs.status = "Healthy"
         return hs
-  dex.config: |
-    connectors:
-    - config:
-        issuer: https://auth.whitestar.systems
-        clientID: 257470643216384018@devops
-        clientSecret: $dex.zitadel.clientSecret
-        scopes:
-          - openid
-          - profile
-          - email
-          - groups
-      id: zitadel
-      name: Zitadel
-      type: oidc
-      logoutURL: https://auth.whitestar.systems/oidc/v1/end_session
+  oidc.config: |
+    name: Zitadel
+    issuer: https://auth.whitestar.systems
+    clientID: 257470643216384018@devops
+    clientSecret: $dex.zitadel.clientSecret
+    requestedScopes:
+      - openid
+      - profile
+      - email
+      - groups
+    logoutURL: https://auth.whitestar.systems/oidc/v1/end_session
   admin.enabled: "false"
 ---
 apiVersion: v1
