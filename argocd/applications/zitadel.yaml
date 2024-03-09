@@ -1,0 +1,71 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zitadel
+spec:
+  destination:
+    name: ''
+    namespace: zitadel
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://charts.zitadel.com'
+    targetRevision: 7.9.1
+    chart: zitadel
+    helm:
+      values: |
+        zitadel:
+          masterkeySecretName: "zitadel"
+          dbSslCaCrtSecret: &db_cert_secret zitadel-db-cluster-cert
+          dbSslUserCrtSecret: *db_cert_secret
+
+          configmapConfig:
+            ExternalSecure: true
+            ExternalDomain: "auth.whitestar.systems"
+            TLS:
+              Enabled: false
+            
+          Env:
+            - name: "ZITADEL_DATABASE_POSTGRES_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-db-pguser-zitadel
+                  key: host
+            - name: "ZITADEL_DATABASE_POSTGRES_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-db-pguser-zitadel
+                  key: port
+            - name: "ZITADEL_DATABASE_POSTGRES_DATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-db-pguser-zitadel
+                  key: dbname
+            - name: "ZITADEL_DATABASE_POSTGRES_USER_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-db-pguser-zitadel
+                  key: user
+            - name: "ZITADEL_DATABASE_POSTGRES_USER_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-db-pguser-zitadel
+                  key: password
+
+        ingress:
+            annotations:
+              traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+              traefik.ingress.kubernetes.io/router.middlewares: authentik-inject-headers@kubernetescrd
+            enabled: true
+            hosts:
+            - zitadel.auth-ing.k3s.brickyard.whitestar.systems
+            - auth.whitestar.systems
+
+        metrics:
+          enabled: true
+
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
