@@ -53,13 +53,17 @@ spec:
                   key: password
 
         ingress:
-            annotations:
-              traefik.ingress.kubernetes.io/router.entrypoints: web-ext
-              traefik.ingress.kubernetes.io/router.middlewares: authentik-inject-headers@kubernetescrd
-            enabled: true
-            hosts:
-            - zitadel.auth-ing.k3s.brickyard.whitestar.systems
-            - auth.whitestar.systems
+          annotations:
+            traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+            traefik.ingress.kubernetes.io/router.middlewares: zitadel-inject-headers@kubernetescrd
+          enabled: true
+          hosts:
+            - host: zitadel.auth-ing.k3s.brickyard.whitestar.systems
+              paths: 
+                - "/"
+            - host: auth.whitestar.systems
+              paths: 
+                - "/"
 
         metrics:
           enabled: true
