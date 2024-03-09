@@ -75,6 +75,10 @@ spec:
                 name: zitadel-db-pguser-zitadel
                 key: password
 
+        service:
+          annotations:
+            traefik.ingress.kubernetes.io/service.serversscheme: h2c
+
         ingress:
           annotations:
             traefik.ingress.kubernetes.io/router.entrypoints: web-ext
