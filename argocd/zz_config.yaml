@@ -20,15 +20,15 @@ data:
     - config:
         issuer: https://auth.whitestar.systems/application/o/argocd/
         clientID: 257470643216384018@devops
-        clientSecret: $dex.authentik.clientSecret
+        clientSecret: $dex.zitadel.clientSecret
         scopes:
           - openid
           - profile
           - email
           - groups
-      name: authentik
+      name: Zitadel
       type: oidc
-      id: authentik
+      logoutURL: https://auth.whitestar.systems/oidc/v1/end_session
   admin.enabled: "false"
 ---
 apiVersion: v1
