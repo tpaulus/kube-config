@@ -20097,7 +20097,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
               weight: 5
       containers:
-        - args: [--save, '', --appendonly, no]
+        - args: [--save, '', --appendonly, 'no']
           image: redis:7.2.4-alpine
           imagePullPolicy: Always
           name: redis
