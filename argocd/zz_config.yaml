@@ -18,7 +18,7 @@ data:
   dex.config: |
     connectors:
     - config:
-        issuer: https://auth.whitestar.systems/
+        issuer: https://auth.whitestar.systems
         clientID: 257470643216384018@devops
         clientSecret: $dex.zitadel.clientSecret
         scopes:
