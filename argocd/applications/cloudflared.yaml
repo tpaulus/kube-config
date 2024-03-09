@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudflared
+  namespace: argocd
+spec:
+  destination:
+    namespace: cloudflared
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cloudflared
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true

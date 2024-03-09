@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: monitoring
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
