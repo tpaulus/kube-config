@@ -1,6 +1,6 @@
 ---
 name: pint
-"on":
+on:
   push:
     branches: [main]
     paths: [_alerts/**]

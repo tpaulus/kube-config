@@ -30,7 +30,7 @@ spec:
           plugins:
             jwt:
               moduleName: github.com/tpaulus/jwt-middleware
-              version: v1.1.11
+              version: v1.1.12
         providers:
           kubernetesIngress:
             publishedService:
