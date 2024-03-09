@@ -60,10 +60,10 @@ spec:
           hosts:
             - host: zitadel.auth-ing.k3s.brickyard.whitestar.systems
               paths: 
-                - "/"
+                - path: "/"
             - host: auth.whitestar.systems
               paths: 
-                - "/"
+                - path: "/"
 
         metrics:
           enabled: true
