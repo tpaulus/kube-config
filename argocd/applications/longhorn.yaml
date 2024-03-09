@@ -5,14 +5,33 @@ metadata:
   name: longhorn
   namespace: argocd
 spec:
-  destination:
-    namespace: longhorn-system
-    server: https://kubernetes.default.svc
   project: default
-  source:
-    path: longhorn
-    repoURL: git@github.com:tpaulus/kube-config.git
-    targetRevision: HEAD
+  sources:
+    - chart: longhorn
+      repoURL: https://charts.longhorn.io/
+      targetRevision: v1.6.0  # Replace with the Longhorn version you'd like to install or upgrade to
+      helm:
+        values: |
+          preUpgradeChecker:
+            jobEnabled: false
+          defaultSettings:
+            backupTargetCredentialSecret: cifs://woodlandpark.brickyard.whitestar.systems/longhorn
+            backupTargetCredentialSecret: cifs-secret
+            defaultDataPath: /var/lib/longhorn/
+            replicaAutoBalance: best-effort
+            defaultReplicaCount: 2
+            priorityClass: longhorn-critical
+            v2DataEngineGuaranteedInstanceManagerCPU: 7
+          ingress:
+            enabled: true
+            host: longhorn.ing.k3s.brickyard.whitestar.systems
+          longhornManager:
+            serviceAnnotations:
+              prometheus.io/scrape: 'true'
+              prometheus.io/port:   '9500'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
   syncPolicy:
     automated:
       prune: true
