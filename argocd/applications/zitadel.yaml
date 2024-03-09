@@ -24,6 +24,19 @@ spec:
             ExternalDomain: "auth.whitestar.systems"
             TLS:
               Enabled: false
+          
+            Database:
+              Postgres:
+                MaxOpenConns: 20
+                MaxIdleConns: 10
+                MaxConnLifetime: 30m
+                MaxConnIdleTime: 5m
+                User:
+                  SSL:
+                    Mode: require
+                Admin:
+                  SSL:
+                    Mode: require
             
           Env:
             - name: "ZITADEL_DATABASE_POSTGRES_HOST"
@@ -46,7 +59,17 @@ spec:
                 secretKeyRef:
                   name: zitadel-db-pguser-zitadel
                   key: user
+            - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-db-pguser-zitadel
+                  key: user
             - name: "ZITADEL_DATABASE_POSTGRES_USER_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-db-pguser-zitadel
+                  key: password
+            - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD"
               valueFrom:
                 secretKeyRef:
                   name: zitadel-db-pguser-zitadel
