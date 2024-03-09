@@ -19,13 +19,13 @@ data:
     connectors:
     - config:
         issuer: https://auth.whitestar.systems/application/o/argocd/
-        clientID: 2nt1MrotMukmRC0xbNbJyUGVqa0G12RionEdrjJ7
+        clientID: 257470643216384018@devops
         clientSecret: $dex.authentik.clientSecret
-        insecureEnableGroups: true
         scopes:
           - openid
           - profile
           - email
+          - groups
       name: authentik
       type: oidc
       id: authentik
@@ -58,6 +58,8 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: argocd-rbac-cm
 data:
+  scopes: '[groups]'
   policy.csv: |
-    g, DevOps-ArgoCD-Admins, role:admin
-    g, DevOps-ArgoCD-RO, role:readonly
+    g, argocd_administrators, role:admin
+    g, argocd_users, role:readonly
+  policy.default: ''
