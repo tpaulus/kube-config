@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,7 +16,7 @@ spec:
         app: prometheus-opnsense-exporter
       annotations:
         prometheus.io/scrape: 'true'
-        prometheus.io/port:   '8080'
+        prometheus.io/port: '8080'
     spec:
       containers:
         - name: prometheus-opnsense-exporter
@@ -25,17 +26,16 @@ spec:
               name: metrics
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "64m"
+              memory: 256Mi
+              cpu: 64m
             limits:
-              memory: "256Mi"
-              cpu: "64m"
+              memory: 256Mi
+              cpu: 64m
           envFrom:
             - secretRef:
                 name: opnsense-creds
             - configMapRef:
                 name: opnsense-config
-                
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -44,14 +44,12 @@ metadata:
 data:
   METRICS_PORT: '8080'
   DELAY: '5'
-
-  OPNSENSE_URL: 'https://10.0.10.1'
+  OPNSENSE_URL: https://10.0.10.1
   OPNSENSE_SSL_VERIFY: 'false'
-
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
   name: opnsense-creds
 spec:
-  itemPath: "vaults/K3S/items/OPNSense-Exporter"
+  itemPath: vaults/K3S/items/OPNSense-Exporter

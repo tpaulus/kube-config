@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -12,28 +13,24 @@ spec:
     chart: traefik
     helm:
       parameters:
-      - name: deployment.replicas
-        value: "2"
+        - name: deployment.replicas
+          value: '2'
       values: |
         experimental.plugins.enabled: true
-
         ports:
           web:
             redirectTo:
               port: websecure
               priority: 10
-
           web-ext:
             port: 9200
             exposedPort: 9200
             protocol: TCP
-
         experimental:
           plugins:
             jwt:
               moduleName: github.com/tpaulus/jwt-middleware
               version: v1.1.10
-        
         providers:
           kubernetesIngress:
             publishedService:
@@ -43,5 +40,4 @@ spec:
   syncPolicy:
     automated:
       prune: true
-    syncOptions:
-    - CreateNamespace=true
+    syncOptions: [CreateNamespace=true]

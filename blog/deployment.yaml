@@ -19,8 +19,8 @@ spec:
           image: ghost:5.80
           resources:
             limits:
-              memory: "1024Mi"
-              cpu: "1024m"
+              memory: 1024Mi
+              cpu: 1024m
           ports:
             - containerPort: 2368
           volumeMounts:
@@ -49,7 +49,6 @@ spec:
                   value: https
             initialDelaySeconds: 5
             periodSeconds: 10
-            
           livenessProbe:
             httpGet:
               path: /
@@ -68,9 +67,8 @@ spec:
           configMap:
             name: ghost-conf
             items:
-            - key: config.production.json
-              path: config.production.json
-
+              - key: config.production.json
+                path: config.production.json
 ---
 apiVersion: v1
 kind: Service
@@ -78,6 +76,6 @@ metadata:
   name: ghost
 spec:
   ports:
-  - port: 2368
+    - port: 2368
   selector:
     app: ghost

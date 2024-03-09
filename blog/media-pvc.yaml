@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -5,8 +6,7 @@ metadata:
   labels:
     name: media-pvc
 spec:
-  accessModes:
-  - ReadWriteOnce
+  accessModes: [ReadWriteOnce]
   resources:
     requests:
       storage: 5Gi

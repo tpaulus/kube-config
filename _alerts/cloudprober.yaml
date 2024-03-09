@@ -1,24 +1,30 @@
 ---
 groups:
-- name: Cloudprober
-  rules:
-  - alert: Internal Service Down
-    expr: sum(rate(success{kubernetes_app_name="cloudprober", location="internal"}[1m])) by (probe) / sum(rate(total{kubernetes_app_name="cloudprober", location="internal"}[1m])) by (probe) < 0.50
-    for: 3m
-    labels:
-      severity: high
-    annotations:
-      summary: "{{ $labels.probe }} Is Down"
-      description: "{{ $labels.probe }} is failing Cloudprober Healthchecks"
-      dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
-- name: IPMI
-  rules:
-  - alert: IMPI Node Not Reachable
-    expr: sum(rate(success{kubernetes_app_name="cloudprober", location="internal", type="node", probe="IPMI Ping"}[1m15s]) / rate(total{kubernetes_app_name="cloudprober", location="internal", type="node", probe="IPMI Ping"}[1m15s])) by (dst) < 0.75
-    for: 3m
-    labels:
-      severity: high
-    annotations:
-      title: "IPMI for Node {{ $labels.dst }} is down"
-      description: "Pings toward {{ $labels.dst }} are not successful. Node appears down."
-      dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
+  - name: Cloudprober
+    rules:
+      - alert: Internal Service Down
+        expr: sum(rate(success{kubernetes_app_name="cloudprober", location="internal"}[1m]))
+          by (probe) / sum(rate(total{kubernetes_app_name="cloudprober", location="internal"}[1m]))
+          by (probe) < 0.50
+        for: 3m
+        labels:
+          severity: high
+        annotations:
+          summary: '{{ $labels.probe }} Is Down'
+          description: '{{ $labels.probe }} is failing Cloudprober Healthchecks'
+          dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
+  - name: IPMI
+    rules:
+      - alert: IMPI Node Not Reachable
+        expr: sum(rate(success{kubernetes_app_name="cloudprober", location="internal",
+          type="node", probe="IPMI Ping"}[1m15s]) / rate(total{kubernetes_app_name="cloudprober",
+          location="internal", type="node", probe="IPMI Ping"}[1m15s])) by (dst) <
+          0.75
+        for: 3m
+        labels:
+          severity: high
+        annotations:
+          title: IPMI for Node {{ $labels.dst }} is down
+          description: Pings toward {{ $labels.dst }} are not successful. Node appears
+            down.
+          dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview

@@ -5,10 +5,9 @@ metadata:
   name: h-snap
   namespace: longhorn-system
 spec:
-  cron: "0 */3 * * *"
-  task: "snapshot"
-  groups:
-  - default
+  cron: 0 */3 * * *
+  task: snapshot
+  groups: [default]
   retain: 4
   concurrency: 2
 ---
@@ -18,10 +17,9 @@ metadata:
   name: 12h-backup
   namespace: longhorn-system
 spec:
-  cron: "15 */12 * * *"
-  task: "backup"
-  groups:
-  - default
+  cron: 15 */12 * * *
+  task: backup
+  groups: [default]
   retain: 2
   concurrency: 2
 ---
@@ -31,10 +29,9 @@ metadata:
   name: snap-cleanup
   namespace: longhorn-system
 spec:
-  cron: "0 2 * * *"
-  task: "snapshot-cleanup"
-  groups:
-  - default
+  cron: 0 2 * * *
+  task: snapshot-cleanup
+  groups: [default]
   retain: 0
   concurrency: 1
 ---
@@ -44,9 +41,8 @@ metadata:
   name: fs-trim
   namespace: longhorn-system
 spec:
-  cron: "30 3 * * 2"
-  task: "filesystem-trim"
-  groups:
-  - default
+  cron: 30 3 * * 2
+  task: filesystem-trim
+  groups: [default]
   retain: 0
   concurrency: 1

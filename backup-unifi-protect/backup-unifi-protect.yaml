@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -14,10 +15,8 @@ spec:
     requests:
       storage: 2.5Gi
   volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
+  accessModes: [ReadWriteOnce]
   volumeName: pvc-d84f5c73-a129-4866-bb5d-10dcff58b493
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -37,42 +36,42 @@ spec:
         app: backup-unifi-protect
     spec:
       containers:
-      - name: unifi-protect-backup
-        image: ghcr.io/ep1cman/unifi-protect-backup:0.10.5
-        resources:
-          requests:
-            memory: "1024Mi"
-            cpu: "1024m"
-          limits:
-            memory: "2048Mi"
-            cpu: "2048m"
-        env:
-          - name: SQLITE_PATH
-            value: '/data/backup-events'
-        envFrom:
-        - configMapRef:
-            name: protect-config
-        - configMapRef:
-            name: rclone-args
-        - secretRef:
-            name: rclone-secrets
-        - secretRef:
-            name: protect-secrets
-        volumeMounts:
-        - name: unifi-protect-backup-nfs-volume
-          mountPath: "/data"
-        - name: rclone-config
-          mountPath: "/config/rclone"
+        - name: unifi-protect-backup
+          image: ghcr.io/ep1cman/unifi-protect-backup:0.10.5
+          resources:
+            requests:
+              memory: 1024Mi
+              cpu: 1024m
+            limits:
+              memory: 2048Mi
+              cpu: 2048m
+          env:
+            - name: SQLITE_PATH
+              value: /data/backup-events
+          envFrom:
+            - configMapRef:
+                name: protect-config
+            - configMapRef:
+                name: rclone-args
+            - secretRef:
+                name: rclone-secrets
+            - secretRef:
+                name: protect-secrets
+          volumeMounts:
+            - name: unifi-protect-backup-nfs-volume
+              mountPath: /data
+            - name: rclone-config
+              mountPath: /config/rclone
       volumes:
-      - name: unifi-protect-backup-nfs-volume
-        persistentVolumeClaim:
-          claimName: unifi-protect-backup-sqllite
-      - name: rclone-config
-        configMap:
-          name: rclone-config
-          items:
-          - key: rclone.conf
-            path: rclone.conf
+        - name: unifi-protect-backup-nfs-volume
+          persistentVolumeClaim:
+            claimName: unifi-protect-backup-sqllite
+        - name: rclone-config
+          configMap:
+            name: rclone-config
+            items:
+              - key: rclone.conf
+                path: rclone.conf
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -84,11 +83,9 @@ data:
     [b2]
     type = b2
     hard_delete = true
-
     [compress-b2]
     type = compress
     remote = b2:seaview-protect
-
     [encrypt-compress-b2]
     type = crypt
     remote = compress-b2:/
@@ -101,7 +98,7 @@ metadata:
   name: rclone-secrets
   namespace: backup-unifi-protect
 spec:
-  itemPath: "vaults/K3S/items/Protect-Backup-RClone"
+  itemPath: vaults/K3S/items/Protect-Backup-RClone
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -110,7 +107,7 @@ metadata:
   namespace: backup-unifi-protect
 data:
   RCLONE_RETENTION: 3d
-  RCLONE_DESTINATION: 'encrypt-compress-b2:/'
+  RCLONE_DESTINATION: encrypt-compress-b2:/
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
@@ -118,7 +115,7 @@ metadata:
   name: protect-secrets
   namespace: backup-unifi-protect
 spec:
-  itemPath: "vaults/K3S/items/Protect-Backup-Protect"
+  itemPath: vaults/K3S/items/Protect-Backup-Protect
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -126,4 +123,4 @@ metadata:
   name: protect-config
   namespace: backup-unifi-protect
 data:
-  UFP_SSL_VERIFY: "false"
+  UFP_SSL_VERIFY: 'false'

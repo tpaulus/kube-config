@@ -1,20 +1,20 @@
 ---
 groups:
-- name: UPSAlerts
-  rules:
-  - alert: UPS On Batt
-    expr: network_ups_tools_ups_status{flag="OB"} == 1
-    labels:
-      severity: critical
-    annotations:
-      summary: UPS Is On Battery
-      description: UPS is on battery power
-      dashboard: https://grafana.brickyard.whitestar.systems/d/j4a-DMWRk/ups-statistics?orgId=1
-  - alert: Unable to Scrape UPS Metrics
-    expr: up{kubernetes_app_name="prometheus-nut-exporter"} == 0
-    for: 5m
-    labels:
-      severity: critical
-    annotations:
-      summary: Unable to scrape UPS Status
-      description: Prometheus is unable to scrape the UPS via the NUT Exporter.
+  - name: UPSAlerts
+    rules:
+      - alert: UPS On Batt
+        expr: network_ups_tools_ups_status{flag="OB"} == 1
+        labels:
+          severity: critical
+        annotations:
+          summary: UPS Is On Battery
+          description: UPS is on battery power
+          dashboard: https://grafana.brickyard.whitestar.systems/d/j4a-DMWRk/ups-statistics?orgId=1
+      - alert: Unable to Scrape UPS Metrics
+        expr: up{kubernetes_app_name="prometheus-nut-exporter"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Unable to scrape UPS Status
+          description: Prometheus is unable to scrape the UPS via the NUT Exporter.

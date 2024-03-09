@@ -14,7 +14,6 @@ data:
       "comments": {
         "url": false
       },
-
       "mail": {
         "from": "Tom's Journal <blog-tompaulus@whitestar.systems>",
         "transport": "SMTP",
@@ -47,11 +46,10 @@ data:
         "contentPath": "/var/lib/ghost/content"
       }
     }
-
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
   name: smtp
 spec:
-  itemPath: "vaults/K3S/items/SMTP"
+  itemPath: vaults/K3S/items/SMTP

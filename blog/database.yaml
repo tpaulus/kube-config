@@ -4,15 +4,14 @@ kind: OnePasswordItem
 metadata:
   name: ghost-db
 spec:
-  itemPath: "vaults/K3S/items/Ghost-DB"
+  itemPath: vaults/K3S/items/Ghost-DB
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mysql-pv-claim
 spec:
-  accessModes:
-    - ReadWriteOnce
+  accessModes: [ReadWriteOnce]
   resources:
     requests:
       storage: 20Gi
@@ -33,43 +32,43 @@ spec:
         app: mysql
     spec:
       containers:
-      - image: mysql:8.3.0
-        name: mysql
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ghost-db
-              key: root-password
-        - name: MYSQL_DATABASE
-          value: ghost
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: ghost-db
-              key: username
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ghost-db
-              key: password
-        ports:
-        - containerPort: 3306
+        - image: mysql:8.3.0
           name: mysql
-        volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-        resources:
-          requests:
-            memory: "1024Mi"
-            cpu: "1"
-          limits:
-            memory: "2048Mi"
-            cpu: "2"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ghost-db
+                  key: root-password
+            - name: MYSQL_DATABASE
+              value: ghost
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ghost-db
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ghost-db
+                  key: password
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+          resources:
+            requests:
+              memory: 1024Mi
+              cpu: '1'
+            limits:
+              memory: 2048Mi
+              cpu: '2'
       volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
 ---
 apiVersion: v1
 kind: Service
@@ -77,6 +76,6 @@ metadata:
   name: mysql
 spec:
   ports:
-  - port: 3306
+    - port: 3306
   selector:
     app: mysql

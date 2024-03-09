@@ -1,2 +1,1 @@
-Kubernetes Manifests
-====================
+Kubernetes Manifests ====================

@@ -1,10 +1,11 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-server-conf
   namespace: monitoring
 data:
-  prometheus.rules: ""
+  prometheus.rules: ''
   prometheus.yml: |-
     global:
       scrape_interval: 5s
@@ -179,7 +180,6 @@ data:
       smtp_from: alertmanager@whitestar.systems
       smtp_smarthost: "smtp-relay.smtp-relay.svc.cluster.local:25"
       smtp_require_tls: false
-
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
@@ -187,4 +187,4 @@ metadata:
   name: netbox-token
   namespace: monitoring
 spec:
-  itemPath: "vaults/K3S/items/Prometheus-Netbox-Token"
+  itemPath: vaults/K3S/items/Prometheus-Netbox-Token

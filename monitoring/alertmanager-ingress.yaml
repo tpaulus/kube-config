@@ -1,3 +1,4 @@
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -5,17 +6,16 @@ metadata:
   namespace: monitoring
 spec:
   rules:
-  - host: alertmanager.ing.k3s.brickyard.whitestar.systems
-    http:
-      paths:
-      - backend:
-          service:
-            name: alertmanager
-            port:
-              number: 8080
-        path: /
-        pathType: Prefix
-
+    - host: alertmanager.ing.k3s.brickyard.whitestar.systems
+      http:
+        paths:
+          - backend:
+              service:
+                name: alertmanager
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -25,13 +25,11 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers:
-        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
-      headerName: 'Cf-Access-Jwt-Assertion'
+      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      headerName: Cf-Access-Jwt-Assertion
       require:
         aud: 5d3ead708d3639809c0b20fcff4a0294b73d483cdddd3cdf663dc82ef7bde503
 ---
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -42,14 +40,13 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: monitoring-am-jwt-verification@kubernetescrd
 spec:
   rules:
-  - host: alertmanager.auth-ing.k3s.brickyard.whitestar.systems
-    http:
-      paths:
-      - backend:
-          service:
-            name: alertmanager
-            port:
-              number: 8080
-        path: /
-        pathType: Prefix
-    
+    - host: alertmanager.auth-ing.k3s.brickyard.whitestar.systems
+      http:
+        paths:
+          - backend:
+              service:
+                name: alertmanager
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix

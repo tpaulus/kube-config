@@ -4,65 +4,63 @@ kind: CronJob
 metadata:
   name: backup-icloud-tom
 spec:
-  schedule: "0, 2,14 * * *"
+  schedule: 0, 2,14 * * *
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
         spec:
           initContainers:
-          - name: move-cookies
-            image: busybox:1.36
-            command: ["sh", "-c", "cp /cookie-jar/* /cookie-dir/"]
-            volumeMounts:
-              - name: cookie-jar
-                mountPath: /cookie-jar
-              - name: cookie-dir
-                mountPath: /cookie-dir
-
+            - name: move-cookies
+              image: busybox:1.36
+              command: [sh, -c, cp /cookie-jar/* /cookie-dir/]
+              volumeMounts:
+                - name: cookie-jar
+                  mountPath: /cookie-jar
+                - name: cookie-dir
+                  mountPath: /cookie-dir
           containers:
-          - name: backup-photos
-            image: icloudpd/icloudpd:1.17.3
-            args:
-              - "icloudpd"
-              - "--directory"
-              - "/photos"
-              - "--cookie-directory"
-              - "/local/cookies/"
-              - "--username"
-              - "$(ICLOUD_USERNAME)"
-              - "--password"
-              - "$(ICLOUD_PASSWORD)"
-              - "--until-found"
-              - '10'
-              - "--auto-delete"
-              - "--smtp-host"
-              - "smtp-relay.smtp-relay.svc.cluster.local"
-              - "--smtp-port"
-              - "25"
-              - "--notification-email"
-              - "notify@tompaulus.com"
-              - "--notification-email-from"
-              - iCloud Photo Backups <icloudpd@whitestar.systems>
-              - "--log-level"
-              - debug
-              - "--no-progress-bar"
-            env:
-              - name: SMTP_SERVER
-                value: email-smtp.us-west-2.amazonaws.com
-              - name: SMTP_PORT
-                value: "587"
-            envFrom:
-              - secretRef: 
-                  name: tom-icloud
-              - secretRef:
-                  name: smtp
-            
-            volumeMounts:
-              - name: storage
-                mountPath: /photos
-              - name: cookie-dir
-                mountPath: /local/cookies
+            - name: backup-photos
+              image: icloudpd/icloudpd:1.17.3
+              args:
+                - icloudpd
+                - --directory
+                - /photos
+                - --cookie-directory
+                - /local/cookies/
+                - --username
+                - $(ICLOUD_USERNAME)
+                - --password
+                - $(ICLOUD_PASSWORD)
+                - --until-found
+                - '10'
+                - --auto-delete
+                - --smtp-host
+                - smtp-relay.smtp-relay.svc.cluster.local
+                - --smtp-port
+                - '25'
+                - --notification-email
+                - notify@tompaulus.com
+                - --notification-email-from
+                - iCloud Photo Backups <icloudpd@whitestar.systems>
+                - --log-level
+                - debug
+                - --no-progress-bar
+              env:
+                - name: SMTP_SERVER
+                  value: email-smtp.us-west-2.amazonaws.com
+                - name: SMTP_PORT
+                  value: '587'
+              envFrom:
+                - secretRef:
+                    name: tom-icloud
+                - secretRef:
+                    name: smtp
+              volumeMounts:
+                - name: storage
+                  mountPath: /photos
+                - name: cookie-dir
+                  mountPath: /local/cookies
           restartPolicy: OnFailure
           volumes:
             - name: storage
@@ -76,9 +74,7 @@ spec:
             - name: cookie-dir
               emptyDir: {}
           dnsConfig:
-            nameservers: 
-              - 1.1.1.1
-              - 1.0.0.1
+            nameservers: [1.1.1.1, 1.0.0.1]
           dnsPolicy: None
 ---
 apiVersion: onepassword.com/v1
@@ -86,11 +82,11 @@ kind: OnePasswordItem
 metadata:
   name: tom-icloud
 spec:
-  itemPath: "vaults/K3S/items/icloud-tom-login"
+  itemPath: vaults/K3S/items/icloud-tom-login
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
   name: tom-icloud-cookie
 spec:
-  itemPath: "vaults/K3S/items/icloud-tom-cookie"
+  itemPath: vaults/K3S/items/icloud-tom-cookie

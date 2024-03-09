@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -6,98 +7,41 @@ spec:
   destination:
     name: ''
     namespace: zitadel
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
   source:
     path: ''
-    repoURL: 'https://charts.zitadel.com'
+    repoURL: https://charts.zitadel.com
     targetRevision: 7.9.1
     chart: zitadel
     helm:
-      values: |
-        zitadel:
-          masterkeySecretName: "zitadel"
-          dbSslCaCrtSecret: &db_cert_secret zitadel-db-cluster-cert
-          dbSslUserCrtSecret: *db_cert_secret
-
-          configmapConfig:
-            ExternalPort: 443
-            ExternalSecure: true
-            ExternalDomain: "auth.whitestar.systems"
-            TLS:
-              Enabled: false
-          
-            Database:
-              Postgres:
-                MaxOpenConns: 20
-                MaxIdleConns: 10
-                MaxConnLifetime: 30m
-                MaxConnIdleTime: 5m
-                User:
-                  SSL:
-                    Mode: require
-                Admin:
-                  SSL:
-                    Mode: require
-            
-        env:
-          - name: "ZITADEL_DATABASE_POSTGRES_HOST"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: host
-          - name: "ZITADEL_DATABASE_POSTGRES_PORT"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: port
-          - name: "ZITADEL_DATABASE_POSTGRES_DATABASE"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: dbname
-          - name: "ZITADEL_DATABASE_POSTGRES_USER_USERNAME"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: user
-          - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: user
-          - name: "ZITADEL_DATABASE_POSTGRES_USER_PASSWORD"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: password
-          - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: password
-
-        service:
-          annotations:
-            traefik.ingress.kubernetes.io/service.serversscheme: h2c
-
-        ingress:
-          annotations:
-            traefik.ingress.kubernetes.io/router.entrypoints: web-ext
-            traefik.ingress.kubernetes.io/router.middlewares: zitadel-inject-headers@kubernetescrd
-          enabled: true
-          hosts:
-            - host: zitadel.auth-ing.k3s.brickyard.whitestar.systems
-              paths: 
-                - path: "/"
-                  pathType: Prefix
-            - host: auth.whitestar.systems
-              paths: 
-                - path: "/"
-                  pathType: Prefix
-
-        metrics:
-          enabled: true
-
+      values: "zitadel:\n  masterkeySecretName: \"zitadel\"\n  dbSslCaCrtSecret: &db_cert_secret\
+        \ zitadel-db-cluster-cert\n  dbSslUserCrtSecret: *db_cert_secret\n\n  configmapConfig:\n\
+        \    ExternalPort: 443\n    ExternalSecure: true\n    ExternalDomain: \"auth.whitestar.systems\"\
+        \n    TLS:\n      Enabled: false\n  \n    Database:\n      Postgres:\n   \
+        \     MaxOpenConns: 20\n        MaxIdleConns: 10\n        MaxConnLifetime:\
+        \ 30m\n        MaxConnIdleTime: 5m\n        User:\n          SSL:\n      \
+        \      Mode: require\n        Admin:\n          SSL:\n            Mode: require\n\
+        \    \nenv:\n  - name: \"ZITADEL_DATABASE_POSTGRES_HOST\"\n    valueFrom:\n\
+        \      secretKeyRef:\n        name: zitadel-db-pguser-zitadel\n        key:\
+        \ host\n  - name: \"ZITADEL_DATABASE_POSTGRES_PORT\"\n    valueFrom:\n   \
+        \   secretKeyRef:\n        name: zitadel-db-pguser-zitadel\n        key: port\n\
+        \  - name: \"ZITADEL_DATABASE_POSTGRES_DATABASE\"\n    valueFrom:\n      secretKeyRef:\n\
+        \        name: zitadel-db-pguser-zitadel\n        key: dbname\n  - name: \"\
+        ZITADEL_DATABASE_POSTGRES_USER_USERNAME\"\n    valueFrom:\n      secretKeyRef:\n\
+        \        name: zitadel-db-pguser-zitadel\n        key: user\n  - name: \"\
+        ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME\"\n    valueFrom:\n      secretKeyRef:\n\
+        \        name: zitadel-db-pguser-zitadel\n        key: user\n  - name: \"\
+        ZITADEL_DATABASE_POSTGRES_USER_PASSWORD\"\n    valueFrom:\n      secretKeyRef:\n\
+        \        name: zitadel-db-pguser-zitadel\n        key: password\n  - name:\
+        \ \"ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD\"\n    valueFrom:\n      secretKeyRef:\n\
+        \        name: zitadel-db-pguser-zitadel\n        key: password\n\nservice:\n\
+        \  annotations:\n    traefik.ingress.kubernetes.io/service.serversscheme:\
+        \ h2c\n\ningress:\n  annotations:\n    traefik.ingress.kubernetes.io/router.entrypoints:\
+        \ web-ext\n    traefik.ingress.kubernetes.io/router.middlewares: zitadel-inject-headers@kubernetescrd\n\
+        \  enabled: true\n  hosts:\n    - host: zitadel.auth-ing.k3s.brickyard.whitestar.systems\n\
+        \      paths: \n        - path: \"/\"\n          pathType: Prefix\n    - host:\
+        \ auth.whitestar.systems\n      paths: \n        - path: \"/\"\n         \
+        \ pathType: Prefix\n\nmetrics:\n  enabled: true\n"
   sources: []
   project: default
   syncPolicy:

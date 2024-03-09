@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,34 +8,34 @@ data:
   # NetBox environment variables
   # More configuration can be added via: https://netbox.readthedocs.io/en/stable/configuration/optional-settings/
   ALLOWED_HOSTS: '*'
-  CSRF_TRUSTED_ORIGINS: &csrf_hosts 'https://netbox.whitestar.systems https://netbox.auth-ing.k3s.whitestar.systems https://netbox.ing.k3s.whitestar.systems http://localhost http://::1 http://127.0.0.1'
+  CSRF_TRUSTED_ORIGINS: &csrf_hosts https://netbox.whitestar.systems https://netbox.auth-ing.k3s.whitestar.systems
+    https://netbox.ing.k3s.whitestar.systems http://localhost http://::1 http://127.0.0.1
   CORS_ORIGIN_WHITELIST: *csrf_hosts
-  CHANGELOG_RETENTION: "90"
+  CHANGELOG_RETENTION: '90'
   DB_SSLMODE: require
   EMAIL_FROM: netbox@whitestar.systems
-  EMAIL_PORT: "25"
+  EMAIL_PORT: '25'
   EMAIL_SERVER: smtp-relay.smtp-relay.svc.cluster.local
-  EMAIL_TIMEOUT: "10"
-  EMAIL_USERNAME: ""
-  EMAIL_PASSWORD: ""
+  EMAIL_TIMEOUT: '10'
+  EMAIL_USERNAME: ''
+  EMAIL_PASSWORD: ''
   # EXEMPT_VIEW_PERMISSIONS: ''
   # LOGIN_REQUIRED: "true"
   MEDIA_ROOT: /opt/netbox/netbox/media
-  METRICS_ENABLED: "true"
+  METRICS_ENABLED: 'true'
   # NETBOX_USERNAME: guest
   REDIS_HOST: &redis_host netbox-redis-master.netbox.svc.cluster.local
   REDIS_CACHE_HOST: *redis_host
-  REDIS_PORT: &redis_port "6379"
+  REDIS_PORT: &redis_port '6379'
   REDIS_CACHE_PORT: *redis_port
-  REDIS_DATABASE: "0"
-  REDIS_CACHE_DATABASE: "1"
+  REDIS_DATABASE: '0'
+  REDIS_CACHE_DATABASE: '1'
   MAINTENANCE_MODE: 'False'
   DEBUG: 'False'
   # Enable python-social-auth
   REMOTE_AUTH_ENABLED: 'true'
-  REMOTE_AUTH_BACKEND: 'social_core.backends.open_id_connect.OpenIdConnectAuth'
-
+  REMOTE_AUTH_BACKEND: social_core.backends.open_id_connect.OpenIdConnectAuth
   # python-social-auth config
-  SOCIAL_AUTH_OIDC_ENDPOINT: 'https://auth.whitestar.systems/'
-  SOCIAL_AUTH_OIDC_KEY: '257471610657767688@netbox'
-  LOGOUT_REDIRECT_URL: 'https://auth.whitestar.systems/oidc/v1/end_session'
+  SOCIAL_AUTH_OIDC_ENDPOINT: https://auth.whitestar.systems/
+  SOCIAL_AUTH_OIDC_KEY: 257471610657767688@netbox
+  LOGOUT_REDIRECT_URL: https://auth.whitestar.systems/oidc/v1/end_session

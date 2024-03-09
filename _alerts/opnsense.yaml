@@ -1,46 +1,47 @@
 ---
 groups:
-- name: OPNSense
-  rules:
-  - alert: Internet Down
-    expr: sum(gateway_up{gateway_name!~"[a-zA-Z]*_Weave|.*DHCP6"}) == 0
-    for: 3m
-    labels:
-      severity: critical
-    annotations:
-      summary: Internet is Down
-      description: All Upstream Gateways are Offline
-      dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
-  - alert: Primary Internet Down
-    expr: gateway_up{gateway_name="CENTURYLINKINET_PPPOE"} == 0
-    for: 3m
-    labels:
-      severity: high
-    annotations:
-      summary: Centurylink Internet Gateway is Down - Running on Backup Gateway
-      dashboard: https://grafana.brickyard.whitestar.systems/d/a6c53492-cfb0-41c9-8f71-cce622706523/internet-uplink
-  - alert: Backup Internet Down
-    expr: gateway_up{gateway_name="TMOBILEGATEWAY_DHCP"} == 0
-    for: 3m
-    labels:
-      reciever: "webhook-homeassistant"
-      severity: low
-    annotations:
-      summary: T-Mobile Internet Gateway is Down - Redundancy Lost
-      dashboard: https://grafana.brickyard.whitestar.systems/d/a6c53492-cfb0-41c9-8f71-cce622706523/internet-uplink
-  - alert: Backup Internet Down (Auto Remidiation Not Successful)
-    expr: gateway_up{gateway_name="TMOBILEGATEWAY_DHCP"} == 0
-    for: 15m
-    labels:
-      severity: low
-    annotations:
-      summary: T-Mobile Internet Gateway is Down - Redundancy Lost (Auto Remidiation Not Successful)
-      dashboard: https://grafana.brickyard.whitestar.systems/d/a6c53492-cfb0-41c9-8f71-cce622706523/internet-uplink
-  - alert: Unable to Scrape OPNSense Metrics
-    expr: up{kubernetes_app_name="prometheus-opnsense-exporter"} == 0
-    for: 5m
-    labels:
-      severity: critical
-    annotations:
-      summary: Unable to Scrape OPNSense Metrics
-      description: Prometheus is unable to scrape OPNSense via the Exporter.
+  - name: OPNSense
+    rules:
+      - alert: Internet Down
+        expr: sum(gateway_up{gateway_name!~"[a-zA-Z]*_Weave|.*DHCP6"}) == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: Internet is Down
+          description: All Upstream Gateways are Offline
+          dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
+      - alert: Primary Internet Down
+        expr: gateway_up{gateway_name="CENTURYLINKINET_PPPOE"} == 0
+        for: 3m
+        labels:
+          severity: high
+        annotations:
+          summary: Centurylink Internet Gateway is Down - Running on Backup Gateway
+          dashboard: https://grafana.brickyard.whitestar.systems/d/a6c53492-cfb0-41c9-8f71-cce622706523/internet-uplink
+      - alert: Backup Internet Down
+        expr: gateway_up{gateway_name="TMOBILEGATEWAY_DHCP"} == 0
+        for: 3m
+        labels:
+          reciever: webhook-homeassistant
+          severity: low
+        annotations:
+          summary: T-Mobile Internet Gateway is Down - Redundancy Lost
+          dashboard: https://grafana.brickyard.whitestar.systems/d/a6c53492-cfb0-41c9-8f71-cce622706523/internet-uplink
+      - alert: Backup Internet Down (Auto Remidiation Not Successful)
+        expr: gateway_up{gateway_name="TMOBILEGATEWAY_DHCP"} == 0
+        for: 15m
+        labels:
+          severity: low
+        annotations:
+          summary: T-Mobile Internet Gateway is Down - Redundancy Lost (Auto Remidiation
+            Not Successful)
+          dashboard: https://grafana.brickyard.whitestar.systems/d/a6c53492-cfb0-41c9-8f71-cce622706523/internet-uplink
+      - alert: Unable to Scrape OPNSense Metrics
+        expr: up{kubernetes_app_name="prometheus-opnsense-exporter"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Unable to Scrape OPNSense Metrics
+          description: Prometheus is unable to scrape OPNSense via the Exporter.

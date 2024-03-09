@@ -1,33 +1,26 @@
+---
 name: pint
-
-on:
+"on":
   push:
-    branches:
-      - main
-    paths:
-      - _alerts/**
+    branches: [main]
+    paths: [_alerts/**]
   pull_request:
-    branches:
-      - main
-    paths:
-      - _alerts/**
-
+    branches: [main]
+    paths: [_alerts/**]
 permissions:
   pull-requests: write
-
 jobs:
   pint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4
         with:
           fetch-depth: 0
-
       - name: Run pint
-        uses: prymitive/pint-action@6879de903d62f3f8b513aed1b0d74d487efab70e # v1.40.0
+        uses: prymitive/pint-action@6879de903d62f3f8b513aed1b0d74d487efab70e  # v1.40.0
         with:
           token: ${{ github.token }}
         env:
-          WORKDIR: "_alerts/"
+          WORKDIR: _alerts/
           PINT_BRICKYARD_CLIENT_ID: ${{ secrets.PINT_BRICKYARD_CLIENT_ID }}
           PINT_BRICKYARD_CLIENT_SECRET: ${{ secrets.PINT_BRICKYARD_CLIENT_SECRET }}

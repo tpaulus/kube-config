@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -12,12 +13,11 @@ spec:
     chart: cert-manager
     helm:
       parameters:
-      - name: installCRDs
-        value: "true"
+        - name: installCRDs
+          value: 'true'
     repoURL: https://charts.jetstack.io
     targetRevision: v1.13.3
   syncPolicy:
     automated:
       prune: true
-    syncOptions:
-    - CreateNamespace=true
+    syncOptions: [CreateNamespace=true]

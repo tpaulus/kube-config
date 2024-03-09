@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -9,9 +10,10 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: postgres
-    repoURL: git@github.com:tpaulus/kube-config.git
-    targetRevision: HEAD
+    chart: pgo
+    repoURL: registry.developers.crunchydata.com/crunchydata
+    targetRevision: 5.5.1
   syncPolicy:
     automated:
       prune: true
+    syncOptions: [ServerSideApply=true]

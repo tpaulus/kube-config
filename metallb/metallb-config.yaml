@@ -26,12 +26,10 @@ metadata:
   name: main-pool
   namespace: metallb-system
 spec:
-  addresses:
-  - 10.30.0.0/16
+  addresses: [10.30.0.0/16]
 ---
 apiVersion: metallb.io/v1beta1
 kind: BGPAdvertisement
 metadata:
   name: main
   namespace: metallb-system
-

@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,8 +16,8 @@ spec:
         app: prometheus-nut-exporter
       annotations:
         prometheus.io/scrape: 'true'
-        prometheus.io/port:   '9199'
-        prometheus.io/path:   '/ups_metrics'
+        prometheus.io/port: '9199'
+        prometheus.io/path: /ups_metrics
     spec:
       containers:
         - name: prometheus-nut-exporter
@@ -26,23 +27,21 @@ spec:
               name: metrics
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "64m"
+              memory: 256Mi
+              cpu: 64m
             limits:
-              memory: "256Mi"
-              cpu: "64m"
+              memory: 256Mi
+              cpu: 64m
           envFrom:
             - secretRef:
                 name: nut-config
           env:
             - name: NUT_EXPORTER_VARIABLES
               value: battery.charge,battery.voltage,battery.voltage.nominal,battery.runtime,input.voltage,input.voltage.nominal,ups.load,ups.status
-                
 ---
-
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
   name: nut-config
 spec:
-  itemPath: "vaults/K3S/items/NUT-Exporter"
+  itemPath: vaults/K3S/items/NUT-Exporter

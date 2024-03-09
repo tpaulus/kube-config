@@ -26,7 +26,7 @@ data:
       - email
       - groups
     logoutURL: https://auth.whitestar.systems/oidc/v1/end_session
-  admin.enabled: "false"
+  admin.enabled: 'false'
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -37,7 +37,7 @@ metadata:
   name: argocd-cmd-params-cm
   namespace: argocd
 data:
-  server.insecure: "true"
+  server.insecure: 'true'
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
@@ -45,7 +45,7 @@ metadata:
   name: argocd-secret
   namespace: argocd
 spec:
-  itemPath: "vaults/K3S/items/argocd"
+  itemPath: vaults/K3S/items/argocd
 ---
 apiVersion: v1
 kind: ConfigMap

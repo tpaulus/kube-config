@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +21,7 @@ spec:
       initContainers:
         - name: volume-permissions
           image: busybox:1.36
-          command: ["sh", "-c", "chown nobody:nobody /data"]
+          command: [sh, -c, chown nobody:nobody /data]
           volumeMounts:
             - name: alertmanager-storage-volume
               mountPath: /data
@@ -28,8 +29,8 @@ spec:
         - name: alertmanager
           image: prom/alertmanager:v0.27.0
           args:
-            - "--config.file=/etc/alertmanager/alertmanager.yml"
-            - "--web.external-url=https://alertmanager.ing.k3s.brickyard.whitestar.systems"
+            - --config.file=/etc/alertmanager/alertmanager.yml
+            - --web.external-url=https://alertmanager.ing.k3s.brickyard.whitestar.systems
           ports:
             - containerPort: 9093
           volumeMounts:
@@ -39,11 +40,11 @@ spec:
               mountPath: /alertmanager
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "500m"
+              memory: 256Mi
+              cpu: 500m
             limits:
-              memory: "256Mi"
-              cpu: "500m"
+              memory: 256Mi
+              cpu: 500m
           livenessProbe:
             httpGet:
               path: /-/healthy
@@ -71,5 +72,4 @@ spec:
     requests:
       storage: 1Gi
   volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
+  accessModes: [ReadWriteOnce]

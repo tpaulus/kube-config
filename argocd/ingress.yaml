@@ -1,11 +1,11 @@
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: argocd-server
   namespace: argocd
 spec:
-  entryPoints:
-    - websecure
+  entryPoints: [websecure]
   routes:
     - kind: Rule
       match: Host(`argocd.ing.k3s.brickyard.whitestar.systems`)
@@ -14,7 +14,8 @@ spec:
         - name: argocd-server
           port: 80
     - kind: Rule
-      match: Host(`argocd.ing.k3s.brickyard.whitestar.systems`) && Headers(`Content-Type`, `application/grpc`)
+      match: Host(`argocd.ing.k3s.brickyard.whitestar.systems`) && Headers(`Content-Type`,
+        `application/grpc`)
       priority: 11
       services:
         - name: argocd-server
@@ -29,9 +30,8 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers:
-        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
-      headerName: 'Cf-Access-Jwt-Assertion'
+      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      headerName: Cf-Access-Jwt-Assertion
       require:
         aud: f2d6259e0bc9268137d8382a2b145834130153c17ddefae081fa8e4c60603998
 ---
@@ -41,23 +41,23 @@ metadata:
   name: argocd-server-ext
   namespace: argocd
 spec:
-  entryPoints:
-    - web-ext
+  entryPoints: [web-ext]
   routes:
     - kind: Rule
       match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`)
       middlewares:
-      - name: jwt-verification
-        namespace: argocd
+        - name: jwt-verification
+          namespace: argocd
       priority: 10
       services:
         - name: argocd-server
           port: 80
     - kind: Rule
-      match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`) && Headers(`Content-Type`, `application/grpc`)
+      match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`) && Headers(`Content-Type`,
+        `application/grpc`)
       middlewares:
-      - name: jwt-verification
-        namespace: argocd
+        - name: jwt-verification
+          namespace: argocd
       priority: 11
       services:
         - name: argocd-server

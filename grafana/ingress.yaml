@@ -7,9 +7,8 @@ spec:
   selector:
     app: grafana
   ports:
-  - port: 3000
-    targetPort: 3000
-
+    - port: 3000
+      targetPort: 3000
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -17,17 +16,16 @@ metadata:
   name: grafana
 spec:
   rules:
-  - host: grafana.ing.k3s.brickyard.whitestar.systems
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: grafana
-            port: 
-              number: 3000
-
+    - host: grafana.ing.k3s.brickyard.whitestar.systems
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -36,13 +34,11 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers:
-        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
-      headerName: 'Cf-Access-Jwt-Assertion'
+      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      headerName: Cf-Access-Jwt-Assertion
       require:
         aud: 383cd50986ddcddc0018638011ea367e4a2dc57dd0b59635b18b9f8be0c144f7
 ---
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -52,15 +48,15 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: grafana-jwt-verification@kubernetescrd
 spec:
   rules:
-  - host: grafana.auth-ing.k3s.brickyard.whitestar.systems
-    http: &rules
-      paths:
-      - backend:
-          service:
-            name: grafana
-            port:
-              number: 3000
-        path: /
-        pathType: Prefix
-  - host: grafana.brickyard.whitestar.systems
-    http: *rules
+    - host: grafana.auth-ing.k3s.brickyard.whitestar.systems
+      http: &rules
+        paths:
+          - backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
+            path: /
+            pathType: Prefix
+    - host: grafana.brickyard.whitestar.systems
+      http: *rules

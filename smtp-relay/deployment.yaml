@@ -13,47 +13,47 @@ spec:
         app: relay
     spec:
       containers:
-      - name: relay
-        image: juanluisbaptiste/postfix:1.7.1
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "256m"
-        ports:
-        - containerPort: 25
-        env:
-        - name: SMTP_PORT
-          value: "587"
-        - name: SMTP_SERVER
-          value: "email-smtp.us-west-2.amazonaws.com"
-        - name: SMTP_USERNAME
-          valueFrom:
-            secretKeyRef:
-              key: username
-              name: smtp
-        - name: SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: password
-              name: smtp
-        - name: SERVER_HOSTNAME
-          value: "whitestar.systems"
-        - name: SMTP_NETWORKS
-          value: "0.0.0.0/0"
-        readinessProbe:
-          tcpSocket:
-            port: 25
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          tcpSocket:
-            port: 25
-          initialDelaySeconds: 5
-          periodSeconds: 10
+        - name: relay
+          image: juanluisbaptiste/postfix:1.7.1
+          resources:
+            limits:
+              memory: 128Mi
+              cpu: 256m
+          ports:
+            - containerPort: 25
+          env:
+            - name: SMTP_PORT
+              value: '587'
+            - name: SMTP_SERVER
+              value: email-smtp.us-west-2.amazonaws.com
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: smtp
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: smtp
+            - name: SERVER_HOSTNAME
+              value: whitestar.systems
+            - name: SMTP_NETWORKS
+              value: 0.0.0.0/0
+          readinessProbe:
+            tcpSocket:
+              port: 25
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 25
+            initialDelaySeconds: 5
+            periodSeconds: 10
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
   name: smtp
 spec:
-  itemPath: "vaults/K3S/items/SMTP"
+  itemPath: vaults/K3S/items/SMTP

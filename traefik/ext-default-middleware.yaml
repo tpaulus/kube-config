@@ -6,6 +6,5 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers:
-        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
-      headerName: 'Cf-Access-Jwt-Assertion'
+      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      headerName: Cf-Access-Jwt-Assertion

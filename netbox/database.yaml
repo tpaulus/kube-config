@@ -1,3 +1,4 @@
+---
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
@@ -9,25 +10,22 @@ spec:
   instances:
     - name: instance1
       dataVolumeClaimSpec:
-        accessModes:
-        - "ReadWriteOnce"
+        accessModes: [ReadWriteOnce]
         resources:
           requests:
             storage: 5Gi
   users:
-    - databases:
-      - netbox
+    - databases: [netbox]
       name: netbox
-      options: 'SUPERUSER'
+      options: SUPERUSER
   backups:
     pgbackrest:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.47-2
       repos:
-      - name: repo1
-        volume:
-          volumeClaimSpec:
-            accessModes:
-            - "ReadWriteOnce"
-            resources:
-              requests:
-                storage: 5Gi
+        - name: repo1
+          volume:
+            volumeClaimSpec:
+              accessModes: [ReadWriteOnce]
+              resources:
+                requests:
+                  storage: 5Gi

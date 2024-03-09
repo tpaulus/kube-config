@@ -1,3 +1,4 @@
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -5,16 +6,16 @@ metadata:
   namespace: monitoring
 spec:
   rules:
-  - host: prometheus.ing.k3s.brickyard.whitestar.systems
-    http:
-      paths:
-      - backend:
-          service:
-            name: prometheus
-            port:
-              number: 8080
-        path: /
-        pathType: Prefix
+    - host: prometheus.ing.k3s.brickyard.whitestar.systems
+      http:
+        paths:
+          - backend:
+              service:
+                name: prometheus
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -24,9 +25,8 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers:
-        - https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs
-      headerName: 'Cf-Access-Jwt-Assertion'
+      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      headerName: Cf-Access-Jwt-Assertion
       require:
         aud: fa3dd83c769193080cdc3a7156abea0e265e6f87c8b788551d7a7f87c521e75a
 ---
@@ -40,13 +40,13 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: monitoring-prom-jwt-verification@kubernetescrd
 spec:
   rules:
-  - host: prometheus.auth-ing.k3s.brickyard.whitestar.systems
-    http:
-      paths:
-      - backend:
-          service:
-            name: prometheus
-            port:
-              number: 8080
-        path: /
-        pathType: Prefix
+    - host: prometheus.auth-ing.k3s.brickyard.whitestar.systems
+      http:
+        paths:
+          - backend:
+              service:
+                name: prometheus
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix

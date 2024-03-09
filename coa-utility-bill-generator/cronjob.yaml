@@ -4,46 +4,42 @@ kind: CronJob
 metadata:
   name: next-century
 spec:
-  schedule: "0 10 2 * *"
+  schedule: 0 10 2 * *
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: generate-bill
-            image: ghcr.io/tpaulus/nextcentury-payhoa:main
-
-            env:
-              - name: TZ
-                value: "America/Los_Angeles"
-              - name: SMTP_SERVER
-                value: email-smtp.us-west-2.amazonaws.com
-              - name: SMTP_USERNAME
-                valueFrom:
-                  secretKeyRef:
-                    key: username
-                    name: smtp
-              - name: SMTP_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    key: password
-                    name: smtp
-              - name: SMTP_PORT
-                value: "587"
-              
-            envFrom:
-              - secretRef:
-                  name: bill-generation-secrets
-
-            resources:
-              requests:
-                memory: "256Mi"
-                cpu: "500m"
-              limits:
-                memory: "256Mi"
-                cpu: "500m"
-
+            - name: generate-bill
+              image: ghcr.io/tpaulus/nextcentury-payhoa:main
+              env:
+                - name: TZ
+                  value: America/Los_Angeles
+                - name: SMTP_SERVER
+                  value: email-smtp.us-west-2.amazonaws.com
+                - name: SMTP_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      key: username
+                      name: smtp
+                - name: SMTP_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: password
+                      name: smtp
+                - name: SMTP_PORT
+                  value: '587'
+              envFrom:
+                - secretRef:
+                    name: bill-generation-secrets
+              resources:
+                requests:
+                  memory: 256Mi
+                  cpu: 500m
+                limits:
+                  memory: 256Mi
+                  cpu: 500m
           restartPolicy: OnFailure
 ---
 apiVersion: onepassword.com/v1
@@ -51,11 +47,11 @@ kind: OnePasswordItem
 metadata:
   name: smtp
 spec:
-  itemPath: "vaults/K3S/items/SMTP"
+  itemPath: vaults/K3S/items/SMTP
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
   name: bill-generation-secrets
 spec:
-  itemPath: "vaults/K3S/items/coa-utilities-bill-generation"
+  itemPath: vaults/K3S/items/coa-utilities-bill-generation

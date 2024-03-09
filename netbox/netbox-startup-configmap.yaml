@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,10 +10,9 @@ data:
     # Enter every plugin to be enabled by NetBox
     # Uncomment 'django3_saml2_nbplugin' if you want to enable SSO
     PLUGINS = ['netbox_prometheus_sd']
-    #PLUGINS = ['django3_saml2_nbplugin']
+    # PLUGINS = ['django3_saml2_nbplugin']
     # NetBox plugins configuration definition
     PLUGINS_CONFIG = {}
-
   # Script for installing NetBox plugins packages
   install-plugins.sh: |
     source /opt/netbox/venv/bin/activate
@@ -22,21 +22,17 @@ data:
     # apk add xmlsec
     # pip install django3_auth_saml2
     # pip install netbox-plugin-auth-saml2
-
   # Script for starting rqworker, which handles reports
   start-rqworker.sh: |
     /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py rqworker &>/dev/null &disown;
-
   # Script for fixing permission issue in unit temporary folder
   nginx-caching-fix.sh: |
     chown unit:root -R /opt/unit/tmp/
-
     cp /etc/ssl/postgres/* /root/.postgresql/
     chown unit:root -R /root/
     chmod 770 /root/
     chmod 0400 /root/.postgresql/postgresql.key
     chmod 0555 /root/.postgresql/postgresql.crt
-  
   authentik.py: |
     from os import environ
 
@@ -49,7 +45,6 @@ data:
     SOCIAL_AUTH_OIDC_KEY = environ.get('SOCIAL_AUTH_OIDC_KEY')
     SOCIAL_AUTH_OIDC_SECRET = environ.get('SOCIAL_AUTH_OIDC_SECRET')
     LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
-
     SOCIAL_AUTH_PIPELINE = (
         ###################
         # Default pipelines
@@ -98,7 +93,6 @@ data:
         # Update the user record with any changed info from the auth service.
         'social_core.pipeline.user.user_details',
 
-
         ###################
         # Custom pipelines
         ###################
@@ -108,14 +102,10 @@ data:
         # Set Roles
         'netbox.custom_pipeline.set_roles'
     )
-
-
-  custom_pipeline.py: |
+  custom_pipeline.py: |-
     from django.contrib.auth.models import Group
-
     class AuthFailed(Exception):
         pass
-
     def add_groups(response, user, backend, *args, **kwargs):
         try:
             groups = response['groups']
@@ -126,7 +116,6 @@ data:
         for group in groups:
             group, created = Group.objects.get_or_create(name=group)
             group.user_set.add(user)
-
     def remove_groups(response, user, backend, *args, **kwargs):
         try:
             groups = response['groups']
@@ -144,8 +133,6 @@ data:
         for delete_group in delete_groups:
             group = Group.objects.get(name=delete_group)
             group.user_set.remove(user)
-
-
     def set_roles(response, user, backend, *args, **kwargs):
         # Remove Roles temporary
         user.is_superuser = False
