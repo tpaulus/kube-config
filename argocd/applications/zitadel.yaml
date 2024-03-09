@@ -20,6 +20,7 @@ spec:
           dbSslUserCrtSecret: *db_cert_secret
 
           configmapConfig:
+            ExternalPort: 443
             ExternalSecure: true
             ExternalDomain: "auth.whitestar.systems"
             TLS:
