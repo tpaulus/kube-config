@@ -54,9 +54,8 @@ groups:
             minute in the last minute.
           link: https://grafana.brickyard.whitestar.systems/d/wY4blRMGz/coredns
       - alert: CoreDNSTooManyRequestsGoingToFallback
-        expr: sum(rate(coredns_forward_requests_total{to="127.0.0.1:5302"}[1m])) /
-          sum(rate(coredns_forward_requests_total{to=~"127.0.0.1:5301|127.0.0.1:5302"}[1m]))
-          > 0.50
+        expr: sum(rate(coredns_forward_requests_total{to="127.0.0.1:5303"}[1m])) /
+          sum(rate(coredns_forward_requests_total{to=~"127.0.0.1:5301|127.0.0.1:5303"}[1m])) > 0.50
         for: 5m
         labels:
           severity: warning
