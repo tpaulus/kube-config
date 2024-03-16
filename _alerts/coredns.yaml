@@ -35,7 +35,7 @@ groups:
             per minute in the last 5 minutes.
           link: https://grafana.brickyard.whitestar.systems/d/wY4blRMGz/coredns
       - alert: CoreDNSUnavailable
-        expr: up{netbox_device_name="BeaconHill", job="netbox-devices"} == 0
+        expr: up{netbox_device_name="BeaconHill", job="netbox-devices",instance=~".*:9253"} == 0
         for: 1m
         labels:
           severity: critical
