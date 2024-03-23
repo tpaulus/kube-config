@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: prometheus-graphite-exporter
-          image: prom/graphite-exporter:v0.15.0
+          image: prom/graphite-exporter:v0.15.1
           args:
             - --graphite.listen-address=0.0.0.0:2003
             - --graphite.mapping-config=/etc/prometheus/graphite_mapping.conf
