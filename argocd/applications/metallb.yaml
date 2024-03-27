@@ -18,6 +18,10 @@ spec:
           value: monitoring
         - name: prometheus.scrapeAnnotations
           value: 'true'
+      values: |
+        speaker:
+          podAnnotations:
+            prometheus.io/port: '7472'
     chart: metallb
   ignoreDifferences:
     - group: "apiextensions.k8s.io"
