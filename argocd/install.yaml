@@ -19684,6 +19684,9 @@ metadata:
     app.kubernetes.io/component: metrics
     app.kubernetes.io/name: argocd-metrics
     app.kubernetes.io/part-of: argocd
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8082'
   name: argocd-metrics
 spec:
   ports:
