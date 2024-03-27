@@ -11,7 +11,7 @@ spec:
   source:
     path: ''
     repoURL: https://charts.zitadel.com
-    targetRevision: 7.9.1
+    targetRevision: 7.10.0
     chart: zitadel
     helm:
       values: |
