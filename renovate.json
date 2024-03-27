@@ -22,7 +22,8 @@
     "packageRules": [
       {
         "matchManagers": [
-          "kubernetes"
+          "kubernetes",
+          "argocd"
         ],
         "automergeMajor": false,
         "automergeMinor": true,
