@@ -12,7 +12,7 @@ groups:
           description: "{{ $labels.name }} is out of sync, but is enabled for automatic syncing. Check that the manifests are able to apply correctly."
           dashboard: https://argocd.ing.k3s.brickyard.whitestar.systems/applications/argocd/{{ $labels.name }}
       - alert: Application Unhealthy
-        expr: sum(argocd_app_info{kubernetes_namespace=~"argocd", health_status!="Healthy"}) by (name, health_status) > 0
+        expr: sum(argocd_app_info{kubernetes_namespace="argocd", health_status!="Healthy"}) by (name, health_status) > 0
         for: 10m
         labels:
           severity: critical
