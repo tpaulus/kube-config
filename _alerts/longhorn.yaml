@@ -94,13 +94,13 @@ groups:
   - name: longhorn.jobs
     rules:
       - alert: Hourly Snapshots
-        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="h-snap"}) / 60) > 120 or absent(kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="h-snap"})
+        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="h-snap"}) / 60 / 60) > 7 or absent(kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="h-snap"})
         for: 0s
         labels:
           severity: critical
         annotations:
           summary: 'Longhorn Hourly Snapshots Not Running'
-          description: It has been over 2 hours since the last hourly snapshot job was successful
+          description: It has been over 7 hours since the last snapshot job was successful, which is scheduled to run every 3 hours.
           dashboard: http://longhorn.ing.k3s.brickyard.whitestar.systems
       - alert: Twice-Daily Backups
         expr: ((time() - kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="12h-backup"}) / 60 / 60) > 25 or absent(kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="12h-backup"})
