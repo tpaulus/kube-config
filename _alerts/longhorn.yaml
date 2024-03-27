@@ -91,3 +91,41 @@ groups:
         labels:
           issue: Longhorn node {{$labels.node}} experiences high CPU pressure.
           severity: warning
+  - name: longhorn.jobs
+    rules:
+      - alert: Hourly Snapshots
+        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="h-snap"}) / 60) > 120 or absent(kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="h-snap"})
+        for: 0s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Longhorn Hourly Snapshots Not Running'
+          description: It has been over 2 hours since the last hourly snapshot job was successful
+          dashboard: http://longhorn.ing.k3s.brickyard.whitestar.systems
+      - alert: Twice-Daily Backups
+        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="12h-backup"}) / 60 / 60) > 25 or absent(kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="12h-backup"})
+        for: 0s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Longhorn Twice-Daily Backups Not Running'
+          description: It has been over 24 hours since the last twice-daily backup job was successful
+          dashboard: http://longhorn.ing.k3s.brickyard.whitestar.systems
+      - alert: Snapshot Cleanup
+        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="snap-cleanup"}) / 60 / 60) > 49 or absent(kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="snap-cleanup"})
+        for: 0s
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Longhorn Snapshot Cleanup Not Running'
+          description: It has been over 48 hours since the snapshot cleanup job was successful, which is expected to run daily
+          dashboard: http://longhorn.ing.k3s.brickyard.whitestar.systems
+      - alert: FS Trim
+        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="fs-trim"}) / 60 / 60 / 24) > 14 or absent(kube_cronjob_status_last_successful_time{namespace="longhorn-system", cronjob="fs-trim"})
+        for: 0s
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Longhorn Filesystem Trim Not Running'
+          description: It has been over 2 weeks since the filesystem job was successful, which is expected to run weekly.
+          dashboard: http://longhorn.ing.k3s.brickyard.whitestar.systems
