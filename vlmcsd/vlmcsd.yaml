@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: vlmcsd
-          image: mikolatero/vlmcsd:999
+          image: mikolatero/vlmcsd:latest
           resources:
             requests:
               memory: 1024Mi
