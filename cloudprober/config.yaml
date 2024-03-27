@@ -4,81 +4,318 @@ kind: ConfigMap
 metadata:
   name: cloudprober-config
 data:
-  cloudprober.cfg: "# Internal Services\nprobe {\n  name: \"Router DNS - External\
-    \ Query\"\n  type: DNS\n  targets {\n    host_names: \"10.0.40.1\"\n  }\n  dns_probe\
-    \ {\n    resolved_domain: \"tompaulus.com\"\n    query_type: A\n  }\n  additional_label\
-    \ {\n    key: \"location\"\n    value: \"internal\"\n  }\n  additional_label {\n\
-    \    key: \"type\"\n    value: \"dns\"\n  }\n  interval_msec: 5000  # 5s\n  timeout_msec:\
-    \ 1000  # 1s\n}\n\nprobe {\n  name: \"Home Assistant\"\n  type: HTTP\n  targets\
-    \ {\n    host_names: \"home.whitestar.systems\"\n  }\n  http_probe {\n    protocol:\
-    \ HTTPS\n    \n    header {\n      key: \"CF-Access-Client-Id\"\n      value:\
-    \ \"{{env \"CF_ACCESS_ID\" }}\"\n    }\n    header {\n      key: \"CF-Access-Client-Secret\"\
-    \n      value: \"{{env \"CF_ACCESS_SECRET\" }}\"\n    }\n  }\n  validator {\n\
-    \      name: \"status_code_2xx\"\n      http_validator {\n          success_status_codes:\
-    \ \"200-299\"\n      }\n  }\n  validator {\n      name: \"expected_content\"\n\
-    \      regex: \"Home Assistant\"\n  }\n  additional_label {\n    key: \"location\"\
-    \n    value: \"internal\"\n  }\n  additional_label {\n    key: \"type\"\n    value:\
-    \ \"service\"\n  }\n  interval_msec: 5000  # 5s\n  timeout_msec: 1000  # 1s\n\
-    }\n\nprobe {\n  name: \"Grafana\"\n  type: HTTP\n  targets {\n    host_names:\
-    \ \"grafana.brickyard.whitestar.systems\"\n  }\n  http_probe {\n    protocol:\
-    \ HTTPS\n    \n    header {\n      key: \"CF-Access-Client-Id\"\n      value:\
-    \ \"{{env \"CF_ACCESS_ID\" }}\"\n    }\n    header {\n      key: \"CF-Access-Client-Secret\"\
-    \n      value: \"{{env \"CF_ACCESS_SECRET\" }}\"\n    }\n  }\n  validator {\n\
-    \      name: \"status_code_2xx\"\n      http_validator {\n          success_status_codes:\
-    \ \"200-299\"\n      }\n  }\n  additional_label {\n    key: \"location\"\n   \
-    \ value: \"internal\"\n  }\n  additional_label {\n    key: \"type\"\n    value:\
-    \ \"service\"\n  }\n  interval_msec: 5000  # 5s\n  timeout_msec: 1000  # 1s\n\
-    }\n\nprobe {\n  name: \"Netbox\"\n  type: HTTP\n  targets {\n    host_names: \"\
-    netbox.whitestar.systems\"\n  }\n  http_probe {\n    protocol: HTTPS\n    \n \
-    \   header {\n      key: \"CF-Access-Client-Id\"\n      value: \"{{env★\"CF_ACCESS_ID\"\
-    ★}}\"\n    }\n    header {\n      key: \"CF-Access-Client-Secret\"\n      value:\
-    \ \"{{env \"CF_ACCESS_SECRET\" }}\"\n    }\n  }\n  validator {\n      name: \"\
-    status_code_2xx\"\n      http_validator {\n          success_status_codes: \"\
-    200-299\"\n      }\n  }\n  additional_label {\n    key: \"location\"\n    value:\
-    \ \"internal\"\n  }\n  additional_label {\n    key: \"type\"\n    value: \"service\"\
-    \n  }\n  interval_msec: 5000  # 5s\n  timeout_msec: 1000  # 1s\n}\n\nprobe {\n\
-    \  name: \"Protect NVR\"\n  type: HTTP\n  targets {\n    host_names: \"protect.brickyard.whitestar.systems\"\
-    \n  }\n  http_probe {\n    protocol: HTTPS\n    tls_config {\n      disable_cert_validation:\
-    \ true\n    }\n  }\n  validator {\n      name: \"status_code_2xx\"\n      http_validator\
-    \ {\n          success_status_codes: \"200-299\"\n      }\n  }\n  additional_label\
-    \ {\n    key: \"location\"\n    value: \"internal\"\n  }\n  additional_label {\n\
-    \    key: \"type\"\n    value: \"service\"\n  }\n  interval_msec: 5000  # 5s\n\
-    \  timeout_msec: 1000  # 1s\n}\n\nprobe {\n  name: \"Blog\"\n  type: HTTP\n  targets\
-    \ {\n    host_names: \"blog.tompaulus.com\"\n  }\n  http_probe {\n    protocol:\
-    \ HTTPS\n  }\n  validator {\n      name: \"status_code_2xx\"\n      http_validator\
-    \ {\n          success_status_codes: \"200-299\"\n      }\n  }\n  validator {\n\
-    \      name: \"expected_content\"\n      regex: \"[Jj]ournal\"\n  }\n  additional_label\
-    \ {\n    key: \"location\"\n    value: \"internal\"\n  }\n  additional_label {\n\
-    \    key: \"type\"\n    value: \"service\"\n  }\n  interval_msec: 5000  # 5s\n\
-    \  timeout_msec: 1000  # 1s\n}\n\n# External Services\n\nprobe {\n  name: \"Cloudflare\"\
-    \n  type: HTTP\n  targets {\n    host_names: \"www.cloudflare.com\"\n  }\n  http_probe\
-    \ {\n    protocol: HTTPS\n  }\n  validator {\n      name: \"status_code_2xx\"\n\
-    \      http_validator {\n          success_status_codes: \"200-299\"\n      }\n\
-    \  }\n  additional_label {\n    key: \"location\"\n    value: \"external\"\n \
-    \ }\n  interval_msec: 5000  # 5s\n  timeout_msec: 1000  # 1s\n}\n\nprobe {\n \
-    \ name: \"Google Homepage\"\n  type: HTTP\n  targets {\n    host_names: \"www.google.com\"\
-    \n  }\n  http_probe {\n    protocol: HTTPS\n  }\n  validator {\n      name: \"\
-    status_code_2xx\"\n      http_validator {\n          success_status_codes: \"\
-    200-299\"\n      }\n  }\n  additional_label {\n    key: \"location\"\n    value:\
-    \ \"external\"\n  }\n  interval_msec: 5000  # 5s\n  timeout_msec: 1000  # 1s\n\
-    }\n\nprobe {\n  name: \"Apple Homepage\"\n  type: HTTP\n  targets {\n    host_names:\
-    \ \"www.apple.com\"\n  }\n  http_probe {\n    protocol: HTTPS\n  }\n  validator\
-    \ {\n      name: \"status_code_2xx\"\n      http_validator {\n          success_status_codes:\
-    \ \"200-299\"\n      }\n  }\n  additional_label {\n    key: \"location\"\n   \
-    \ value: \"external\"\n  }\n  interval_msec: 5000  # 5s\n  timeout_msec: 1000\
-    \  # 1s\n}\n\n# Host Checks\nprobe {\n  name: \"IPMI Ping\"\n  type: PING\n\n\
-    \  interval: \"10s\"\n\n  targets {\n    endpoint {\n      name: \"ravenna\"\n\
-    \      ip: \"10.0.199.2\"\n    }\n    endpoint {\n      name: \"roosevelt\"\n\
-    \      ip: \"10.0.199.3\"\n    }\n    endpoint {\n      name: \"woodlandpark\"\
-    \n      ip: \"10.0.199.4\"\n    }\n    endpoint {\n      name: \"beaconhill\"\n\
-    \      ip: \"10.0.199.5\"\n    }\n    endpoint {\n      name: \"laurelhurst\"\n\
-    \      ip: \"10.0.199.6\"\n    }\n  }\n\n  additional_label {\n    key: \"location\"\
-    \n    value: \"internal\"\n  }\n  additional_label {\n    key: \"type\"\n    value:\
-    \ \"node\"\n  }\n}\n"
+  cloudprober.cfg: |
+    # Internal Services
+    probe {
+      name: "Router DNS - External Query"
+      type: DNS
+      targets {
+        host_names: "10.0.40.1"
+      }
+      dns_probe {
+        resolved_domain: "tompaulus.com"
+        query_type: A
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "dns"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Home Assistant"
+      type: HTTP
+      targets {
+        host_names: "home.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        
+        header {
+          key: "CF-Access-Client-Id"
+          value: "{{env "CF_ACCESS_ID" }}"
+        }
+        header {
+          key: "CF-Access-Client-Secret"
+          value: "{{env "CF_ACCESS_SECRET" }}"
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      validator {
+          name: "expected_content"
+          regex: "Home Assistant"
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Grafana"
+      type: HTTP
+      targets {
+        host_names: "grafana.brickyard.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        
+        header {
+          key: "CF-Access-Client-Id"
+          value: "{{env "CF_ACCESS_ID" }}"
+        }
+        header {
+          key: "CF-Access-Client-Secret"
+          value: "{{env "CF_ACCESS_SECRET" }}"
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Netbox"
+      type: HTTP
+      targets {
+        host_names: "netbox.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        
+        header {
+          key: "CF-Access-Client-Id"
+          value: "{{env "CF_ACCESS_ID" }}"
+        }
+        header {
+          key: "CF-Access-Client-Secret"
+          value: "{{env "CF_ACCESS_SECRET" }}"
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Protect NVR"
+      type: HTTP
+      targets {
+        host_names: "protect.brickyard.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        tls_config {
+          disable_cert_validation: true
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Blog"
+      type: HTTP
+      targets {
+        host_names: "blog.tompaulus.com"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      validator {
+          name: "expected_content"
+          regex: "[Jj]ournal"
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    # External Services
+
+    probe {
+      name: "Cloudflare"
+      type: HTTP
+      targets {
+        host_names: "www.cloudflare.com"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "external"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Google Homepage"
+      type: HTTP
+      targets {
+        host_names: "www.google.com"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "external"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
+      name: "Apple Homepage"
+      type: HTTP
+      targets {
+        host_names: "www.apple.com"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "external"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    # Host Checks
+    probe {
+      name: "IPMI Ping"
+      type: PING
+
+      interval: "10s"
+
+      targets {
+        endpoint {
+          name: "ravenna"
+          ip: "10.0.199.2"
+        }
+        endpoint {
+          name: "roosevelt"
+          ip: "10.0.199.3"
+        }
+        endpoint {
+          name: "woodlandpark"
+          ip: "10.0.199.4"
+        }
+        endpoint {
+          name: "beaconhill"
+          ip: "10.0.199.5"
+        }
+        endpoint {
+          name: "laurelhurst"
+          ip: "10.0.199.6"
+        }
+      }
+
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "node"
+      }
+    }
+
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
   name: cf-access-keys
 spec:
-  itemPath: vaults/K3S/items/CloudProber
+  itemPath: "vaults/K3S/items/CloudProber"
