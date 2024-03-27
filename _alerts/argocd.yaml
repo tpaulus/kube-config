@@ -1,0 +1,22 @@
+---
+groups:
+  - name: ArgoCD
+    rules:
+      - alert: Application Out of Sync
+        expr: sum(argocd_app_info{autosync_enabled="true", kubernetes_namespace="argocd", sync_status="OutOfSync"}) by (name) > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Argo Application Out of Sync
+          description: "{{ $labels.name }} is out of sync, but is enabled for automatic syncing. Check that the manifests are able to apply correctly."
+          dashboard: https://argocd.ing.k3s.brickyard.whitestar.systems/applications/argocd/{{ $labels.name }}
+      - alert: Application Unhealthy
+        expr: sum(argocd_app_info{kubernetes_namespace=~"argocd", health_status!="Healthy"}) by (name, health_status) > 0
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: Argo Application {{ $labels.name }} is {{ $labels.health_status }}
+          description: "{{ $labels.name }} is stuck in {{ $labels.health_status }}."
+          dashboard: https://argocd.ing.k3s.brickyard.whitestar.systems/applications/argocd/{{ $labels.name }}
