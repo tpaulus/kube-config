@@ -14,7 +14,7 @@ groups:
             last 30 minutes.
           link: https://grafana.brickyard.whitestar.systems/d/wY4blRMGz/coredns
       - alert: CoreDNSHighLatency
-        expr: histogram_quantile(0.50, sum(rate(coredns_forward_request_duration_seconds_bucket{netbox_device_name="BeaconHill"}[2m]))
+        expr: histogram_quantile(0.50, sum(rate(coredns_proxy_request_duration_seconds_bucket{proxy_name="forward", netbox_device_name="BeaconHill"}[2m]))
           by (to, le)) > 0.5
         for: 2m
         labels:
