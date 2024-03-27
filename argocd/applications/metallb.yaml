@@ -3,16 +3,16 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: metallb
-  namespace: argocd
 spec:
   destination:
-    namespace: metallb-system
-    server: https://kubernetes.default.svc
-  project: default
+    name: ''
+    namespace: metallb
+    server: 'https://kubernetes.default.svc'
   source:
-    path: metallb
-    repoURL: git@github.com:tpaulus/kube-config.git
-    targetRevision: HEAD
-  syncPolicy:
-    automated:
-      prune: true
+    path: ''
+    repoURL: 'https://metallb.github.io/metallb'
+    targetRevision: 0.14.4
+    chart: metallb
+  sources: []
+  project: default
+
