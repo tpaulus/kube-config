@@ -5,11 +5,9 @@ metadata:
   name: zitadel
 spec:
   destination:
-    name: ''
     namespace: zitadel
     server: https://kubernetes.default.svc
   source:
-    path: ''
     repoURL: https://charts.zitadel.com
     targetRevision: 7.10.0
     chart: zitadel
@@ -94,7 +92,6 @@ spec:
                   pathType: Prefix
         metrics:
           enabled: true
-  sources: []
   project: default
   syncPolicy:
     automated:
