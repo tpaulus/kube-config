@@ -9,7 +9,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://charts.zitadel.com
-    targetRevision: 7.12.1
+    targetRevision: 7.13.0
     chart: zitadel
     helm:
       values: |
