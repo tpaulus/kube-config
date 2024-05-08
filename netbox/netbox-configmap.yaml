@@ -6,13 +6,13 @@ metadata:
   namespace: netbox
 data:
   # NetBox environment variables
-  # More configuration can be added via: https://netbox.readthedocs.io/en/stable/configuration/optional-settings/
+  # More configuration can be added via: https://docs.netbox.dev/en/stable/configuration/miscellaneous/
   ALLOWED_HOSTS: '*'
   CSRF_TRUSTED_ORIGINS: &csrf_hosts https://netbox.whitestar.systems https://netbox.auth-ing.k3s.whitestar.systems
     https://netbox.ing.k3s.whitestar.systems http://localhost http://::1 http://127.0.0.1
   CORS_ORIGIN_WHITELIST: *csrf_hosts
   CHANGELOG_RETENTION: '90'
-  DB_SSLMODE: require
+  DB_SSLMODE: disable
   EMAIL_FROM: netbox@whitestar.systems
   EMAIL_PORT: '25'
   EMAIL_SERVER: smtp-relay.smtp-relay.svc.cluster.local
@@ -39,3 +39,5 @@ data:
   SOCIAL_AUTH_OIDC_ENDPOINT: https://auth.whitestar.systems/
   SOCIAL_AUTH_OIDC_KEY: 257471610657767688@netbox
   LOGOUT_REDIRECT_URL: https://auth.whitestar.systems/oidc/v1/end_session
+
+  SKIP_SUPERUSER: 'true'

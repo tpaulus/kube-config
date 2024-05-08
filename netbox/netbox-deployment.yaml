@@ -36,18 +36,17 @@ spec:
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: netbox-pguser-netbox
-                  key: dbname
+                  name: db
+                  key: database
             - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: netbox-pguser-netbox
-                  key: host
+              value: "db.netbox.svc"
+            - name: DB_PORT
+              value: "5432"
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: netbox-pguser-netbox
-                  key: user
+                  name: db
+                  key: username
             - name: DB_WAIT_DEBUG
               value: '1'
             - name: SOCIAL_AUTH_OIDC_SECRET
@@ -155,7 +154,7 @@ spec:
         # Populate via secret
         - name: db-password
           secret:
-            secretName: netbox-pguser-netbox
+            secretName: db
             items:
               - key: password
                 path: db_password
