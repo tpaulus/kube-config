@@ -13,7 +13,7 @@ spec:
         accessModes: [ReadWriteOnce]
         resources:
           requests:
-            storage: 30Gi
+            storage: 10Gi
   users:
     - databases: [zitadel]
       name: zitadel
@@ -28,4 +28,4 @@ spec:
               accessModes: [ReadWriteOnce]
               resources:
                 requests:
-                  storage: 30Gi
+                  storage: 5Gi
