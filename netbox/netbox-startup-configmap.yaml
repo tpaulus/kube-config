@@ -28,11 +28,6 @@ data:
   # Script for fixing permission issue in unit temporary folder
   nginx-caching-fix.sh: |
     chown unit:root -R /opt/unit/tmp/
-    cp /etc/ssl/postgres/* /root/.postgresql/
-    chown unit:root -R /root/
-    chmod 770 /root/
-    chmod 0400 /root/.postgresql/postgresql.key
-    chmod 0555 /root/.postgresql/postgresql.crt
   authentik.py: |
     from os import environ
 
