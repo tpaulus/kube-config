@@ -15,8 +15,6 @@ spec:
       values: |
         zitadel:
           masterkeySecretName: "zitadel"
-          dbSslCaCrtSecret: &db_cert_secret zitadel-db-cluster-cert
-          dbSslUserCrtSecret: *db_cert_secret
           configmapConfig:
             ExternalPort: 443
             ExternalSecure: true
