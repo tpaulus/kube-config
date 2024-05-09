@@ -32,46 +32,40 @@ spec:
                 MaxConnIdleTime: 5m
                 User:
                   SSL:
-                    Mode: require
+                    Mode: disable
                 Admin:
                   SSL:
-                    Mode: require
+                    Mode: disable
             
         env:
           - name: "ZITADEL_DATABASE_POSTGRES_HOST"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: host
+            value: db.zitadel.svc
           - name: "ZITADEL_DATABASE_POSTGRES_PORT"
-            valueFrom:
-              secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: port
+            value: "5432"
           - name: "ZITADEL_DATABASE_POSTGRES_DATABASE"
             valueFrom:
               secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: dbname
+                name: db
+                key: database
           - name: "ZITADEL_DATABASE_POSTGRES_USER_USERNAME"
             valueFrom:
               secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: user
+                name: db
+                key: username
           - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME"
             valueFrom:
               secretKeyRef:
-                name: zitadel-db-pguser-zitadel
-                key: user
+                name: db
+                key: username
           - name: "ZITADEL_DATABASE_POSTGRES_USER_PASSWORD"
             valueFrom:
               secretKeyRef:
-                name: zitadel-db-pguser-zitadel
+                name: db
                 key: password
           - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD"
             valueFrom:
               secretKeyRef:
-                name: zitadel-db-pguser-zitadel
+                name: db
                 key: password
         service:
           annotations:
