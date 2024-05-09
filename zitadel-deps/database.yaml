@@ -144,7 +144,7 @@ kind: CronJob
 metadata:
   name: postgres-backup
 spec:
-  schedule: "0 2/12 * * *"
+  schedule: "0 2,14 * * *"
   jobTemplate:
     spec:
       template:

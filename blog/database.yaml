@@ -79,3 +79,49 @@ spec:
     - port: 3306
   selector:
     app: mysql
+
+
+# Backup Config
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-backup
+spec:
+  schedule: "0 2,14 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+            - name: storage
+              nfs:
+                server: woodlandpark.brickyard.whitestar.systems
+                path: "/mnt/tank/Server Backups/db-dumps"
+                readOnly: false
+          containers:
+          - name: mysql-backup
+            image: mysql:8.4.0
+            volumeMounts:
+            - name: storage
+              mountPath: /backup
+            env:
+            - name: MYSQL_DATABASE
+              value: "ghost"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ghost-db
+                  key: root-password
+            - name: MYSQL_HOST
+              value: mysql.blog.svc
+            command:
+            - sh
+            - -c
+            - |
+              mkdir -p /backup/${MYSQL_DATABASE}
+              mysqldump --user="root" --host="${MYSQL_HOST}" --password="${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE}" > /backup/${MYSQL_DATABASE}/backup_$(date +%Y%m%d%H%M%S).sql
+              
+              # Retain last 7 backups
+              ls -t /backup/${MYSQL_DATABASE}/backup_*.sql | tail -n +8 | xargs -r rm
