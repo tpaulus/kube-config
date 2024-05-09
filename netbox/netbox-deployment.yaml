@@ -83,8 +83,6 @@ spec:
               mountPath: /run/secrets/secret_key
               subPath: secret_key
               readOnly: true
-            - name: db-cert
-              mountPath: /etc/ssl/postgres
             - name: django-psql-certs
               mountPath: /root/.postgresql/
             # Persistent Volume paths
@@ -182,15 +180,5 @@ spec:
             items:
               - key: superuser_api_token
                 path: superuser_api_token
-        - name: db-cert
-          secret:
-            secretName: netbox-cluster-cert
-            items:
-              - key: tls.crt
-                path: postgresql.crt
-                mode: 0666
-              - key: tls.key
-                path: postgresql.key
-                mode: 0640
         - name: django-psql-certs
           emptyDir: {}
