@@ -1,0 +1,12 @@
+---
+groups:
+  - name: db_backups
+    rules:
+      - alert: PSQL Backup Not Running
+        expr: ((time() - kube_cronjob_status_last_successful_time{cronjob="postgres-backup"}) / 60 / 60) >= 25
+        for: 0s
+        labels:
+          severity: high
+        annotations:
+          summary: DB Backup Not Running for {{ $labels.namespace }}
+          description: "{{ $labels.cronjob }} in {{ $labels.namespace }} has not run in the last 25 hours, when it should be running every 12 hours."

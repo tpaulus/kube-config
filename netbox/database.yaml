@@ -144,7 +144,7 @@ kind: CronJob
 metadata:
   name: postgres-backup
 spec:
-  schedule: "0 2 * * *"
+  schedule: "0 2/12 * * *"
   jobTemplate:
     spec:
       template:
@@ -184,4 +184,8 @@ spec:
             - sh
             - -c
             - |
-              pg_dump -U ${POSTGRES_USER} -h ${POSTGRES_HOST} ${POSTGRES_DB} > /backup/backup_${POSTGRES_DB}.sql
+              mkdir -p /backup/${POSTGRES_DB}
+              pg_dump -U ${POSTGRES_USER} -h ${POSTGRES_HOST} ${POSTGRES_DB} > /backup/${POSTGRES_DB}/backup_$(date +%Y%m%d%H%M%S).sql
+              
+              # Retain last 7 backups
+              ls -t /backup/${POSTGRES_DB}/backup_*.sql | tail -n +8 | xargs -r rm
