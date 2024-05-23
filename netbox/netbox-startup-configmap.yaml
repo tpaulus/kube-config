@@ -98,7 +98,7 @@ data:
         'netbox.custom_pipeline.set_roles'
     )
   custom_pipeline.py: |-
-    from django.contrib.auth.models import Group
+    from netbox.authentication import Group
     class AuthFailed(Exception):
         pass
     def add_groups(response, user, backend, *args, **kwargs):
@@ -110,7 +110,7 @@ data:
         # Add all groups from oAuth token
         for group in groups:
             group, created = Group.objects.get_or_create(name=group)
-            group.user_set.add(user)
+            group.users.add(user)
     def remove_groups(response, user, backend, *args, **kwargs):
         try:
             groups = response['groups']
@@ -127,7 +127,7 @@ data:
         # Delete non oAuth token groups
         for delete_group in delete_groups:
             group = Group.objects.get(name=delete_group)
-            group.user_set.remove(user)
+            group.users.remove(user)
     def set_roles(response, user, backend, *args, **kwargs):
         # Remove Roles temporary
         user.is_superuser = False
