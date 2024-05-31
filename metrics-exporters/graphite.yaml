@@ -39,6 +39,12 @@ spec:
             limits:
               memory: 256Mi
               cpu: 64m
+          livenessProbe:
+            tcpSocket:
+              port: 9108
+          readinessProbe:
+            tcpSocket:
+              port: 9108
       volumes:
         - name: config-volume
           configMap:

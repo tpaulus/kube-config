@@ -36,6 +36,12 @@ spec:
                 name: opnsense-creds
             - configMapRef:
                 name: opnsense-config
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+          readinessProbe:
+            tcpSocket:
+              port: 8080
 ---
 apiVersion: v1
 kind: ConfigMap
