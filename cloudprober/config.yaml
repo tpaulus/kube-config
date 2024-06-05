@@ -92,6 +92,10 @@ data:
               success_status_codes: "200-299"
           }
       }
+      validator {
+          name: "expected_content"
+          regex: "app-grafana"
+      }
       additional_label {
         key: "location"
         value: "internal"
@@ -127,6 +131,10 @@ data:
           http_validator {
               success_status_codes: "200-299"
           }
+      }
+      validator {
+          name: "expected_content"
+          regex: "netbox.ico"
       }
       additional_label {
         key: "location"
