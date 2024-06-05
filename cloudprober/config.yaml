@@ -201,8 +201,47 @@ data:
       timeout_msec: 1000   # 1s
     }
 
-    # External Services
+    probe {
+      name: "Svalbard NAS"
+      type: HTTP
+      targets {
+        host_names: "svalbard.vista.whitestar.systems"
+      }
+      http_probe {
+        protocol: HTTPS
+        
+        header {
+          key: "CF-Access-Client-Id"
+          value: "{{env "CF_ACCESS_ID" }}"
+        }
+        header {
+          key: "CF-Access-Client-Secret"
+          value: "{{env "CF_ACCESS_SECRET" }}"
+        }
+      }
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+      validator {
+          name: "expected_content"
+          regex: "Synology"
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "node"
+      }
+      interval_msec: 30000  # 30s
+      timeout_msec: 5000   # 5s
+    }
 
+    # External Services
     probe {
       name: "Cloudflare"
       type: HTTP
@@ -272,7 +311,7 @@ data:
       timeout_msec: 1000   # 1s
     }
 
-    # Host Checks
+    # BMC Checks
     probe {
       name: "IPMI Ping"
       type: PING
