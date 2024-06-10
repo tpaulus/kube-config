@@ -124,3 +124,4 @@ metadata:
   namespace: backup-unifi-protect
 data:
   UFP_SSL_VERIFY: 'false'
+  EXPERIMENTAL_DOWNLOADER: 'true'
