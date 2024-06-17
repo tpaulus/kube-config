@@ -1,0 +1,52 @@
+groups:
+  - name: Unbound
+    rules:
+      # Alert when unable to scrape
+      - alert: UnboundDown
+        expr: unbound_up{netbox_device_name="BeaconHill"} == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Unbound Exporter is unable to scrape Unbound (instance {{ $labels.instance }})"
+          description: "The Unbound Exporter at {{ $labels.instance }} is reporting that it is unable to scrape metrics from Unbound."
+
+      # Alert for high query rate
+      - alert: UnboundHighQueryRate
+        expr: sum(rate(unbound_queries_total{netbox_device_name="BeaconHill"}[5m])) by (instance) > 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High query rate on Unbound DNS server (instance {{ $labels.instance }})"
+          description: "The Unbound DNS server at {{ $labels.instance }} is experiencing a high query rate of {{ $value | humanize }} queries/sec."
+
+      # Alert for high query rate for specific query type
+      - alert: UnboundHighQueryTypeRate
+        expr: rate(unbound_query_types_total{netbox_device_name="BeaconHill"}[5m]) > 5000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High query rate for QUERY opcode on Unbound DNS server (instance {{ $labels.instance }})"
+          description: "The Unbound DNS server at {{ $labels.instance }} is experiencing a high rate of {{ $value | humanize }} queries/sec for the {{ $labels.type }} opcode."
+
+      # Alert for high cache miss rate
+      - alert: UnboundHighCacheMissRate
+        expr: avg(rate(unbound_cache_misses_total{netbox_device_name="BeaconHill"}[5m]) / rate(unbound_queries_total{netbox_device_name="BeaconHill"}[5m])) by (instance) > 0.15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High cache miss rate on Unbound DNS server (instance {{ $labels.instance }})"
+          description: "The Unbound DNS server at {{ $labels.instance }} is experiencing a high cache miss rate of {{ $value | humanizePercentage }}."
+
+      # Alert for low query volume
+      - alert: UnboundLowQueryVolume
+        expr: sum(rate(unbound_queries_total{netbox_device_name="BeaconHill"}[5m])) by (instance) < 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low query volume on Unbound DNS server (instance {{ $labels.instance }})"
+          description: "The Unbound DNS server at {{ $labels.instance }} is experiencing a low query volume of {{ $value | humanize }} queries/sec."
