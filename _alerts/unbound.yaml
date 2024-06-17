@@ -33,7 +33,7 @@ groups:
 
       # Alert for high cache miss rate
       - alert: UnboundHighCacheMissRate
-        expr: avg(rate(unbound_cache_misses_total{netbox_device_name="BeaconHill"}[5m]) / rate(unbound_queries_total{netbox_device_name="BeaconHill"}[5m])) by (instance) > 0.15
+        expr: avg(rate(unbound_cache_misses_total{netbox_device_name="BeaconHill"}[5m]) / rate(unbound_queries_total{netbox_device_name="BeaconHill"}[5m])) by (instance) > 0.75
         for: 5m
         labels:
           severity: warning
