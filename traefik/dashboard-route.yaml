@@ -1,0 +1,15 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: traefik
+spec:
+  entryPoints: [websecure]
+  routes:
+    - kind: Rule
+      match: Host(`traefik.ing.k3s.brickyard.whitestar.systems`)
+      priority: 10
+      services:
+        - kind: TraefikService
+          name: api@internal

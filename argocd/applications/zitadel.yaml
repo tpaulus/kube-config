@@ -71,7 +71,6 @@ spec:
         ingress:
           annotations:
             traefik.ingress.kubernetes.io/router.entrypoints: web-ext
-            traefik.ingress.kubernetes.io/router.middlewares: zitadel-inject-headers@kubernetescrd
           enabled: true
           hosts:
             - host: zitadel.auth-ing.k3s.brickyard.whitestar.systems

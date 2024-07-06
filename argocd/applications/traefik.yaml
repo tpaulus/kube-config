@@ -21,16 +21,23 @@ spec:
           web:
             redirectTo:
               port: websecure
-              priority: 10
+              priority: 1
+          websecure:
+            asDefault: true
           web-ext:
             port: 9200
             exposedPort: 9200
             protocol: TCP
+            middlewares:
+              - traefik-rewrite-cf-tunnel-headers@kubernetescrd
         experimental:
           plugins:
             jwt:
               moduleName: github.com/tpaulus/jwt-middleware
-              version: v1.1.12
+              version: v1.1.13
+            cloudflarewarp:
+              moduleName: github.com/BetterCorp/cloudflarewarp
+              version: v1.3.0
         providers:
           kubernetesIngress:
             publishedService:

@@ -14,7 +14,7 @@ spec:
         - name: argocd-server
           port: 80
     - kind: Rule
-      match: Host(`argocd.ing.k3s.brickyard.whitestar.systems`) && Headers(`Content-Type`,
+      match: Host(`argocd.ing.k3s.brickyard.whitestar.systems`) && Header(`Content-Type`,
         `application/grpc`)
       priority: 11
       services:
@@ -53,7 +53,7 @@ spec:
         - name: argocd-server
           port: 80
     - kind: Rule
-      match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`) && Headers(`Content-Type`,
+      match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`) && Header(`Content-Type`,
         `application/grpc`)
       middlewares:
         - name: jwt-verification
