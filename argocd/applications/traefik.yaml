@@ -36,7 +36,7 @@ spec:
             publishedService:
               enabled: true
     repoURL: https://traefik.github.io/charts
-    targetRevision: 28.3.0
+    targetRevision: 29.0.0
   syncPolicy:
     automated:
       prune: true
