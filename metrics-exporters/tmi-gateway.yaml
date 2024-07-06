@@ -21,7 +21,9 @@ spec:
       containers:
         - name: prometheus-tmi-exporter
           image: ghcr.io/tpaulus/tmobile-internet-exporter:main
-          args: ['-target', '192.168.12.1']
+          imagePullPolicy: Always
+          args: 
+            - '-target=192.168.12.1'
           ports:
             - containerPort: 9099
               name: metrics

@@ -21,6 +21,7 @@ spec:
       containers:
         - name: prometheus-opnsense-exporter
           image: ghcr.io/tpaulus/opnsense-exporter:main
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: metrics
