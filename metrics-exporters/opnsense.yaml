@@ -45,6 +45,7 @@ spec:
               port: 8080
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: ConfigMap
