@@ -43,6 +43,8 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: ConfigMap

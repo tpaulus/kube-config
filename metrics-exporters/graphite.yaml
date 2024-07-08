@@ -45,6 +45,8 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 9108
+          securityContext:
+            allowPrivilegeEscalation: false
       volumes:
         - name: config-volume
           configMap:

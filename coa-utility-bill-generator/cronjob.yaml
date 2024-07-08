@@ -13,6 +13,7 @@ spec:
           containers:
             - name: generate-bill
               image: ghcr.io/tpaulus/nextcentury-payhoa:main
+              imagePullPolicy: Always
               env:
                 - name: TZ
                   value: America/Los_Angeles

@@ -44,6 +44,8 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 9199
+          securityContext:
+            allowPrivilegeEscalation: false
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem

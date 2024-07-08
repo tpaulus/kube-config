@@ -40,3 +40,5 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 9099
+          securityContext:
+            allowPrivilegeEscalation: false
