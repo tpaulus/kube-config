@@ -47,11 +47,11 @@ spec:
               port: 9108
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
       volumes:
         - name: config-volume
           configMap:
             name: prometheus-graphite-exporter-config
-            readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: ConfigMap
