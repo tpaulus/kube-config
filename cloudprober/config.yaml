@@ -32,7 +32,7 @@ data:
       name: "Home Assistant"
       type: HTTP
       targets {
-        host_names: "home.whitestar.systems"
+        host_names: "home.paulus.family"
       }
       http_probe {
         protocol: HTTPS
