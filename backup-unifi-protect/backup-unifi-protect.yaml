@@ -65,8 +65,8 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
-            runAsUser: 65534
-            runAsGroup: 65534
+            runAsUser: 0
+            runAsGroup: 0
       volumes:
         - name: unifi-protect-backup-nfs-volume
           persistentVolumeClaim:
