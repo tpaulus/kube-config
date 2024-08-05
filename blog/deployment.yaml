@@ -58,6 +58,8 @@ spec:
                   value: https
             initialDelaySeconds: 5
             periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
       volumes:
         - name: media
           persistentVolumeClaim:
