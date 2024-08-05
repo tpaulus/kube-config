@@ -56,7 +56,8 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
       volumes:
         - name: alertmanager-config-volume
           configMap:
