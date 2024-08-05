@@ -74,6 +74,8 @@ spec:
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
       volumes:
         - name: grafana-config
           configMap:

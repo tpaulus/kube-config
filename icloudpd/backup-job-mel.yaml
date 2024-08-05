@@ -59,6 +59,8 @@ spec:
                   mountPath: /photos
                 - name: cookie-dir
                   mountPath: /local/cookies
+              securityContext:
+                allowPrivilegeEscalation: false
           restartPolicy: OnFailure
           volumes:
             - name: storage

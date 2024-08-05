@@ -53,6 +53,8 @@ spec:
             limits:
               memory: 1024Mi
               cpu: 1024m
+          securityContext:
+            allowPrivilegeEscalation: false
       volumes:
         - name: creds
           secret:
