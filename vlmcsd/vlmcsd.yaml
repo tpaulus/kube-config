@@ -33,6 +33,8 @@ spec:
               cpu: 1024m
           ports:
             - containerPort: 1688
+          securityContext:
+            allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service

@@ -106,6 +106,8 @@ spec:
             - mountPath: /etc/netbox/config/authentik.py
               name: authentik
               subPath: authentik.py
+          securityContext:
+            allowPrivilegeEscalation: false
       restartPolicy: Always
       volumes:
         # Reference to configmaps and PVs

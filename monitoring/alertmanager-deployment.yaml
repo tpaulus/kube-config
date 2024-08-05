@@ -53,6 +53,8 @@ spec:
             httpGet:
               path: /-/healthy
               port: 9093
+          securityContext:
+            allowPrivilegeEscalation: false
       volumes:
         - name: alertmanager-config-volume
           configMap:

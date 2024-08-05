@@ -62,6 +62,8 @@ spec:
             httpGet:
               path: /-/healthy
               port: 9090
+          securityContext:
+            allowPrivilegeEscalation: false
         - name: rules-git-sync
           image: registry.k8s.io/git-sync/git-sync:v4.2.4
           args:
@@ -86,6 +88,8 @@ spec:
             limits:
               memory: 512Mi
               cpu: 100m
+          securityContext:
+            allowPrivilegeEscalation: false
       volumes:
         - name: prometheus-config-volume
           configMap:

@@ -50,6 +50,8 @@ spec:
               port: 25
             initialDelaySeconds: 5
             periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
