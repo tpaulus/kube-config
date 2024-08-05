@@ -55,6 +55,7 @@ spec:
               port: 9093
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
       volumes:
         - name: alertmanager-config-volume
           configMap:

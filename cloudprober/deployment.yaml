@@ -52,6 +52,7 @@ spec:
             periodSeconds: 3
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
       volumes:
         - name: config
           configMap:

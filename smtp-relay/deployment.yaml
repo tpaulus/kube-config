@@ -52,6 +52,7 @@ spec:
             periodSeconds: 10
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem

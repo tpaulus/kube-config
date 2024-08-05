@@ -90,6 +90,7 @@ spec:
               cpu: 100m
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
       volumes:
         - name: prometheus-config-volume
           configMap:

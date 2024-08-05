@@ -35,6 +35,7 @@ spec:
             - containerPort: 1688
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: Service

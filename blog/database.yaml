@@ -67,6 +67,7 @@ spec:
               cpu: '2'
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
@@ -129,3 +130,4 @@ spec:
               ls -t /backup/${MYSQL_DATABASE}/backup_*.sql | tail -n +8 | xargs -r rm
             securityContext:
               allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true

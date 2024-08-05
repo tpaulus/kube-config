@@ -72,6 +72,7 @@ spec:
               mountPath: /home/node/.n8n/
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
       dnsConfig:
         nameservers: [1.1.1.1, 1.0.0.1]
       dnsPolicy: None
