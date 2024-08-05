@@ -62,6 +62,7 @@ spec:
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
+                runAsNonRoot: false
           restartPolicy: OnFailure
           volumes:
             - name: storage

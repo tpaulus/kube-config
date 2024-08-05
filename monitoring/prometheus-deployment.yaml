@@ -91,6 +91,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
+            runAsNonRoot: true
       volumes:
         - name: prometheus-config-volume
           configMap:

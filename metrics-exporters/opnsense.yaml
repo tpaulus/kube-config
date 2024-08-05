@@ -46,6 +46,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+            runAsNonRoot: true
 ---
 apiVersion: v1
 kind: ConfigMap

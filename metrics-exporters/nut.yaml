@@ -47,6 +47,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+            runAsNonRoot: true
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
