@@ -108,7 +108,7 @@ spec:
               subPath: authentik.py
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
       restartPolicy: Always
       volumes:
         # Reference to configmaps and PVs
