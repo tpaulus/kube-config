@@ -93,7 +93,7 @@ spec:
             timeoutSeconds: 1
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
         - image: quay.io/prometheuscommunity/postgres-exporter 
           name: psql-exporter
           ports:
@@ -197,4 +197,4 @@ spec:
               ls -t /backup/${POSTGRES_DB}/backup_*.sql | tail -n +8 | xargs -r rm
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
