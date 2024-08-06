@@ -61,7 +61,7 @@ spec:
                   mountPath: /local/cookies
               securityContext:
                 allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: true
+                readOnlyRootFilesystem: false
                 runAsNonRoot: false
           restartPolicy: OnFailure
           volumes:
