@@ -31,3 +31,4 @@ spec:
     - port: 25
       targetPort: 25
   type: LoadBalancer
+  externalTrafficPolicy: Local
