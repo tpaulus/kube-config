@@ -1,3 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: relay-netpol
+spec:
+  podSelector:
+    matchLabels:
+      app: relay
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 10.0.10.16/32
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 25
+  egress:
+  - {}
 ---
 apiVersion: v1
 kind: Service
@@ -9,3 +30,4 @@ spec:
   ports:
     - port: 25
       targetPort: 25
+  type: LoadBalancer
