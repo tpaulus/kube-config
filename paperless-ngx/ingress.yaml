@@ -1,0 +1,84 @@
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ingress-cert
+spec:
+  secretName: ingress-cert
+  duration: 2160h0m0s
+  renewBefore: 360h0m0s
+  dnsNames: ['paperless.paulus.family']
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: paperless
+spec:
+  tls:
+    - hosts:
+       - paperless.paulus.family
+      secretName: ingress-cert
+    - hosts:
+       - paperless.ing.k3s.brickyard.whitestar.systems
+  rules:
+    - host: paperless.ing.k3s.brickyard.whitestar.systems
+      http: &rules
+        paths:
+          - backend:
+              service:
+                name: paperless-ngx
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: paperless.paulus.family
+      http: *rules
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: jwt-verification
+spec:
+  plugin:
+    jwt:
+      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      headerName: Cf-Access-Jwt-Assertion
+      require:
+        aud: ab89878146c48c2038f0d52aa9339f3178521120e145bcbb400f1c515407fae3
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: inject-headers
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: paperless-ext
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.middlewares: paperless-ngx-inject-headers@kubernetescrd,paperless-ngx-jwt-verification@kubernetescrd
+spec:
+  rules:
+    - host: paperless.auth-ing.k3s.brickyard.whitestar.systems
+      http: &rules
+        paths:
+          - backend:
+              service:
+                name: paperless-ngx
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: paperless.paulus.family
+      http: *rules

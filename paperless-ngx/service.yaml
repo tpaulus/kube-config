@@ -1,0 +1,156 @@
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: app-secrets
+spec:
+  itemPath: vaults/K3S/items/Paperless
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paperless-ngx-config
+  namespace: paperless-ngx
+data:
+  PAPERLESS_TIME_ZONE: "America/Los_Angeles"
+  PAPERLESS_OCR_LANGUAGE: "eng"
+  
+  PAPERLESS_URL: "https://paperless.paulus.family"
+
+  PAPERLESS_REDIS: "redis://redis.paperless-ngx"
+  PAPERLESS_DBHOST: db.paperless-ngx
+
+  PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{title}"
+  PAPERLESS_FILENAME_FORMAT_REMOVE_NONE: "true"
+
+  PAPERLESS_APPS: "allauth.socialaccount.providers.openid_connect"
+  
+  PAPERLESS_SOCIAL_AUTO_SIGNUP: "true"
+  PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
+  PAPERLESS_REDIRECT_LOGIN_TO_SSO: "true"
+
+  PAPERLESS_APP_TITLE: "Paulus Family Docs"
+
+  PAPERLESS_EMAIL_HOST: "smtp-relay.smtp-relay.svc.cluster.local"
+  PAPERLESS_EMAIL_HOST_USER: "paperless@whitestar.systems"
+
+  PAPERLESS_TASK_WORKERS: "2"
+  PAPERLESS_THREADS_PER_WORKER: "4"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-ngx-data
+  namespace: paperless-ngx
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-ngx-media
+  namespace: paperless-ngx
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 25Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-ngx
+  namespace: paperless-ngx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless-ngx
+  template:
+    metadata:
+      labels:
+        app: paperless-ngx
+    spec:
+      containers:
+      - name: paperless-ngx
+        image: ghcr.io/paperless-ngx/paperless-ngx:2.11.6
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: paperless-ngx-config
+        - secretRef:
+            name: app-secrets
+        env:
+          - name: "PAPERLESS_DBUSER"
+            valueFrom:
+              secretKeyRef:
+                  key: username
+                  name: db
+          - name: "PAPERLESS_DBPASS"
+            valueFrom:
+              secretKeyRef:
+                  key: password
+                  name: db
+          - name: "PAPERLESS_DBNAME"
+            valueFrom:
+              secretKeyRef:
+                  key: database
+                  name: db
+        resources:
+          requests:
+            cpu: 2560m
+            memory: 2.5Gi
+          limits:
+            cpu: 10240m
+            memory: 5Gi
+        volumeMounts:
+        - name: data
+          mountPath: /usr/src/paperless/data
+        - name: media
+          mountPath: /usr/src/paperless/media
+        - name: export
+          mountPath: /usr/src/paperless/export
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: paperless-ngx-data
+      - name: media
+        persistentVolumeClaim:
+          claimName: paperless-ngx-media
+      - name: export
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperless-ngx
+  namespace: paperless-ngx
+spec:
+  selector:
+    app: paperless-ngx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

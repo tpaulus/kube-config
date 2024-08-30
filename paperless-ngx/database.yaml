@@ -1,0 +1,200 @@
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: db
+spec:
+  itemPath: vaults/K3S/items/Paperless-DB
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-storage-claim
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: psql
+  serviceName: database
+  template:
+    metadata:
+      labels:
+        app: psql
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9187'
+    spec:
+      initContainers:
+        - name: generate-datasource-uri
+          image: busybox:1.36
+          command: [sh, -c, 'echo "127.0.0.1:5432/${POSTGRES_DB}?sslmode=disable" > /data/uri']
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: database
+          volumeMounts:
+            - name: ds-uri
+              mountPath: /data
+      containers:
+        - image: postgres:16.4
+          name: psql
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: database
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: password
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: psql
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              memory: 1024Mi
+              cpu: '1'
+            limits:
+              memory: 2048Mi
+              cpu: '2'
+          livenessProbe:
+            tcpSocket:
+              port: psql
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            tcpSocket:
+              port: psql
+            timeoutSeconds: 1
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+        - image: quay.io/prometheuscommunity/postgres-exporter 
+          name: psql-exporter
+          ports:
+            - containerPort: 9187
+              name: metrics
+          env:
+            - name: DATA_SOURCE_URI_FILE
+              value: "/var/run/datasource_uri/uri"
+            - name: DATA_SOURCE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: username
+            - name: DATA_SOURCE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: password
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 128Mi
+              cpu: 100m
+          volumeMounts:
+            - name: ds-uri
+              mountPath: /var/run/datasource_uri
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+      volumes:
+        - name: ds-uri
+          emptyDir: {}
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: db-storage-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: psql
+
+
+# Backup Config
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+spec:
+  schedule: "0 2,14 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+            - name: storage
+              nfs:
+                server: woodlandpark.brickyard.whitestar.systems
+                path: "/mnt/tank/Server Backups/db-dumps"
+                readOnly: false
+          containers:
+          - name: postgres-backup
+            image: postgres:16.4
+            volumeMounts:
+            - name: storage
+              mountPath: /backup
+            env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: database
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: password
+            - name: POSTGRES_HOST
+              value: db.netbox.svc
+            command:
+            - sh
+            - -c
+            - |
+              mkdir -p /backup/${POSTGRES_DB}
+              pg_dump -U ${POSTGRES_USER} -h ${POSTGRES_HOST} ${POSTGRES_DB} > /backup/${POSTGRES_DB}/backup_$(date +%Y%m%d%H%M%S).sql
+              
+              # Retain last 7 backups
+              ls -t /backup/${POSTGRES_DB}/backup_*.sql | tail -n +8 | xargs -r rm
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
