@@ -6,7 +6,7 @@ prometheus "Brickyard" {
   }
 }
 
-ci {
+parser {
   include    = [ "(_alerts/.*)" ]
   baseBranch = "main"
 }
