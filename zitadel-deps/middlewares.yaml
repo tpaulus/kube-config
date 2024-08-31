@@ -1,0 +1,11 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: inject-headers
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+      X-ZITADEL-INSTANCE: "auth.whitestar.systems"
+      X-ZITADEL-DOMAIN: "auth.whitestar.systems"
