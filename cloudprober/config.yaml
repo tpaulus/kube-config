@@ -210,6 +210,33 @@ data:
     }
 
     probe {
+      name: "Paperless"
+      type: HTTP
+      targets {
+        host_names: "paperless.paulus.family"
+      }
+      http_probe {
+        protocol: HTTPS
+      }
+      validator {
+          name: "status_code_2|3xx"
+          http_validator {
+              success_status_codes: "200-399"
+          }
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
       name: "Svalbard NAS"
       type: HTTP
       targets {
