@@ -1,7 +1,7 @@
 ---
 groups: 
-  name: Paperless-ngx
-  rules:
+  - name: Paperless-ngx
+    rules:
       - alert: Paperless Offsite Backups Not Running
         expr: ((time() - kube_cronjob_status_last_successful_time{cronjob="paperless-backup", namespace="paperless-ngx"}) / 60 / 60) >= 13
         for: 0s
