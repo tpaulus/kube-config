@@ -36,7 +36,7 @@ data:
   REMOTE_AUTH_ENABLED: 'true'
   REMOTE_AUTH_BACKEND: social_core.backends.open_id_connect.OpenIdConnectAuth
   # python-social-auth config
-  SOCIAL_AUTH_OIDC_ENDPOINT: https://auth.whitestar.systems/
+  SOCIAL_AUTH_OIDC_ENDPOINT: https://auth.whitestar.systems
   SOCIAL_AUTH_OIDC_KEY: 257471610657767688@netbox
   LOGOUT_REDIRECT_URL: https://auth.whitestar.systems/oidc/v1/end_session
 
