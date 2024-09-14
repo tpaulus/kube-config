@@ -8,5 +8,8 @@ prometheus "Brickyard" {
 
 parser {
   include    = [ "(_alerts/.*)" ]
+}
+
+ci {
   baseBranch = "main"
 }
