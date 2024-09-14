@@ -97,7 +97,8 @@ spec:
             defaultMode: 420
             name: prometheus-server-conf
         - name: prometheus-storage-volume
-          emptyDir: {}
+          emptyDir: 
+            sizeLimit: 55Gi
         - name: rules-volume
           emptyDir: {}
         - name: netbox-token
