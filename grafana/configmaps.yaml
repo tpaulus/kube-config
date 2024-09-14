@@ -25,11 +25,15 @@ data:
   datasources.yaml: |-
     apiVersion: 1
     datasources:
-      - name: Prometheus
+      - name: Kube Prometheus
         type: prometheus
         access: proxy
         url: http://prometheus.monitoring.svc:8080
+      - name: NAS Prometheus
+        type: prometheus
+        access: proxy
         isDefault: true
+        url: http://woodlandpark.brickyard.whitestar.systems:9090
       - name: AlertManager
         type: alertmanager
         access: proxy
