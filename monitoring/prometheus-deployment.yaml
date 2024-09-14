@@ -32,7 +32,6 @@ spec:
             - --config.file=/etc/prometheus/prometheus.yml
             - --storage.tsdb.path=/prometheus/
             - --storage.tsdb.retention.size=100GB
-            - --storage.tsdb.retention.time=4w
             - --enable-feature=auto-gomaxprocs,new-service-discovery-manager,memory-snapshot-on-shutdown
             - --web.external-url=https://prometheus.ing.k3s.brickyard.whitestar.systems
             - --web.enable-lifecycle
