@@ -7,7 +7,7 @@ metadata:
   labels:
     app: prometheus-server
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     type: Recreate
   selector:
@@ -31,7 +31,7 @@ spec:
           args:
             - --config.file=/etc/prometheus/prometheus.yml
             - --storage.tsdb.path=/prometheus/
-            - --storage.tsdb.retention.size=100GB
+            - --storage.tsdb.retention.size=50GB
             - --enable-feature=auto-gomaxprocs,new-service-discovery-manager,memory-snapshot-on-shutdown
             - --web.external-url=https://prometheus.ing.k3s.brickyard.whitestar.systems
             - --web.enable-lifecycle
@@ -97,8 +97,7 @@ spec:
             defaultMode: 420
             name: prometheus-server-conf
         - name: prometheus-storage-volume
-          persistentVolumeClaim:
-            claimName: tsdb
+          emptyDir: {}
         - name: rules-volume
           emptyDir: {}
         - name: netbox-token
@@ -107,15 +106,3 @@ spec:
             items:
               - key: password
                 path: netbox-token
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: tsdb
-  namespace: monitoring
-spec:
-  resources:
-    requests:
-      storage: 120Gi
-  volumeMode: Filesystem
-  accessModes: [ReadWriteOnce]
