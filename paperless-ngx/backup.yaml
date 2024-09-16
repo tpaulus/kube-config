@@ -86,7 +86,7 @@ spec:
                 defaultMode: 0744
           initContainers:
             - name: exporter
-              image: ghcr.io/paperless-ngx/paperless-ngx:2.12.0
+              image: ghcr.io/paperless-ngx/paperless-ngx:2.12.1
               command: ["/bin/sh", "/scripts/export.sh"]
               envFrom:
                 - configMapRef:
