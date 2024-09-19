@@ -32,7 +32,7 @@ spec:
         - name: n8n
           command: [/bin/sh]
           args: [-c, sleep 5; n8n start]
-          image: n8nio/n8n:1.59.3
+          image: n8nio/n8n:1.60.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
