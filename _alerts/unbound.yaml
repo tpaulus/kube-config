@@ -50,3 +50,13 @@ groups:
         annotations:
           summary: "Low query volume on Unbound DNS server (instance {{ $labels.instance }})"
           description: "The Unbound DNS server at {{ $labels.instance }} is experiencing a low query volume of {{ $value | humanize }} queries/sec."
+
+      # Alert for high SERVFAILs
+      - alert: UnboundHighServFailRate
+        expr: rate(unbound_answer_rcodes_total{rcode="SERVFAIL"}[5m]) > 0
+        for: 3m
+        labels:
+          severity: high
+        annotations:
+          summary: "Non-zero number of SERVFAIL being returned (instance {{ $labels.instance }})"
+          description: "The Unbound DNS server at {{ $labels.instance }} is returning {{ $value | humanize }} ServFails per sec. This indicates that the server was unable to get a valid response from an Authoritative DNS Service."
