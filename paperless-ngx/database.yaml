@@ -37,7 +37,7 @@ spec:
     spec:
       initContainers:
         - name: generate-datasource-uri
-          image: busybox:1.36
+          image: busybox:1.37
           command: [sh, -c, 'echo "127.0.0.1:5432/${POSTGRES_DB}?sslmode=disable" > /data/uri']
           env:
             - name: POSTGRES_DB
