@@ -17,6 +17,8 @@ spec:
           value: 'true'
         - name: enableCertificateOwnerRef
           value: 'true'
+        - name: clusterResourceNamespace
+          value: 'cert-manager'
     repoURL: https://charts.jetstack.io
     targetRevision: v1.16.0
   syncPolicy:
