@@ -20,7 +20,7 @@ spec:
         - name: clusterResourceNamespace
           value: 'cert-manager'
     repoURL: https://charts.jetstack.io
-    targetRevision: v1.15.3
+    targetRevision: v1.16.0
   syncPolicy:
     automated:
       prune: true
