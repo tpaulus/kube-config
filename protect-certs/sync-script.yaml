@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: protect-sync-script
+data:
+  sync.sh: |
+    #!/bin/bash
+
+    # Install Dependencies
+    apt-get update
+    apt-get install -y \
+      openssh-client \
+      sshpass
+
+    # Define variables
+    LOCAL_CERT_PATH="/var/run/ssl/tls.crt"
+    LOCAL_KEY_PATH="/var/run/ssl/tls.key"
+    REMOTE_CERT_PATH="/data/unifi-core/config/unifi-core.crt"
+    REMOTE_KEY_PATH="/data/unifi-core/config/unifi-core.key"
+
+    NGINX_RELOAD_CMD="nginx -s reload"
+
+    # Temporary file to store checksum for change detection
+    LOCAL_CHECKSUM_FILE="/tmp/unifi-core-checksum"
+    REMOTE_CHECKSUM_CMD="md5sum $REMOTE_CERT_PATH $REMOTE_KEY_PATH"
+
+    # Checksum calculation for change detection
+    calculate_local_checksum() {
+        md5sum $LOCAL_CERT_PATH $LOCAL_KEY_PATH | awk '{print $1}'
+    }
+
+    calculate_remote_checksum() {
+        sshpass -p "$REMOTE_PASSWORD" ssh $REMOTE_USER@$REMOTE_HOST "$REMOTE_CHECKSUM_CMD" | awk '{print $1}'
+    }
+
+    # Upload files to the remote host
+    upload_files() {
+        sshpass -p "$REMOTE_PASSWORD" scp $LOCAL_CERT_PATH $REMOTE_USER@$REMOTE_HOST:$REMOTE_CERT_PATH
+        sshpass -p "$REMOTE_PASSWORD" scp $LOCAL_KEY_PATH $REMOTE_USER@$REMOTE_HOST:$REMOTE_KEY_PATH
+    }
+
+    # Reload NGINX on the remote host
+    reload_nginx() {
+        sshpass -p "$REMOTE_PASSWORD" ssh $REMOTE_USER@$REMOTE_HOST "$NGINX_RELOAD_CMD"
+    }
+
+    # SSH Magic
+    mkdir -p /root/.ssh
+    ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts
+
+    # Main logic
+    local_checksum=$(calculate_local_checksum)
+    remote_checksum=$(calculate_remote_checksum)
+
+    # Compare checksums to detect changes
+    if [[ "$local_checksum" != "$remote_checksum" ]]; then
+        echo "Files have changed, uploading and reloading NGINX..."
+        upload_files
+        reload_nginx
+
+        echo "All Done!"
+    else
+        echo "No changes detected, nothing to do."
+    fi
+

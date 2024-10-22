@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: protect-cert
+spec:
+  secretName: protect-cert
+  duration: 2160h0m0s
+  renewBefore: 360h0m0s
+  dnsNames: ['protect.brickyard.whitestar.systems']
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer

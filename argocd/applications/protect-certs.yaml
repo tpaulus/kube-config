@@ -1,0 +1,18 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: protect-certs
+  namespace: argocd
+spec:
+  destination:
+    namespace: protect-certs
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: protect-certs
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true

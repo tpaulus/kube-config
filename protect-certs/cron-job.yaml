@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sync-protect-web-cert
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cert-sync-container
+            image: ubuntu:latest
+            command: ["/bin/sh", "-c", "/app/sync.sh"]
+            volumeMounts:
+            - name: script-volume
+              mountPath: /app
+            - name: cert-volume
+              mountPath: /var/run/ssl
+            env:
+            - name: REMOTE_HOST
+              value: "10.0.10.10"
+            - name: "REMOTE_USER"
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: protect-host
+            - name: "REMOTE_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: protect-host
+          restartPolicy: OnFailure
+          volumes:
+          - name: script-volume
+            configMap:
+              name: protect-sync-script
+              defaultMode: 0777
+          - name: cert-volume
+            secret:
+              secretName: protect-cert
+
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: protect-host
+spec:
+  itemPath: vaults/K3S/items/Protect NVR SSH
