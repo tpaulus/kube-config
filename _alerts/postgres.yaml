@@ -15,7 +15,7 @@ groups:
 
   # High database connections
   - alert: HighDatabaseConnections
-    expr: pg_stat_activity_count / pg_settings_max_connections > 0.8
+    expr: sum(pg_stat_activity_count) by (namespace, instance) / sum(pg_settings_max_connections) by (namespace, instance) > 0.8
     for: 5m
     labels:
       severity: warning
