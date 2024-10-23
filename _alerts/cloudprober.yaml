@@ -13,6 +13,14 @@ groups:
           summary: '{{ $labels.probe }} Is Down'
           description: '{{ $labels.probe }} is failing Cloudprober Healthchecks'
           dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
+      - alert: SSL Cert Expiring Soon
+        expr: ssl_earliest_cert_expiry_sec{kubernetes_app_name="cloudprober", location="internal"}/60/60/24 < 5
+        for: 1m
+        labels:
+          severity: warn
+        annotations: 
+          summary: '{{ $labels.dst }} SSL Cert Expiring'
+          description: 'The SSL Certificate for {{ $labels.dst }} is expiring within the next 5 days.'
   - name: IPMI
     rules:
       - alert: IMPI Node Not Reachable
