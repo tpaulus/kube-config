@@ -27,6 +27,7 @@ groups:
           severity: critical
         annotations:
           title: Node {{ $labels.instance }} {{ $labels.device }} is over 95% utilized
+      # pint disable promql/regexp
       - alert: Node down
         expr: up{instance=~"[0-9.]+:9100", netbox_device_name!=""} == 0
         for: 3m
