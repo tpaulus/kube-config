@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: ghost
-          image: ghost:5.98
+          image: ghost:5.97
           resources:
             limits:
               memory: 1024Mi
