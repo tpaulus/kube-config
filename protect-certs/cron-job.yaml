@@ -30,6 +30,10 @@ spec:
                 secretKeyRef:
                   key: password
                   name: protect-host
+            securityContext:
+              # Must run as root, since it runs apt-install
+              runAsUser: 0
+              runAsGroup: 0
           restartPolicy: OnFailure
           volumes:
           - name: script-volume

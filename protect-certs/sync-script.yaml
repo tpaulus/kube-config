@@ -6,6 +6,7 @@ metadata:
 data:
   sync.sh: |
     #!/bin/bash
+    set -e
 
     # Install Dependencies
     apt-get update
