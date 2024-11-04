@@ -21,7 +21,7 @@ spec:
                   mountPath: /cookie-dir
           containers:
             - name: backup-photos
-              image: icloudpd/icloudpd:1.24.2
+              image: icloudpd/icloudpd:1.24.3
               args:
                 - icloudpd
                 - --directory
