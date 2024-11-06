@@ -1,43 +1,48 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-      "config:base",
-      "github>tpaulus/renovate-config:auto-merge-gh-actions"
-    ],
-    "prConcurrentLimit": 0,
-    "prHourlyLimit": 0,
-    "kubernetes": {
-      "fileMatch": [
-        "\\.yaml$"
-      ]
-    },
-    "argocd": {
-      "fileMatch": [
-        "argocd/applications/.+\\.yaml$"
-      ]
-    },
-    "platformAutomerge": true,
-    "automergeType": "branch",
-    "ignoreTests": true,
-    "packageRules": [
-      {
-        "matchManagers": [
-          "kubernetes",
-          "argocd"
-        ],
-        "automergeMajor": false,
-        "automergeMinor": true,
-        "automergePatch": true,
-        "stabilityDays": 1
-      }
-    ],
-    "hostRules": [
-      {
-        "hostType": "docker",
-        "matchHost": "ghcr.io",
-        "username": "tpaulus",
-        "token": "{{ secrets.tpaulus_ghcr }}"
-      }
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "github>tpaulus/renovate-config:auto-merge-gh-actions"
+  ],
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
+  "kubernetes": {
+    "fileMatch": [
+      "\\.yaml$"
     ]
-  }
-  
+  },
+  "argocd": {
+    "fileMatch": [
+      "argocd/applications/.+\\.yaml$"
+    ]
+  },
+  "platformAutomerge": true,
+  "automergeType": "branch",
+  "ignoreTests": true,
+  "packageRules": [
+    {
+      "matchManagers": [
+        "kubernetes",
+        "argocd"
+      ],
+      "major": {
+        "automerge": false
+      },
+      "minor": {
+        "automerge": true
+      },
+      "patch": {
+        "automerge": true
+      },
+      "minimumReleaseAge": "1 day"
+    }
+  ],
+  "hostRules": [
+    {
+      "hostType": "docker",
+      "matchHost": "ghcr.io",
+      "username": "tpaulus",
+      "token": "{{ secrets.tpaulus_ghcr }}"
+    }
+  ]
+}
