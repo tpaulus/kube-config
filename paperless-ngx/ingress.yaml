@@ -7,7 +7,6 @@ metadata:
 spec:
   secretName: ingress-cert
   duration: 2160h0m0s
-  renewBefore: 360h0m0s
   dnsNames: ['paperless.paulus.family']
   issuerRef:
     name: letsencrypt-cf-prod
