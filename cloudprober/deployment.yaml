@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: cloudprober
-          image: cloudprober/cloudprober:v0.13.7
+          image: cloudprober/cloudprober:v0.13.8
           args: [--config_file, /config/cloudprober.cfg]
           ports:
             - containerPort: 9313
