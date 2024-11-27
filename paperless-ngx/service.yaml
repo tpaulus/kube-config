@@ -38,6 +38,8 @@ data:
   PAPERLESS_TASK_WORKERS: "2"
   PAPERLESS_THREADS_PER_WORKER: "4"
 
+  PAPERLESS_OCR_USER_ARGS: '{"continue_on_soft_render_error": true}'
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
