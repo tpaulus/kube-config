@@ -43,7 +43,7 @@ spec:
             publishedService:
               enabled: true
     repoURL: https://traefik.github.io/charts
-    targetRevision: 33.1.0
+    targetRevision: 33.0.0
   syncPolicy:
     automated:
       prune: true
