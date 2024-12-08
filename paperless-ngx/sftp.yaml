@@ -1,0 +1,149 @@
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: sftp-host-keys
+spec:
+  itemPath: vaults/K3S/items/Paperless-SFTP-Server
+
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: sftp-scanner-user
+spec:
+  itemPath: vaults/K3S/items/Paperless-SFTP-Scanner-User
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sftp-scripts
+data:
+  bindmount.sh: |
+    #!/bin/bash
+
+    function bindmount() {
+        if [ -d "$1" ]; then
+            mkdir -p "$2"
+        fi
+        mount --bind $3 "$1" "$2"
+    }
+
+    chown -R :users /data/common
+    bindmount /data/common/paperless-consume /home/scanner/paperless
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sftp-users
+data:
+  users.conf: |
+    scanner::1001:100:paperless
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sftp-server
+  namespace: paperless-ngx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sftp-server
+  template:
+    metadata:
+      labels:
+        app: sftp-server
+    spec:
+      containers:
+      - name: sftp-server
+        image: atmoz/sftp:alpine
+        ports:
+        - containerPort: 22
+        resources:
+          requests:
+            cpu: 256m
+            memory: 512Mi
+          limits:
+            cpu: 256m
+            memory: 512Mi
+        volumeMounts:
+        - name: consumption
+          mountPath: /data/common/paperless-consume
+        - name: ssh-host-keys
+          mountPath: /etc/ssh/ssh_host_ed25519_key
+          subPath: ssh_host_ed25519_key
+          readOnly: true
+        - name: ssh-host-keys
+          mountPath: /etc/ssh/ssh_host_ed25519_key.pub
+          subPath: ssh_host_ed25519_key.pub
+          readOnly: true
+        - name: scanner-user-ssh
+          mountPath: /home/scanner/.ssh/keys/id_ed25519.pub
+          subPath: id_ed25519.pub
+          readOnly: true
+        - name: config
+          mountPath: /etc/sftp/users.conf
+          subPath: users.conf
+          readOnly: true
+        - name: post-start
+          mountPath: /etc/sftp.d/bindmount.sh
+          subPath: bindmount.sh
+        readinessProbe:
+          tcpSocket:
+            port: 22
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 22
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        securityContext:
+          # Required for Bind Mounting directories
+          privileged: true
+      volumes:
+      - name: consumption
+        persistentVolumeClaim:
+          claimName: paperless-ngx-consumption
+      - name: ssh-host-keys
+        secret:
+          secretName: sftp-host-keys
+          items:
+            - key: public-key
+              path: ssh_host_ed25519_key.pub
+            - key: private-key
+              path: ssh_host_ed25519_key
+          defaultMode: 0600
+      - name: scanner-user-ssh
+        secret:
+          secretName: sftp-scanner-user
+          items:
+            - key: public-key
+              path: id_ed25519.pub
+      - name: config
+        configMap:
+          name: sftp-users
+      - name: post-start
+        configMap:
+          name: sftp-scripts
+          defaultMode: 0555
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sftp-server
+  namespace: paperless-ngx
+spec:
+  selector:
+    app: sftp-server
+  ports:
+    - protocol: TCP
+      port: 22
+      targetPort: 22
+  type: LoadBalancer
+  externalTrafficPolicy: Local

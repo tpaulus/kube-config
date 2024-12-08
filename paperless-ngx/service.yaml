@@ -20,6 +20,9 @@ data:
   PAPERLESS_REDIS: "redis://redis.paperless-ngx"
   PAPERLESS_DBHOST: db.paperless-ngx
 
+  PAPERLESS_CONSUMER_RECURSIVE: "true"
+  PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
+
   PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{title}"
   PAPERLESS_FILENAME_FORMAT_REMOVE_NONE: "true"
 
@@ -65,6 +68,19 @@ spec:
   resources:
     requests:
       storage: 25Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-ngx-consumption
+  namespace: paperless-ngx
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2.5Gi
 
 ---
 apiVersion: apps/v1
@@ -120,6 +136,8 @@ spec:
           mountPath: /usr/src/paperless/data
         - name: media
           mountPath: /usr/src/paperless/media
+        - name: consumption
+          mountPath: /usr/src/paperless/consume
         - name: export
           mountPath: /usr/src/paperless/export
         readinessProbe:
@@ -141,6 +159,9 @@ spec:
       - name: media
         persistentVolumeClaim:
           claimName: paperless-ngx-media
+      - name: consumption
+        persistentVolumeClaim:
+          claimName: paperless-ngx-consumption
       - name: export
         emptyDir: {}
 
