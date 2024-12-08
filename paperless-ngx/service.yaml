@@ -44,45 +44,6 @@ data:
   PAPERLESS_OCR_USER_ARGS: "{\"continue_on_soft_render_error\": true}"
 
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: paperless-ngx-data
-  namespace: paperless-ngx
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Gi
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: paperless-ngx-media
-  namespace: paperless-ngx
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 25Gi
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: paperless-ngx-consumption
-  namespace: paperless-ngx
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 2.5Gi
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
