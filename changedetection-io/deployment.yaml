@@ -22,7 +22,8 @@ spec:
     spec:
       automountServiceAccountToken: false
       containers:
-        - env:
+        - name: changedetection-io
+          env:
             - name: TZ
               value: "America/Los_Angeles"
             - name: UMASK
@@ -34,13 +35,15 @@ spec:
             - name: S6_READ_ONLY_ROOT
               value: '1'
             - name: BASE_URL
-              value: ''
+              value: 'https://changedetection.ing.k3s.brickyard.whitestar.systems'
             - name: FETCH_WORKERS
               value: '10'
             - name: HIDE_REFERER
               value: 'false'
             - name: USE_X_SETTINGS
               value: 'true'
+            - name: PLAYWRIGHT_DRIVER_URL
+              value: 'ws://127.0.0.1:3000'
           image: ghcr.io/dgtlmoon/changedetection.io:0.48.01
           imagePullPolicy: IfNotPresent
           livenessProbe:
@@ -53,7 +56,6 @@ spec:
             periodSeconds: 15
             successThreshold: 1
             timeoutSeconds: 5
-          name: changedetection-io
           ports:
             - containerPort: 5000
               name: main
@@ -119,38 +121,39 @@ spec:
             - mountPath: /var/run
               name: varrun
               readOnly: false
+        - name: sockpuppetbrowser
+          image: dgtlmoon/sockpuppetbrowser:latest
+          securityContext:
+            capabilities:
+              add:
+                - SYS_ADMIN
+          env:
+            - name: SCREEN_WIDTH
+              value: "1920"
+            - name: SCREEN_HEIGHT
+              value: "1024"
+            - name: "SCREEN_DEPTH"
+              value: "16"
+            - name: MAX_CONCURRENT_CHROME_PROCESSES
+              value: "10"
+          ports:
+            - containerPort: 3000
+              name: main
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 4000m
+              memory: 8Gi
+            requests:
+              cpu: 10m
+              memory: 50Mi
       dnsConfig:
         options:
           - name: ndots
             value: '1'
       dnsPolicy: ClusterFirst
-      enableServiceLinks: false
-      hostIPC: false
-      hostNetwork: false
-      hostPID: false
-      nodeSelector:
-        kubernetes.io/arch: amd64
       restartPolicy: Always
-      securityContext:
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups:
-          - 568
-        sysctls: []
-      serviceAccountName: default
-      shareProcessNamespace: false
       terminationGracePeriodSeconds: 60
-      topologySpreadConstraints:
-        - labelSelector:
-            matchLabels:
-              app.kubernetes.io/instance: changedetection-io
-              app.kubernetes.io/name: changedetection-io
-              pod.name: main
-          maxSkew: 1
-          nodeAffinityPolicy: Honor
-          nodeTaintsPolicy: Honor
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: ScheduleAnyway
       volumes:
         - name: datastore
           persistentVolumeClaim:
