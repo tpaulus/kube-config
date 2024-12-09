@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: changedetection-io
+  namespace: changedetection-io
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: changedetection.ing.k3s.brickyard.whitestar.systems
+      http:
+        paths:
+          - backend:
+              service:
+                name: changedetection-io
+                port:
+                  number: 5000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - changedetection.ing.k3s.brickyard.whitestar.systems

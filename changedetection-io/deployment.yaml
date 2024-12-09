@@ -1,0 +1,175 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: changedetection-io
+  namespace: changedetection-io
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: changedetection-io
+      app.kubernetes.io/name: changedetection-io
+      pod.name: main
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: changedetection-io
+        app.kubernetes.io/name: changedetection-io
+        pod.name: main
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - env:
+            - name: TZ
+              value: "America/Los_Angeles"
+            - name: UMASK
+              value: '0022'
+            - name: UMASK_SET
+              value: '0022'
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: void
+            - name: S6_READ_ONLY_ROOT
+              value: '1'
+            - name: BASE_URL
+              value: ''
+            - name: FETCH_WORKERS
+              value: '10'
+            - name: HIDE_REFERER
+              value: 'false'
+            - name: USE_X_SETTINGS
+              value: 'true'
+          image: ghcr.io/dgtlmoon/changedetection.io:0.48.01
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 12
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: changedetection-io
+          ports:
+            - containerPort: 5000
+              name: main
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 4
+            httpGet:
+              path: /
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 12
+            successThreshold: 2
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 4000m
+              memory: 8Gi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: []
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 568
+            runAsNonRoot: true
+            runAsUser: 568
+            seccompProfile:
+              type: RuntimeDefault
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          stdin: false
+          tty: false
+          volumeMounts:
+            - mountPath: /datastore
+              name: datastore
+              readOnly: false
+            - mountPath: /dev/shm
+              name: devshm
+              readOnly: false
+            - mountPath: /shared
+              name: shared
+              readOnly: false
+            - mountPath: /tmp
+              name: tmp
+              readOnly: false
+            - mountPath: /var/logs
+              name: varlogs
+              readOnly: false
+            - mountPath: /var/run
+              name: varrun
+              readOnly: false
+      dnsConfig:
+        options:
+          - name: ndots
+            value: '1'
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: false
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups:
+          - 568
+        sysctls: []
+      serviceAccountName: default
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 60
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/instance: changedetection-io
+              app.kubernetes.io/name: changedetection-io
+              pod.name: main
+          maxSkew: 1
+          nodeAffinityPolicy: Honor
+          nodeTaintsPolicy: Honor
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+      volumes:
+        - name: datastore
+          persistentVolumeClaim:
+            claimName: changedetection-io-datastore
+        - emptyDir:
+            medium: Memory
+            sizeLimit: 8Gi
+          name: devshm
+        - emptyDir: {}
+          name: shared
+        - emptyDir:
+            medium: Memory
+            sizeLimit: 8Gi
+          name: tmp
+        - emptyDir:
+            medium: Memory
+            sizeLimit: 8Gi
+          name: varlogs
+        - emptyDir:
+            medium: Memory
+            sizeLimit: 8Gi
+          name: varrun
