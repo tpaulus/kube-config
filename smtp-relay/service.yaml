@@ -12,7 +12,9 @@ spec:
   ingress:
   - from:
     - ipBlock:
-        cidr: 10.0.10.16/32
+        cidr: 10.0.10.16/32  # Broadmoor
+    - ipBlock: 
+        cidr: 10.0.10.185/32  # Scanner
     - namespaceSelector: {}
     ports:
     - protocol: TCP
