@@ -1,0 +1,80 @@
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: samba-users
+spec:
+  itemPath: vaults/K3S/items/Paperless-SMB
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samba-server
+  namespace: paperless-ngx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: samba-server
+  template:
+    metadata:
+      labels:
+        app: samba-server
+    spec:
+      containers:
+      - name: samba-server
+        image: dperson/samba:latest
+        args: 
+          - "-p"
+          - "-s"
+          - "paperless;/data/common/paperless-consume;yes;no;yes"
+          - "-r"
+        env:
+          - name: "USER1"
+            valueFrom:
+              secretKeyRef:
+                name: "samba-users"
+                key: "scanner-user"
+        ports:
+        - containerPort: 445
+        resources:
+          requests:
+            cpu: 256m
+            memory: 512Mi
+          limits:
+            cpu: 256m
+            memory: 512Mi
+        volumeMounts:
+        - name: consumption
+          mountPath: /data/common/paperless-consume
+        readinessProbe:
+          tcpSocket:
+            port: 445
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 445
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: consumption
+        persistentVolumeClaim:
+          claimName: paperless-ngx-consumption
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: samba-server
+  namespace: paperless-ngx
+spec:
+  selector:
+    app: samba-server
+  ports:
+    - protocol: TCP
+      port: 445
+      targetPort: 445
+  type: LoadBalancer
+  externalTrafficPolicy: Local
