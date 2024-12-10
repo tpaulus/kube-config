@@ -5,6 +5,13 @@ metadata:
   name: sftp-host-keys
 spec:
   itemPath: vaults/K3S/items/Paperless-SFTP-Server
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: sftp-host-keys-rsa
+spec:
+  itemPath: vaults/K3S/items/Paperless-SFTP-Server-RSA
 
 ---
 apiVersion: onepassword.com/v1
@@ -81,9 +88,17 @@ spec:
           mountPath: /etc/ssh/ssh_host_ed25519_key.pub
           subPath: ssh_host_ed25519_key.pub
           readOnly: true
+        - name: ssh-host-keys-rsa
+          mountPath: /etc/ssh/ssh_host_rsa_key
+          subPath: ssh_host_rsa_key
+          readOnly: true
+        - name: ssh-host-keys-rsa
+          mountPath: /etc/ssh/ssh_host_rsa_key.pub
+          subPath: ssh_host_rsa_key.pub
+          readOnly: true
         - name: scanner-user-ssh
-          mountPath: /home/scanner/.ssh/keys/id_ed25519.pub
-          subPath: id_ed25519.pub
+          mountPath: /home/scanner/.ssh/keys/exported_key.pub
+          subPath: exported_key.pub
           readOnly: true
         - name: config
           mountPath: /etc/sftp/users.conf
@@ -118,12 +133,21 @@ spec:
             - key: private-key
               path: ssh_host_ed25519_key
           defaultMode: 0600
+      - name: ssh-host-keys-rsa
+        secret:
+          secretName: sftp-host-keys-rsa
+          items:
+            - key: public-key
+              path: ssh_host_rsa_key.pub
+            - key: private-key
+              path: ssh_host_rsa_key
+          defaultMode: 0600
       - name: scanner-user-ssh
         secret:
           secretName: sftp-scanner-user
           items:
-            - key: public-key
-              path: id_ed25519.pub
+            - key: publickey.pub
+              path: exported_key.pub
       - name: config
         configMap:
           name: sftp-users
