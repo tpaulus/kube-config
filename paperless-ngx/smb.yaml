@@ -24,17 +24,20 @@ spec:
     spec:
       containers:
       - name: samba-server
-        image: dperson/samba:latest
-        args: 
-          - "-s"
-          - "paperless;/data/common/paperless-consume;yes;no;yes"
-          - "-r"
+        image: dockurr/samba:4.20.6
         env:
-          - name: "USER1"
+          - name: "NAME"
+            value: "paperless"
+          - name: "USER"
             valueFrom:
               secretKeyRef:
                 name: "samba-users"
                 key: "scanner-user"
+          - name: "PASS"
+            valueFrom:
+              secretKeyRef:
+                name: "samba-users"
+                key: "scanner-pass"
           - name: GROUPID
             value: "0"
         ports:
@@ -48,7 +51,7 @@ spec:
             memory: 512Mi
         volumeMounts:
         - name: consumption
-          mountPath: /data/common/paperless-consume
+          mountPath: /storage
         readinessProbe:
           tcpSocket:
             port: 445
