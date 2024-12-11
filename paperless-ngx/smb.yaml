@@ -26,7 +26,6 @@ spec:
       - name: samba-server
         image: dperson/samba:latest
         args: 
-          - "-p"
           - "-s"
           - "paperless;/data/common/paperless-consume;yes;no;yes"
           - "-r"
@@ -36,6 +35,8 @@ spec:
               secretKeyRef:
                 name: "samba-users"
                 key: "scanner-user"
+          - name: GROUPID
+            value: "0"
         ports:
         - containerPort: 445
         resources:
