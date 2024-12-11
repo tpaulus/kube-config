@@ -190,6 +190,8 @@ spec:
             - sh
             - -c
             - |
+              set -e
+              
               mkdir -p /backup/${POSTGRES_DB}
               pg_dump -U ${POSTGRES_USER} -h ${POSTGRES_HOST} ${POSTGRES_DB} > /backup/${POSTGRES_DB}/backup_$(date +%Y%m%d%H%M%S).sql
               
