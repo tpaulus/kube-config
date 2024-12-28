@@ -386,6 +386,43 @@ data:
       }
     }
 
+    # HAM
+    probe {
+      name: "W7AW Allstar Node"
+      type: HTTP
+
+      timeout: "2.5s"
+      interval: "60s"
+
+      targets {
+        endpoint {
+          name: "Echolink Logins"
+          url: "https://www.echolink.org/logins.jsp"
+        }
+      }
+
+      validator {
+          name: "status_code_2xx"
+          http_validator {
+              success_status_codes: "200-299"
+          }
+      }
+
+      validator {
+          name: "Node Logged In"
+          regex: "<tr>\n*.*W7AW-R.*<td>ON</td>.*\n*</tr>"
+      }
+
+      additional_label {
+        key: "location"
+        value: "external"
+      }
+      additional_label {
+        key: "type"
+        value: "HAM"
+      }
+    }
+
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
