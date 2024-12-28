@@ -36,3 +36,16 @@ groups:
           description: Pings toward {{ $labels.dst }} are not successful. Node appears
             down.
           dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
+  - name: HAM
+    rules:
+      - alert: HAM Node Down
+        expr: sum(rate(success{kubernetes_app_name="cloudprober", type="HAM"}[1m]))
+          by (probe) / sum(rate(total{kubernetes_app_name="cloudprober", type="HAM"}[1m]))
+          by (probe) < 0.50
+        for: 5m
+        labels:
+          severity: warn
+        annotations:
+          summary: '{{ $labels.probe }} Is Down'
+          description: '{{ $labels.probe }} is failing Cloudprober Healthchecks'
+          dashboard: https://grafana.brickyard.whitestar.systems/d/bztcrl14k/status-overview
