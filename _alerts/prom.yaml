@@ -10,4 +10,4 @@ groups:
         annotations:
           summary: Target Offline
           description: Prometheus is unable to scrape {{ $labels.instance }}, as part of {{ $labels.job }}
-          dashboard: http://prometheus.ing.k3s.brickyard.whitestar.systems/targets?search={{ $labels.instance }}
+          dashboard: http://prometheus.ing.k3s.brickyard.whitestar.systems/targets?search={{ $labels.instance }}&showEmptyPools=0
