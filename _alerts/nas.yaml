@@ -22,3 +22,25 @@ groups:
           description: It has been over 6 hours since {{ $labels.share }} has been
             cleaned up against the B2 Bucket {{ $labels.bucket_name }}
           dashboard: https://grafana.brickyard.whitestar.systems/d/p1er_aLVk/backups?orgId=1
+  - name: ShareReplication
+    rules:
+      - alert: Server Offsite Backup Not Running
+        expr: (time() - max(server_backups_offsite_backup_completed{})) / 60 / 60 > 2
+        for: 1m
+        labels:
+          severity: high
+        annotations:
+          summary: 'Server Backups not replicated off site'
+          description: It has been over 2 hours since the Server Backups has been
+            backed up to B2. This job is expected to run hourly.
+          dashboard: https://grafana.brickyard.whitestar.systems/d/p1er_aLVk/backups?orgId=1
+      - alert: iCloud Photos Backup Not Running
+        expr: (time() - max(icloudpd_offsite_backup_completed{})) / 60 / 60 > 48
+        for: 1m
+        labels:
+          severity: high
+        annotations:
+          summary: 'iCloud Photos not replicated off site'
+          description: It has been over 2 days since the Server Backups has been
+            backed up to B2. This job is expected to run daily.
+          dashboard: https://grafana.brickyard.whitestar.systems/d/p1er_aLVk/backups?orgId=1
