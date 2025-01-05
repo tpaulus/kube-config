@@ -39,9 +39,8 @@ groups:
   - name: HAM
     rules:
       - alert: HAM Node Down
-        expr: sum(rate(success{kubernetes_app_name="cloudprober", type="HAM"}[1m]))
-          by (probe) / sum(rate(total{kubernetes_app_name="cloudprober", type="HAM"}[1m]))
-          by (probe) < 0.50
+        expr: sum by (probe) (rate(failure{kubernetes_app_name="cloudprober",type="HAM"}[3m]))
+          / sum by (probe) (rate(total{kubernetes_app_name="cloudprober",type="HAM"}[3m])) > 0.5
         for: 5m
         labels:
           severity: warn
