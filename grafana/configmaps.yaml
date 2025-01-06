@@ -29,13 +29,29 @@ data:
         type: prometheus
         access: proxy
         url: http://prometheus.monitoring.svc:8080
+        jsonData:
+          manageAlerts: true
+          prometheusType: Prometheus
+          cacheLevel: 'Medium'
+          incrementalQuerying: true
+          incrementalQueryOverlapWindow: 2m
+          disableRecordingRules: true
       - name: NAS Prometheus
         type: prometheus
         access: proxy
         isDefault: true
         url: http://woodlandpark.brickyard.whitestar.systems:9090
+        jsonData:
+          manageAlerts: false
+          prometheusType: Prometheus
+          cacheLevel: 'Medium'
+          incrementalQuerying: true
+          incrementalQueryOverlapWindow: 5m
+          disableRecordingRules: true
       - name: AlertManager
         type: alertmanager
         access: proxy
         url: http://alertmanager.monitoring.svc:8080
-        implementation: prometheus
+        jsonData:
+          implementation: prometheus
+          handleGrafanaManagedAlerts: true
