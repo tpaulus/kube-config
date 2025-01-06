@@ -12,7 +12,7 @@ spec:
         spec:
           containers:
             - name: generate-bill
-              image: ghcr.io/tpaulus/nextcentury-payhoa:main
+              image: ghcr.io/seaview-cottages/nextcentury-payhoa:main
               imagePullPolicy: Always
               env:
                 - name: TZ
