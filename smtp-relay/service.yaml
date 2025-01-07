@@ -15,6 +15,10 @@ spec:
         cidr: 10.0.10.16/32  # Broadmoor
     - ipBlock: 
         cidr: 10.0.10.185/32  # Scanner
+    - ipBlock: 
+        cidr: 10.0.10.10/32  # Protect NVR
+    - ipBlock: 
+        cidr: 10.0.30.10/32  # Protect NVR
     - namespaceSelector: {}
     ports:
     - protocol: TCP
