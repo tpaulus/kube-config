@@ -23,13 +23,6 @@ data:
         - targets:
           - "alertmanager.monitoring.svc:8080"
     scrape_configs:
-      - job_name: 'node-exporter'
-        kubernetes_sd_configs:
-          - role: endpoints
-        relabel_configs:
-        - source_labels: [__meta_kubernetes_endpoints_name]
-          regex: 'node-exporter'
-          action: keep
       # - job_name: 'kubernetes-apiservers'  # Disabled due to the number of timeseries these create
       #   kubernetes_sd_configs:
       #   - role: endpoints
