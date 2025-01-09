@@ -3,9 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudflared
-  annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '2000'
 spec:
   selector:
     matchLabels:
@@ -15,6 +12,9 @@ spec:
     metadata:
       labels:
         app: cloudflared
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '2000'
     spec:
       containers:
         - name: cloudflared
