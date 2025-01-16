@@ -19,9 +19,11 @@ spec:
         experimental.plugins.enabled: true
         ports:
           web:
-            redirectTo:
-              port: websecure
-              priority: 1
+            redirections:
+              entryPoint:
+                to: websecure
+                scheme: https
+                permanent: true
           websecure:
             asDefault: true
           web-ext:
@@ -43,7 +45,7 @@ spec:
             publishedService:
               enabled: true
     repoURL: https://traefik.github.io/charts
-    targetRevision: 33.2.1
+    targetRevision: 34.0.0
   syncPolicy:
     automated:
       prune: true
