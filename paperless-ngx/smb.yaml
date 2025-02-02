@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: samba-server
-        image: dockurr/samba:4.20.6
+        image: dockurr/samba:4.21.3
         env:
           - name: "NAME"
             value: "paperless"
