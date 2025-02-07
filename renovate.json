@@ -16,7 +16,7 @@
       "argocd/applications/.+\\.yaml$"
     ]
   },
-  "platformAutomerge": true,
+  "platformAutomerge": false,
   "automergeType": "branch",
   "ignoreTests": true,
   "packageRules": [
