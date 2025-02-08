@@ -16,12 +16,12 @@ data:
   # Script for installing NetBox plugins packages
   install-plugins.sh: |
     source /opt/netbox/venv/bin/activate
-    pip install netbox-plugin-prometheus-sd
+    /usr/local/bin/uv pip install netbox-plugin-prometheus-sd
 
     # SSO implementation plugin packages
     # apk add xmlsec
-    # pip install django3_auth_saml2
-    # pip install netbox-plugin-auth-saml2
+    # /usr/local/bin/uv pip install django3_auth_saml2
+    # /usr/local/bin/uv pip install netbox-plugin-auth-saml2
   # Script for starting rqworker, which handles reports
   start-rqworker.sh: |
     /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py rqworker &>/dev/null &disown;

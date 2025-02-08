@@ -19,15 +19,25 @@ spec:
       containers:
         # NetBox container using the netbox-docker image: https://github.com/netbox-community/netbox-docker
         - name: netbox
-          image: netboxcommunity/netbox:v4.2.2
+          image: netboxcommunity/netbox:v4.2.3
           ports:
             - name: http
               containerPort: 8080
-          readinessProbe:  # will mark the pod as ready once the initialization script is completed and will probe every 20 seconds
+          startupProbe:  # will mark the pod as ready once the initialization script is completed and will probe every 20 seconds
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 5
+            failureThreshold: 12
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
             periodSeconds: 20
           envFrom:
             - configMapRef:
@@ -110,6 +120,11 @@ spec:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
       restartPolicy: Always
+      dnsConfig:
+        options:
+          - name: ndots
+            value: '1'
+      dnsPolicy: ClusterFirst
       volumes:
         # Reference to configmaps and PVs
         - name: netbox-media-files
