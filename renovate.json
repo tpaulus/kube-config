@@ -16,7 +16,7 @@
       "argocd/applications/.+\\.yaml$"
     ]
   },
-  "platformAutomerge": true,
+  "platformAutomerge": false,
   "automergeType": "branch",
   "ignoreTests": true,
   "packageRules": [
@@ -29,10 +29,10 @@
         "automerge": false
       },
       "minor": {
-        "automerge": false
+        "automerge": true
       },
       "patch": {
-        "automerge": false
+        "automerge": true
       },
       "minimumReleaseAge": "1 day"
     }
