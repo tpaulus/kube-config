@@ -46,7 +46,7 @@ spec:
               enabled: true
         globalArguments: []
     repoURL: https://traefik.github.io/charts
-    targetRevision: 34.3.0
+    targetRevision: 34.4.0
   syncPolicy:
     automated:
       prune: true
