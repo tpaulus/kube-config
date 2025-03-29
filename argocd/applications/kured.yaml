@@ -13,6 +13,8 @@ spec:
       helm:
         values: |
           configuration:
+            notifyUrl: smtp://smtp-relay.smtp-relay.svc.cluster.local:25/?fromAddress=kured@whitestar.systems&toAddresses=ops@whitestar.systems
+            annotateNodes: true
             prometheusUrl: 'https://prometheus.ing.k3s.brickyard.whitestar.systems'
           service:
             create: true
