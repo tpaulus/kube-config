@@ -1,0 +1,28 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kured
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: kured
+      repoURL: https://kubereboot.github.io/charts
+      targetRevision: 5.6.1
+      helm:
+        values: |
+          configuration:
+            prometheusUrl: 'https://prometheus.ing.k3s.brickyard.whitestar.systems'
+          service:
+            create: true
+            annotations:
+              prometheus.io/scrape: 'true'
+              prometheus.io/port: '8080'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kured
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions: [CreateNamespace=true]
