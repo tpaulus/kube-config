@@ -1,0 +1,1 @@
+https://github.com/trustyou/kured-alert-silencer
