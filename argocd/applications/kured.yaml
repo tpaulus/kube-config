@@ -16,6 +16,7 @@ spec:
             notifyUrl: smtp://smtp-relay.smtp-relay.svc.cluster.local:25/?fromAddress=kured@whitestar.systems&toAddresses=ops@whitestar.systems
             annotateNodes: true
             prometheusUrl: 'http://prometheus.monitoring.svc.cluster.local:8080'
+            alertFilterRegexp: '^RebootRequired$'
           service:
             create: true
             annotations:
