@@ -15,7 +15,7 @@ spec:
           configuration:
             notifyUrl: smtp://smtp-relay.smtp-relay.svc.cluster.local:25/?fromAddress=kured@whitestar.systems&toAddresses=ops@whitestar.systems
             annotateNodes: true
-            prometheusUrl: 'https://prometheus.ing.k3s.brickyard.whitestar.systems'
+            prometheusUrl: 'http://prometheus.monitoring.svc.cluster.local:8080'
           service:
             create: true
             annotations:
