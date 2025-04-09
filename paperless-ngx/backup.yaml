@@ -40,7 +40,7 @@ data:
     BACKUP_DIR="/backup"
     
     echo "Exporting Paperless-ngx data..."
-    document_exporter ${BACKUP_DIR}
+    S6_KEEP_ENV=1 document_exporter ${BACKUP_DIR}
     
     echo "Export completed!"
 
