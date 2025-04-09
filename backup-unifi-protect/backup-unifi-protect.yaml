@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
         - name: unifi-protect-backup
-          image: ghcr.io/ep1cman/unifi-protect-backup:0.12.0
+          image: ghcr.io/ep1cman/unifi-protect-backup:0.13.0
           resources:
             requests:
               memory: 1024Mi
