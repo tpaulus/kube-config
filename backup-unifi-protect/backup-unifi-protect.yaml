@@ -130,3 +130,4 @@ metadata:
 data:
   UFP_SSL_VERIFY: 'false'
   EXPERIMENTAL_DOWNLOADER: 'true'
+  PARALLEL_UPLOADS: '5'
