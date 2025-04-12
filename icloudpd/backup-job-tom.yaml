@@ -8,8 +8,10 @@ spec:
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
+      backoffLimit: 1
       template:
         spec:
+          restartPolicy: Never
           initContainers:
             - name: move-cookies
               image: busybox:1.37
