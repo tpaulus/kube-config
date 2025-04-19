@@ -8,15 +8,9 @@ spec:
     namespace: reloader
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://stakater.github.io/stakater-charts
-    targetRevision: 2.0.0
-    chart: reloader
-    helm:
-      parameters:
-        - name: reloader.ignoreSecrets
-          value: 'true'  # The 1P CRD does this for us
-        - name: reloader.autoReloadAll
-          value: 'true'
+    path: reloader
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
   project: default
   syncPolicy:
     automated:
