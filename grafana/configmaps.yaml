@@ -16,6 +16,7 @@ data:
     username_claim = email
     email_claim = email
     auto_sign_up = true
+    skip_org_role_sync = true
 ---
 apiVersion: v1
 kind: ConfigMap
