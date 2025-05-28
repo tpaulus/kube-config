@@ -1,5 +1,5 @@
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: h-snap
@@ -11,7 +11,7 @@ spec:
   retain: 4
   concurrency: 2
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: 12h-backup
@@ -23,7 +23,7 @@ spec:
   retain: 2
   concurrency: 2
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: snap-cleanup
@@ -35,7 +35,7 @@ spec:
   retain: 0
   concurrency: 1
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: fs-trim
