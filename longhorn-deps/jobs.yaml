@@ -46,3 +46,15 @@ spec:
   groups: [default]
   retain: 0
   concurrency: 5
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: snapshot-delete
+spec:
+  concurrency: 5
+  cron: 0 3 * * *
+  groups: [default]
+  parameters: {}
+  retain: 5
+  task: snapshot-delete
