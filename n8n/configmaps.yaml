@@ -18,7 +18,7 @@ data:
   N8N_SMTP_SENDER: N8N <n8n@whitestar.systems>
   WEBHOOK_TUNNEL_URL: https://n8n.brickyard.whitestar.systems/
   N8N_EDITOR_BASE_URL: https://n8n.brickyard.whitestar.systems/
-  N8N_HOST: https://n8n.brickyard.whitestar.systems/
+  WEBHOOK_URL: https://n8n.brickyard.whitestar.systems/
   N8N_METRICS: 'true'
   N8N_PROTOCOL: http
   N8N_PROXY_HOPS: '1'
