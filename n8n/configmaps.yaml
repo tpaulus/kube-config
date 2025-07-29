@@ -19,3 +19,4 @@ data:
   WEBHOOK_TUNNEL_URL: https://n8n.brickyard.whitestar.systems/
   N8N_METRICS: 'true'
   N8N_PROTOCOL: http
+  N8N_PROXY_HOPS: '1'
