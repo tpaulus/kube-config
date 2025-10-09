@@ -44,7 +44,7 @@ spec:
               value: 'true'
             - name: PLAYWRIGHT_DRIVER_URL
               value: 'ws://127.0.0.1:3000'
-          image: ghcr.io/dgtlmoon/changedetection.io:0.50.16
+          image: ghcr.io/dgtlmoon/changedetection.io:0.50.17
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 5
