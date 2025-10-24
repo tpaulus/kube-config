@@ -32,7 +32,7 @@ spec:
         app: mysql
     spec:
       containers:
-        - image: mysql:9.4.0
+        - image: mysql:9.5.0
           name: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
@@ -105,7 +105,7 @@ spec:
                 readOnly: false
           containers:
           - name: mysql-backup
-            image: mysql:9.4.0
+            image: mysql:9.5.0
             volumeMounts:
             - name: storage
               mountPath: /backup
