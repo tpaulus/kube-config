@@ -19,7 +19,7 @@ spec:
             backupTargetCredentialSecret: cifs-secret
             defaultDataPath: /var/lib/longhorn/
             replicaAutoBalance: best-effort
-            defaultReplicaCount: 2
+            defaultReplicaCount: "2"
             priorityClass: longhorn-critical
             v2DataEngineGuaranteedInstanceManagerCPU: 7
           ingress:
