@@ -81,3 +81,25 @@ spec:
             pathType: Prefix
     - host: paperless.paulus.family
       http: *rules
+
+---
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: paperless-tailscale
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - paperless
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: paperless-ngx
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
