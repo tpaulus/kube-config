@@ -36,10 +36,10 @@ spec:
           plugins:
             jwt:
               moduleName: github.com/tpaulus/jwt-middleware
-              version: v1.1.13
+              version: v1.1.14
             cloudflarewarp:
               moduleName: github.com/BetterCorp/cloudflarewarp
-              version: v1.3.0
+              version: v1.3.3
         providers:
           kubernetesIngress:
             publishedService:
