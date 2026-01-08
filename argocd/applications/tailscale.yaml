@@ -12,7 +12,7 @@ spec:
   source:
     chart: tailscale-operator
     repoURL: https://pkgs.tailscale.com/helmcharts
-    targetRevision: v1.92.4
+    targetRevision: 1.92.5
   syncPolicy:
     automated:
       prune: true
