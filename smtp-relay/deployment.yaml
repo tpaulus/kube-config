@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: relay
-          image: juanluisbaptiste/postfix:1.8.0
+          image: juanluisbaptiste/postfix:1.8.1
           resources:
             limits:
               memory: 128Mi
