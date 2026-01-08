@@ -19,7 +19,7 @@ spec:
       containers:
         # NetBox container using the netbox-docker image: https://github.com/netbox-community/netbox-docker
         - name: netbox
-          image: netboxcommunity/netbox:v4.4.9
+          image: netboxcommunity/netbox:v4.4.10
           ports:
             - name: http
               containerPort: 8080
