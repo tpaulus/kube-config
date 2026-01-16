@@ -6,6 +6,13 @@ metadata:
 spec:
   itemPath: vaults/K3S/items/Paperless
 ---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: samba-users
+spec:
+  itemPath: vaults/K3S/items/Paperless-SMB
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -114,6 +121,46 @@ spec:
             port: 8000
           initialDelaySeconds: 15
           periodSeconds: 10
+      # Samba sidecar for scanner file ingestion
+      - name: samba-server
+        image: dockurr/samba:4.22.6
+        env:
+          - name: "NAME"
+            value: "paperless"
+          - name: "USER"
+            valueFrom:
+              secretKeyRef:
+                name: "samba-users"
+                key: "scanner-user"
+          - name: "PASS"
+            valueFrom:
+              secretKeyRef:
+                name: "samba-users"
+                key: "scanner-pass"
+          - name: GROUPID
+            value: "0"
+        ports:
+        - containerPort: 445
+        resources:
+          requests:
+            cpu: 256m
+            memory: 512Mi
+          limits:
+            cpu: 256m
+            memory: 512Mi
+        volumeMounts:
+        - name: consumption
+          mountPath: /storage
+        readinessProbe:
+          tcpSocket:
+            port: 445
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 445
+          initialDelaySeconds: 5
+          periodSeconds: 10
       volumes:
       - name: data
         persistentVolumeClaim:
@@ -140,3 +187,19 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: samba-server
+  namespace: paperless-ngx
+spec:
+  selector:
+    app: paperless-ngx
+  ports:
+    - protocol: TCP
+      port: 445
+      targetPort: 445
+  type: LoadBalancer
+  externalTrafficPolicy: Local

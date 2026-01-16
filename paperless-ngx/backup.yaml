@@ -29,32 +29,91 @@ data:
     directory_name_encryption = true
 ---
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: paperless-backup
+  namespace: paperless-ngx
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: paperless-backup
+  namespace: paperless-ngx
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: paperless-backup
+  namespace: paperless-ngx
+subjects:
+  - kind: ServiceAccount
+    name: paperless-backup
+    namespace: paperless-ngx
+roleRef:
+  kind: Role
+  name: paperless-backup
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: backup-scripts
   namespace: paperless-ngx
 data:
-  export.sh: |
-    #!/bin/sh
+  backup.sh: |
+    #!/bin/bash
     set -e
-    BACKUP_DIR="/backup"
     
-    echo "Exporting Paperless-ngx data..."
-    S6_KEEP_ENV=1 document_exporter ${BACKUP_DIR}
+    NAMESPACE="paperless-ngx"
+    POD_LABEL="app=paperless-ngx"
+    CONTAINER="paperless-ngx"
+    EXPORT_PATH="/usr/src/paperless/export"
+    LOCAL_BACKUP="/backup"
     
-    echo "Export completed!"
-
+    echo "$(date): Starting Paperless-ngx export..."
+    
+    POD_NAME=$(kubectl get pods -n ${NAMESPACE} -l ${POD_LABEL} -o jsonpath='{.items[0].metadata.name}')
+    if [ -z "$POD_NAME" ]; then
+      echo "ERROR: Could not find paperless pod"
+      exit 1
+    fi
+    echo "Found pod: ${POD_NAME}"
+    
+    echo "Running document_exporter in pod..."
+    kubectl exec -n ${NAMESPACE} ${POD_NAME} -c ${CONTAINER} -- \
+      bash -c "rm -rf ${EXPORT_PATH}/* && document_exporter ${EXPORT_PATH}"
+    
+    echo "Copying export from pod..."
+    kubectl cp ${NAMESPACE}/${POD_NAME}:${EXPORT_PATH} ${LOCAL_BACKUP} -c ${CONTAINER}
+    
+    echo "Cleaning up export in pod..."
+    kubectl exec -n ${NAMESPACE} ${POD_NAME} -c ${CONTAINER} -- rm -rf ${EXPORT_PATH}/*
+    
+    echo "$(date): Export completed! Files in ${LOCAL_BACKUP}:"
+    ls -la ${LOCAL_BACKUP}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: upload-script
+  namespace: paperless-ngx
+data:
   upload.sh: |
     #!/bin/sh
     set -e
-    BACKUP_DIR="/backup"
     
-    echo "Uploading backup to B2"
+    echo "$(date): Uploading backup to B2..."
     rclone --config /rclone-config/rclone.conf \
-      sync ${BACKUP_DIR} encrypt-compress-b2:/
+      sync /backup encrypt-compress-b2:/
     
-    echo "Backup uploaded to B2"
-
+    echo "$(date): Backup uploaded to B2!"
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -63,76 +122,64 @@ metadata:
   namespace: paperless-ngx
 spec:
   schedule: "37 */6 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
         spec:
+          serviceAccountName: paperless-backup
+          restartPolicy: OnFailure
           volumes:
             - name: backup-volume
               emptyDir: {}
-            - name: data
-              persistentVolumeClaim:
-                claimName: paperless-ngx-data
-            - name: media
-              persistentVolumeClaim:
-                claimName: paperless-ngx-media
             - name: backup-scripts
               configMap:
                 name: backup-scripts
-                defaultMode: 0744
+                defaultMode: 0755
+            - name: upload-script
+              configMap:
+                name: upload-script
+                defaultMode: 0755
             - name: rclone-config
               configMap:
                 name: rclone-config
-                defaultMode: 0744
+                defaultMode: 0644
           initContainers:
             - name: exporter
-              image: ghcr.io/paperless-ngx/paperless-ngx:2.19.6
-              command: ["/bin/sh", "/scripts/export.sh"]
-              envFrom:
-                - configMapRef:
-                    name: paperless-ngx-config
-                - secretRef:
-                    name: app-secrets
-              env:
-                - name: "PAPERLESS_DBUSER"
-                  valueFrom:
-                    secretKeyRef:
-                        key: username
-                        name: db
-                - name: "PAPERLESS_DBPASS"
-                  valueFrom:
-                    secretKeyRef:
-                        key: password
-                        name: db
-                - name: "PAPERLESS_DBNAME"
-                  valueFrom:
-                    secretKeyRef:
-                        key: database
-                        name: db
+              image: bitnami/kubectl:1.31
+              command: ["/bin/bash", "/scripts/backup.sh"]
               volumeMounts:
                 - name: backup-volume
                   mountPath: /backup
                 - name: backup-scripts
                   mountPath: /scripts
-                - name: data
-                  mountPath: /usr/src/paperless/data
-                - name: media
-                  mountPath: /usr/src/paperless/media
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+          containers:
             - name: uploader
               image: rclone/rclone:1.72.0
               command: ["/bin/sh", "/scripts/upload.sh"]
               envFrom:
-              - secretRef:
-                  name: rclone-secrets
+                - secretRef:
+                    name: rclone-secrets
               volumeMounts:
                 - name: backup-volume
                   mountPath: /backup
+                - name: upload-script
+                  mountPath: /scripts
                 - name: rclone-config
                   mountPath: /rclone-config
-                - name: backup-scripts
-                  mountPath: /scripts
-          containers:
-            - name: job-done
-              image: busybox
-              command: ['sh', '-c', 'echo "Backup completed and uploaded!"']
-          restartPolicy: Never
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
