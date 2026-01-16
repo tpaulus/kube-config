@@ -148,7 +148,7 @@ spec:
                 defaultMode: 0644
           initContainers:
             - name: exporter
-              image: bitnami/kubectl:1.31
+              image: alpine/k8s:1.31.13
               command: ["/bin/bash", "/scripts/backup.sh"]
               volumeMounts:
                 - name: backup-volume
