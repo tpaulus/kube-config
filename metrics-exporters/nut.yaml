@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: prometheus-nut-exporter
-          image: ghcr.io/druggeri/nut_exporter:3.2.2
+          image: ghcr.io/druggeri/nut_exporter:3.2.3
           ports:
             - containerPort: 9199
               name: metrics
