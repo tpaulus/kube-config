@@ -32,7 +32,7 @@ spec:
                 resourceFieldRef:
                   divisor: '1'
                   resource: limits.memory
-          image: ghcr.io/stakater/reloader:v1.4.10
+          image: ghcr.io/stakater/reloader:v1.4.12
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 5
