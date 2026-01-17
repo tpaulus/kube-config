@@ -62,6 +62,11 @@ spec:
             - name: grafana-datasources
               mountPath: /local/grafana/provisioning/datasources/datasources.yaml
               subPath: datasources.yaml
+            - name: grafana-dashboard-provisioning
+              mountPath: /local/grafana/provisioning/dashboards/dashboards.yaml
+              subPath: dashboards.yaml
+            - name: grafana-dashboards-loki
+              mountPath: /var/lib/grafana/dashboards
           readinessProbe:
             httpGet:
               path: /
@@ -88,3 +93,9 @@ spec:
         - name: grafana-datasources
           configMap:
             name: grafana-datasources
+        - name: grafana-dashboard-provisioning
+          configMap:
+            name: grafana-dashboard-provisioning
+        - name: grafana-dashboards-loki
+          configMap:
+            name: grafana-dashboards-loki

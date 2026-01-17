@@ -1,0 +1,76 @@
+---
+groups:
+  - name: loki.rules
+    rules:
+      - alert: LokiRequestErrors
+        annotations:
+          description: |
+            {{ $labels.job }} {{ $labels.route }} is experiencing {{ printf "%.2f" $value }}% errors.
+          summary: Loki request error rate is high.
+        expr: |
+          100 * sum(rate(loki_request_duration_seconds_count{status_code=~"5.."}[2m])) by (namespace, job, route)
+            /
+          sum(rate(loki_request_duration_seconds_count[2m])) by (namespace, job, route)
+            > 10
+        for: 15m
+        labels:
+          severity: critical
+      - alert: LokiRequestPanics
+        annotations:
+          description: |
+            {{ $labels.job }} is experiencing {{ printf "%.2f" $value }}% increase of panics.
+          summary: Loki requests are causing code panics.
+        expr: |
+          sum(increase(loki_panic_total[10m])) by (namespace, job) > 0
+        labels:
+          severity: critical
+      - alert: LokiRequestLatency
+        annotations:
+          description: |
+            {{ $labels.job }} {{ $labels.route }} is experiencing {{ printf "%.2f" $value }}s 99th percentile latency.
+          summary: Loki request latency is high.
+        expr: |
+          histogram_quantile(0.99, sum(rate(loki_request_duration_seconds_bucket{route!~"(?i).*tail.*"}[5m])) by (le, namespace, job, route)) > 1
+        for: 15m
+        labels:
+          severity: critical
+      - alert: LokiTooManyCompactorsRunning
+        annotations:
+          description: |
+            {{ $labels.namespace }} has had {{ printf "%.0f" $value }} compactors running for more than 5m. Only one compactor should run at a time.
+          summary: Loki deployment is running more than one compactor.
+        expr: |
+          sum(loki_boltdb_shipper_compactor_running) by (namespace) > 1
+        for: 5m
+        labels:
+          severity: warning
+      - alert: LokiCompactorHasNotSuccessfullyRunCompaction
+        annotations:
+          description: |
+            {{ $labels.namespace }} has not run compaction in the last 3 hours. This may indicate a problem with the compactor.
+          summary: Loki compaction has not run in the last 3 hours.
+        expr: |
+          min(time() - (loki_boltdb_shipper_compact_tables_operation_last_successful_run_timestamp_seconds > 0)) by (namespace) > 60 * 60 * 3
+        for: 1h
+        labels:
+          severity: critical
+      - alert: LokiIngesterUnhealthy
+        annotations:
+          description: |
+            Loki ingester {{ $labels.pod }} in {{ $labels.namespace }} is unhealthy.
+          summary: Loki ingester is not healthy.
+        expr: |
+          loki_ingester_inflight_push_requests > 1000
+        for: 5m
+        labels:
+          severity: warning
+      - alert: LokiStorageSlowWrites
+        annotations:
+          description: |
+            Loki in {{ $labels.namespace }} is experiencing slow chunk writes ({{ printf "%.2f" $value }}s p99).
+          summary: Loki chunk storage writes are slow.
+        expr: |
+          histogram_quantile(0.99, sum(rate(loki_chunk_store_put_bucket[5m])) by (le, namespace)) > 5
+        for: 10m
+        labels:
+          severity: warning
