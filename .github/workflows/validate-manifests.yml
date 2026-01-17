@@ -80,6 +80,9 @@ jobs:
   trivy-config:
     name: Security Scan (Trivy)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read          # Required to checkout and read repo files
+      security-events: write  # Required to upload SARIF files to Security tab
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
