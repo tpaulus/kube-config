@@ -59,6 +59,8 @@ metadata:
   namespace: paperless-ngx
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: paperless-ngx
