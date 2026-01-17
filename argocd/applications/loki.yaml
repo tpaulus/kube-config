@@ -34,6 +34,12 @@ spec:
               ingestion_burst_size_mb: 6
           singleBinary:
             replicas: 1
+            extraArgs:
+              - -config.expand-env=true
+            podAnnotations:
+              prometheus.io/scrape: "true"
+              prometheus.io/port: "3100"
+              prometheus.io/path: "/metrics"
             persistence:
               enabled: true
               size: 10Gi
