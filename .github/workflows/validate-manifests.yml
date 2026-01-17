@@ -19,7 +19,7 @@ jobs:
     name: Schema Validation (kubeconform)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: Install kubeconform
         run: |
@@ -45,7 +45,7 @@ jobs:
     name: Best Practices (kube-linter)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: Install kube-linter
         run: |
@@ -84,7 +84,7 @@ jobs:
       contents: read          # Required to checkout and read repo files
       security-events: write  # Required to upload SARIF files to Security tab
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: Run Trivy config scan
         uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # 0.33.1
@@ -107,7 +107,7 @@ jobs:
           skip-dirs: '.github,argocd/install.yaml'
 
       - name: Upload Trivy scan results to GitHub Security
-        uses: github/codeql-action/upload-sarif@4bdb89f48054571735e3792627da6195c57459e2 # v3
+        uses: github/codeql-action/upload-sarif@cdefb33c0f6224e58673d9004f47f7cb3e328b89 # v4
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
