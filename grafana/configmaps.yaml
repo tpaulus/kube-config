@@ -56,3 +56,9 @@ data:
         jsonData:
           implementation: prometheus
           handleGrafanaManagedAlerts: true
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.loki.svc:3100
+        jsonData:
+          maxLines: 1000
