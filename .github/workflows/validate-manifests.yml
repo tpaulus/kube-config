@@ -1,0 +1,110 @@
+---
+name: Validate Kubernetes Manifests
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '!.github/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '!.github/**'
+
+jobs:
+  kubeconform:
+    name: Schema Validation (kubeconform)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubeconform
+        run: |
+          curl -sL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz
+          sudo mv kubeconform /usr/local/bin/
+
+      - name: Validate manifests
+        run: |
+          find . -type f \( -name "*.yaml" -o -name "*.yml" \) \
+            ! -path "./.github/*" \
+            ! -path "./argocd/install.yaml" \
+            ! -path "./_alerts/*" \
+            ! -name "*-values.yaml" \
+            -print0 | xargs -0 kubeconform \
+              -strict \
+              -ignore-missing-schemas \
+              -kubernetes-version 1.31.0 \
+              -schema-location default \
+              -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+              -summary
+
+  kube-linter:
+    name: Best Practices (kube-linter)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kube-linter
+        run: |
+          curl -sL https://github.com/stackrox/kube-linter/releases/download/v0.7.1/kube-linter-linux.tar.gz | tar xz
+          sudo mv kube-linter /usr/local/bin/
+
+      - name: Create kube-linter config
+        run: |
+          cat > .kube-linter.yaml << 'EOF'
+          checks:
+            exclude:
+              - "unset-cpu-requirements"
+              - "unset-memory-requirements"
+              - "no-read-only-root-fs"
+              - "run-as-non-root"
+              - "drop-net-raw-capability"
+              - "required-annotation-email"
+              - "required-label-owner"
+              - "no-anti-affinity"
+              - "exposed-services"
+              - "no-liveness-probe"
+              - "no-readiness-probe"
+          EOF
+
+      - name: Run kube-linter
+        run: |
+          kube-linter lint . \
+            --config .kube-linter.yaml \
+            --exclude argocd/install.yaml \
+            || true  # Don't fail build, just report
+
+  trivy-config:
+    name: Security Scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy config scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '0'  # Don't fail, just report
+          severity: 'CRITICAL,HIGH'
+          skip-dirs: '.github,argocd/install.yaml'
+
+      - name: Run Trivy config scan (SARIF)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          skip-dirs: '.github,argocd/install.yaml'
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'

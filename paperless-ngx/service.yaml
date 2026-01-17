@@ -109,6 +109,12 @@ spec:
           mountPath: /usr/src/paperless/consume
         - name: export
           mountPath: /usr/src/paperless/export
+        startupProbe:
+          httpGet:
+            path: /
+            port: 8000
+          failureThreshold: 30
+          periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /

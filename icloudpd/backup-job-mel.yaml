@@ -65,7 +65,6 @@ spec:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: false
                 runAsNonRoot: false
-          restartPolicy: OnFailure
           volumes:
             - name: storage
               nfs:
