@@ -32,10 +32,6 @@ spec:
               retention_period: 168h  # 7 days
               ingestion_rate_mb: 4
               ingestion_burst_size_mb: 6
-            gatewayLabels:
-              prometheus.io/scrape: "true"
-              prometheus.io/port: "3100"
-              prometheus.io/path: "/metrics"
           singleBinary:
             replicas: 1
             extraArgs:
@@ -49,7 +45,12 @@ spec:
                 memory: 512Mi
               requests:
                 cpu: 100m
-                memory: 256Mi                
+                memory: 256Mi
+            service:
+              annotations:
+                prometheus.io/scrape: "true"
+                prometheus.io/port: "3100"
+                prometheus.io/path: "/metrics"
           # Disable components not needed for SingleBinary mode
           backend:
             replicas: 0
