@@ -9,7 +9,7 @@ metadata:
   namespace: argocd
 data:
   url: https://argocd.ing.k3s.brickyard.whitestar.systems
-  additionalUrls: 
+  additionalUrls: |
     - https://argocd.tailbbff3.ts.net
     - https://argocd.auth-ing.k3s.brickyard.whitestar.systems
   resource.customizations: |
