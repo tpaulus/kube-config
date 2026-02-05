@@ -10,7 +10,7 @@ metadata:
 data:
   url: https://argocd.ing.k3s.brickyard.whitestar.systems
   additionalUrls: 
-    - https://argocd.tailbbff3.ts.net/
+    - https://argocd.tailbbff3.ts.net
     - https://argocd.auth-ing.k3s.brickyard.whitestar.systems
   resource.customizations: |
     extensions/Ingress:
