@@ -35,10 +35,6 @@
         "automerge": true
       },
       "minimumReleaseAge": "1 day"
-    },
-    {
-      "matchPackageNames": ["netboxcommunity/netbox"],
-      "allowedVersions": "!/v4.5.2$/"
     }
   ],
   "hostRules": [
