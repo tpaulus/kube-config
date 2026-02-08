@@ -26,8 +26,6 @@ data:
   start-rqworker.sh: |
     /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py rqworker &>/dev/null &disown;
   # Script for fixing permission issue in unit temporary folder
-  nginx-caching-fix.sh: |
-    chown unit:root -R /opt/unit/tmp/
   authentik.py: |
     from os import environ
 
