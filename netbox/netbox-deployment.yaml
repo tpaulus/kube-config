@@ -19,7 +19,7 @@ spec:
       containers:
         # NetBox container using the netbox-docker image: https://github.com/netbox-community/netbox-docker
         - name: netbox
-          image: netboxcommunity/netbox:v4.5.2
+          image: netboxcommunity/netbox:v4.5.1
           ports:
             - name: http
               containerPort: 8080
@@ -71,8 +71,9 @@ spec:
                   - /bin/sh
                   - -c
                   - >
-                    bash /home/install-plugins.sh && bash /home/start-rqworker.sh
-                    && bash /home/nginx-caching-fix.sh
+                    bash /home/install-plugins.sh 1> /proc/1/fd/1 2> /proc/1/fd/2 && \
+                    bash /home/start-rqworker.sh 1> /proc/1/fd/1 2> /proc/1/fd/2 && \
+                    bash /home/nginx-caching-fix.sh 1> /proc/1/fd/1 2> /proc/1/fd/2
           resources:
             requests:
               memory: 1024Mi
