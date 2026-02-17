@@ -346,6 +346,33 @@ data:
       timeout_msec: 1000   # 1s
     }
 
+    probe {
+      name: "Resideo AlarmNet"
+      type: PING
+
+      interval: "1m"
+
+      targets {
+        endpoint {
+          name: "provds.prod.granite.clouddevice.io"
+        }
+        endpoint {
+          name: "anc-na-ny80-prod-criticalapi.alarmnet.com"
+        }
+        endpoint {
+          name: "devicehub-00-titan-dfc-prod-na.alarmnet.com"
+        }
+        endpoint {
+          name: "files.alarmnet.com"
+        }
+      }
+
+      additional_label {
+        key: "location"
+        value: "external"
+      }
+    }
+
     # BMC Checks
     probe {
       name: "IPMI Ping"
