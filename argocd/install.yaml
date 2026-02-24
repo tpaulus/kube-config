@@ -20101,7 +20101,7 @@ spec:
               weight: 5
       containers:
         - args: [--save, '', --appendonly, 'no']
-          image: redis:8.6.0-alpine
+          image: redis:8.6.1-alpine
           imagePullPolicy: Always
           name: redis
           ports:
