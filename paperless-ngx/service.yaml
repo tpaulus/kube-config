@@ -131,7 +131,7 @@ spec:
           periodSeconds: 10
       # Samba sidecar for scanner file ingestion
       - name: samba-server
-        image: dockurr/samba:4.22.6
+        image: dockurr/samba:4.23.5
         env:
           - name: "NAME"
             value: "paperless"
