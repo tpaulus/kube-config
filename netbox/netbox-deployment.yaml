@@ -8,6 +8,7 @@ metadata:
     k8s-app: netbox
 spec:
   replicas: 3
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       k8s-app: netbox
@@ -16,6 +17,7 @@ spec:
       labels:
         k8s-app: netbox
     spec:
+      automountServiceAccountToken: false
       containers:
         # NetBox container using the netbox-docker image: https://github.com/netbox-community/netbox-docker
         - name: netbox

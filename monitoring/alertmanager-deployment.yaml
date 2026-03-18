@@ -8,6 +8,7 @@ metadata:
     app: alertmanager-server
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   strategy:
     type: Recreate
   selector:
@@ -18,10 +19,15 @@ spec:
       labels:
         app: alertmanager-server
     spec:
+      automountServiceAccountToken: false
       initContainers:
         - name: volume-permissions
           image: busybox:1.37
           command: [sh, -c, chown nobody:nobody /data]
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 0
+            runAsGroup: 0
           volumeMounts:
             - name: alertmanager-storage-volume
               mountPath: /data

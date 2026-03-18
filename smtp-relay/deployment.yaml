@@ -4,6 +4,7 @@ kind: Deployment
 metadata:
   name: relay
 spec:
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: relay
@@ -12,10 +13,14 @@ spec:
       labels:
         app: relay
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: relay
           image: juanluisbaptiste/postfix:1.9.0
           resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
             limits:
               memory: 128Mi
               cpu: 256m

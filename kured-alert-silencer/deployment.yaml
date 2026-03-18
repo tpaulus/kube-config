@@ -9,6 +9,7 @@ metadata:
     app.kubernetes.io/part-of: kured
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: kured-alert-silencer

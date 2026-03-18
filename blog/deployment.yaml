@@ -5,6 +5,7 @@ metadata:
   name: ghost
   namespace: blog
 spec:
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: ghost
@@ -15,6 +16,7 @@ spec:
       labels:
         app: ghost
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: ghost
           image: ghost:6.22

@@ -7,6 +7,7 @@ metadata:
     app: prometheus-nut-exporter
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: prometheus-nut-exporter
@@ -19,6 +20,7 @@ spec:
         prometheus.io/port: '9199'
         prometheus.io/path: /ups_metrics
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: prometheus-nut-exporter
           image: ghcr.io/druggeri/nut_exporter:3.2.3

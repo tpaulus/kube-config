@@ -7,6 +7,7 @@ metadata:
     app: cloudprober
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: cloudprober
@@ -18,6 +19,7 @@ spec:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '9313'
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: cloudprober
           image: cloudprober/cloudprober:v0.14.2

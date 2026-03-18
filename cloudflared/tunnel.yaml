@@ -4,6 +4,7 @@ kind: Deployment
 metadata:
   name: cloudflared
 spec:
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: cloudflared
@@ -16,6 +17,7 @@ spec:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '2000'
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: cloudflared
           image: cloudflare/cloudflared:2026.3.0

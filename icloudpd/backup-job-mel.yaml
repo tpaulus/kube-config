@@ -16,6 +16,11 @@ spec:
             - name: move-cookies
               image: busybox:1.37
               command: [sh, -c, cp /cookie-jar/* /cookie-dir/]
+              securityContext:
+                allowPrivilegeEscalation: false
+                runAsNonRoot: true
+                runAsUser: 65534
+                runAsGroup: 65534
               volumeMounts:
                 - name: cookie-jar
                   mountPath: /cookie-jar
