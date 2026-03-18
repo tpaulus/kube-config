@@ -8,6 +8,7 @@ metadata:
     app: prometheus-server
 spec:
   replicas: 2
+  revisionHistoryLimit: 2
   strategy:
     type: Recreate
   selector:
@@ -22,6 +23,10 @@ spec:
         - name: volume-permissions
           image: busybox:1.37
           command: [sh, -c, chown nobody:nobody /data]
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 0
+            runAsGroup: 0
           volumeMounts:
             - name: prometheus-storage-volume
               mountPath: /data
@@ -63,6 +68,8 @@ spec:
               port: 9090
           securityContext:
             allowPrivilegeEscalation: false
+            runAsUser: 65534
+            runAsGroup: 65534
         - name: rules-git-sync
           image: registry.k8s.io/git-sync/git-sync:v4.5.1
           args:

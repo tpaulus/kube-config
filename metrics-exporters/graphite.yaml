@@ -7,6 +7,7 @@ metadata:
     app: prometheus-graphite-exporter
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: prometheus-graphite-exporter
@@ -18,6 +19,7 @@ spec:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '9108'
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: prometheus-graphite-exporter
           image: prom/graphite-exporter:v0.16.0
