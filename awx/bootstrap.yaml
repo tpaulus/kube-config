@@ -343,7 +343,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: bootstrap
-          image: python:3.12-alpine
+          image: python:3.14-alpine
           command: ["python", "/opt/bootstrap/bootstrap.py"]
           env:
             - name: AWX_API_URL
