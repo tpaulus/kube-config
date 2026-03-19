@@ -1,0 +1,24 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: awx
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://ansible-community.github.io/awx-operator-helm/
+      chart: awx-operator
+      targetRevision: 3.2.1
+    - repoURL: git@github.com:tpaulus/kube-config.git
+      targetRevision: HEAD
+      path: awx
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: awx
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true

@@ -1,0 +1,54 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: inject-headers
+  namespace: awx
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: awx-ext
+  namespace: awx
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.middlewares: awx-inject-headers@kubernetescrd
+spec:
+  rules:
+    - host: awx.auth-ing.k3s.brickyard.whitestar.systems
+      http: &rules
+        paths:
+          - backend:
+              service:
+                name: awx-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: awx.whitestar.systems
+      http: *rules
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: awx-tailscale
+  namespace: awx
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - awx
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: awx-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
