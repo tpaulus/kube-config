@@ -24,6 +24,8 @@ data:
     ORGANIZATION_NAME = os.environ.get("AWX_ORGANIZATION_NAME", "Whitestar Systems")
     PROJECT_NAME = os.environ.get("AWX_PROJECT_NAME", "tpaulus/ansible")
     PROJECT_URL = os.environ.get("AWX_PROJECT_URL", "https://github.com/tpaulus/ansible.git")
+    EXECUTION_ENVIRONMENT_NAME = os.environ.get("AWX_EXECUTION_ENVIRONMENT_NAME", "tpaulus/ansible-ee")
+    EXECUTION_ENVIRONMENT_IMAGE = os.environ.get("AWX_EXECUTION_ENVIRONMENT_IMAGE", "ghcr.io/tpaulus/ansible-ee:latest")
     INVENTORY_NAME = os.environ.get("AWX_INVENTORY_NAME", "NetBox")
     INVENTORY_SOURCE_NAME = os.environ.get("AWX_INVENTORY_SOURCE_NAME", "NetBox inventory")
     JOB_TEMPLATE_NAME = os.environ.get("AWX_JOB_TEMPLATE_NAME", "Provision all")
@@ -249,6 +251,17 @@ data:
 
         wait_for_project_update(project["id"], "provision/all.yaml")
 
+        execution_environment = upsert(
+            "execution_environments/",
+            EXECUTION_ENVIRONMENT_NAME,
+            {
+                "name": EXECUTION_ENVIRONMENT_NAME,
+                "description": "Custom EE for tpaulus/ansible and NetBox inventory.",
+                "image": EXECUTION_ENVIRONMENT_IMAGE,
+                "pull": "always",
+            },
+        )
+
         inventory = upsert(
             "inventories/",
             INVENTORY_NAME,
@@ -275,6 +288,7 @@ data:
                 "overwrite_vars": True,
                 "update_on_project_update": True,
                 "update_cache_timeout": 0,
+                "execution_environment": execution_environment["id"],
             },
             matcher=lambda item: item.get("name") == INVENTORY_SOURCE_NAME and item.get("inventory") == inventory["id"],
         )
@@ -290,6 +304,7 @@ data:
                 "playbook": "provision/all.yaml",
                 "job_type": "run",
                 "limit": LIMIT,
+                "execution_environment": execution_environment["id"],
                 "ask_limit_on_launch": True,
                 "ask_inventory_on_launch": False,
                 "ask_credential_on_launch": True,
@@ -341,6 +356,10 @@ spec:
               value: tpaulus/ansible
             - name: AWX_PROJECT_URL
               value: https://github.com/tpaulus/ansible.git
+            - name: AWX_EXECUTION_ENVIRONMENT_NAME
+              value: tpaulus/ansible-ee
+            - name: AWX_EXECUTION_ENVIRONMENT_IMAGE
+              value: ghcr.io/tpaulus/ansible-ee:latest
             - name: AWX_INVENTORY_NAME
               value: NetBox
             - name: AWX_INVENTORY_SOURCE_NAME

@@ -16,6 +16,16 @@
       "/argocd/applications/.+\\.yaml$/"
     ]
   },
+  "ansible-galaxy": {
+    "managerFilePatterns": [
+      "/awx/ee/requirements\\.yml$/"
+    ]
+  },
+  "pip_requirements": {
+    "managerFilePatterns": [
+      "/awx/ee/requirements\\.txt$/"
+    ]
+  },
   "platformAutomerge": true,
   "automergeType": "branch",
   "ignoreTests": true,
@@ -23,7 +33,10 @@
     {
       "matchManagers": [
         "kubernetes",
-        "argocd"
+        "argocd",
+        "ansible-galaxy",
+        "pip_requirements",
+        "dockerfile"
       ],
       "major": {
         "automerge": false
