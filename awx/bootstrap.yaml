@@ -127,6 +127,32 @@ data:
         return result
 
 
+    def sync_project(project_id):
+        request("POST", f"projects/{project_id}/update/")
+
+
+    def wait_for_project_update(project_id, playbook_path):
+        sync_project(project_id)
+        for attempt in range(90):
+            project = request("GET", f"projects/{project_id}/")
+            status = project.get("status")
+            if status == "successful":
+                playbooks = list_all(f"projects/{project_id}/playbooks/")
+                if any(item.get("name") == playbook_path for item in playbooks):
+                    log(f"Project sync complete and found playbook {playbook_path}")
+                    return
+                raise RuntimeError(
+                    f"Project synced but playbook {playbook_path} was not discovered"
+                )
+            if status in {"failed", "error", "canceled"}:
+                raise RuntimeError(
+                    f"Project sync failed with status {status}: {project.get('last_job_failed')}"
+                )
+            log(f"Waiting for project sync: status={status}")
+            time.sleep(10)
+        raise RuntimeError("Timed out waiting for project sync")
+
+
     def main():
         wait_for_awx()
 
@@ -213,6 +239,8 @@ data:
             },
             matcher=lambda item: item.get("name") == PROJECT_NAME and item.get("organization") == org["id"],
         )
+
+        wait_for_project_update(project["id"], "provision/all.yaml")
 
         inventory = upsert(
             "inventories/",
