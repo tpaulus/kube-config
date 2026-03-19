@@ -84,6 +84,9 @@ data:
             if query:
                 q.update(query)
             data = request("GET", path, query=q)
+            if isinstance(data, list):
+                merged.extend(data)
+                return merged
             merged.extend(data.get("results", []))
             if not data.get("next"):
                 return merged
@@ -138,7 +141,11 @@ data:
             status = project.get("status")
             if status == "successful":
                 playbooks = list_all(f"projects/{project_id}/playbooks/")
-                if any(item.get("name") == playbook_path for item in playbooks):
+                if any(
+                    item == playbook_path
+                    or (isinstance(item, dict) and item.get("name") == playbook_path)
+                    for item in playbooks
+                ):
                     log(f"Project sync complete and found playbook {playbook_path}")
                     return
                 raise RuntimeError(
