@@ -73,7 +73,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: paperless-ngx
-        image: ghcr.io/paperless-ngx/paperless-ngx:2.20.6
+        image: ghcr.io/paperless-ngx/paperless-ngx:2.20.11
         ports:
         - containerPort: 8000
         envFrom:
