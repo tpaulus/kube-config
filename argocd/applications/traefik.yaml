@@ -16,22 +16,23 @@ spec:
         - name: deployment.replicas
           value: '2'
       values: |
-        experimental.plugins.enabled: true
         ports:
           web:
-            redirections:
-              entryPoint:
-                to: websecure
-                scheme: https
-                permanent: true
+            http:
+              redirections:
+                entryPoint:
+                  to: websecure
+                  scheme: https
+                  permanent: true
           websecure:
             asDefault: true
           web-ext:
             port: 9200
             exposedPort: 9200
             protocol: TCP
-            middlewares:
-              - traefik-rewrite-cf-tunnel-headers@kubernetescrd
+            http:
+              middlewares:
+                - traefik-rewrite-cf-tunnel-headers@kubernetescrd
         experimental:
           plugins:
             jwt:
@@ -44,7 +45,6 @@ spec:
           kubernetesIngress:
             publishedService:
               enabled: true
-        globalArguments: []
     repoURL: https://traefik.github.io/charts
     targetRevision: 39.0.5
   syncPolicy:
