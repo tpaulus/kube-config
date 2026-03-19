@@ -32,6 +32,7 @@ jobs:
             ! -path "./.github/*" \
             ! -path "./argocd/install.yaml" \
             ! -path "./_alerts/*" \
+            ! -path "./awx/ee/*" \
             ! -name "*-values.yaml" \
             -print0 | xargs -0 kubeconform \
               -strict \
