@@ -19,7 +19,7 @@ data:
     REMOTE_CERT_PATH="/ssl/fullchain.pem"
     REMOTE_KEY_PATH="/ssl/privkey.pem"
 
-    HA_RESTART_CMD="ha core restart"
+    HA_NGINX_RESTART_CMD="ha addons restart core_nginx_proxy"
 
     # Temporary file to store checksum for change detection
     REMOTE_CHECKSUM_CMD="md5sum $REMOTE_CERT_PATH $REMOTE_KEY_PATH"
@@ -45,9 +45,9 @@ data:
         scp -i /root/.ssh/id_rsa $LOCAL_KEY_PATH $REMOTE_USER@$REMOTE_HOST:$REMOTE_KEY_PATH
     }
 
-    # Restart Home Assistant on the remote host
-    restart_ha() {
-        ssh -i /root/.ssh/id_rsa $REMOTE_USER@$REMOTE_HOST "$HA_RESTART_CMD"
+    # Restart NGINX Add-on on the remote host
+    restart_nginx() {
+        ssh -i /root/.ssh/id_rsa $REMOTE_USER@$REMOTE_HOST "$HA_NGINX_RESTART_CMD"
     }
 
     # Main logic
@@ -56,9 +56,9 @@ data:
 
     # Compare checksums to detect changes
     if [[ "$local_checksum" != "$remote_checksum" ]]; then
-        echo "Files have changed, uploading and restarting Home Assistant..."
+        echo "Files have changed, uploading and restarting NGINX Add-on..."
         upload_files
-        restart_ha
+        restart_nginx
 
         echo "All Done!"
     else
