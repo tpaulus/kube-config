@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sync-ha-web-cert
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cert-sync-container
+            image: ubuntu:24.04
+            command: ["/bin/sh", "-c", "/app/sync.sh"]
+            volumeMounts:
+            - name: script-volume
+              mountPath: /app
+            - name: cert-volume
+              mountPath: /var/run/ssl
+            env:
+            - name: REMOTE_HOST
+              value: "broadmoor.brickyard.whitestar.systems"
+            - name: "REMOTE_USER"
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: ha-host
+            - name: "SSH_PRIVATE_KEY"
+              valueFrom:
+                secretKeyRef:
+                  key: private_key
+                  name: ha-host
+            securityContext:
+              # Must run as root, since it runs apt-install
+              runAsUser: 0
+              runAsGroup: 0
+          restartPolicy: OnFailure
+          volumes:
+          - name: script-volume
+            configMap:
+              name: ha-sync-script
+              defaultMode: 0777
+          - name: cert-volume
+            secret:
+              secretName: ha-cert
+
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: ha-host
+spec:
+  itemPath: "vaults/K3S/items/Home Assistant SSH"
