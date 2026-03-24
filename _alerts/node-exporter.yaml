@@ -12,7 +12,7 @@ groups:
           description: 'Degraded RAID array {{ $labels.device }} on {{ $labels.instance }}:
             {{ $value }} disks failed'
       - alert: Disk Usage High
-        expr: max(1 - node_filesystem_free_bytes{device!="tmpfs"} / node_filesystem_size_bytes{device!="tmpfs"})
+        expr: max(1 - node_filesystem_free_bytes{device!~"tmpfs|tank/TimeMachine/.*"} / node_filesystem_size_bytes{device!~"tmpfs|tank/TimeMachine/.*"})
           by (device, instance) > .80
         for: 5m
         labels:
