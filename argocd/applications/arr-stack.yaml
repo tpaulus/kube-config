@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arr-stack
+spec:
+  destination:
+    namespace: arr-stack
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    directory:
+      recurse: true
+    path: k8s/
+    repoURL: git@github.com:tpaulus/arr-stack.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
