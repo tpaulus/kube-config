@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      serviceAccountName: external-dns
+      containers:
+        - name: external-dns
+          image: registry.k8s.io/external-dns/external-dns:v0.21.0
+          args:
+            - --source=service
+            - --source=ingress
+            - --domain-filter=it.paulus.family
+            - --zone-id-filter=c4c79e93d4d2afd6c0abd49d6f26edad
+            - --provider=cloudflare
+            - --cloudflare-dns-records-per-page=5000 # (optional) configure how many DNS records to fetch per request
+            - --cloudflare-record-comment="synced from K3s" # (optional) configure comments for provisioned records; <=100 chars for free zones; <=500 chars for paid zones
+          env:
+            - name: CF_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-api-token
+                  key: bearer
+          resources:
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
