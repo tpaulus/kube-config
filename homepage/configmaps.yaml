@@ -19,6 +19,16 @@ data:
   settings.yaml: |
     title: Home
     color: slate
+    maxGroupColumns: 3
+    layout:
+      - Smart Home:
+      - Media:
+      - Documents:
+      - Infrastructure:
+      - Storage:
+      - Monitoring:
+      - Automation:
+      - Content Acquisition:
   widgets.yaml: |
     - search:
         provider: duckduckgo
