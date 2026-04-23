@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         app: external-dns
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '7979'
     spec:
       serviceAccountName: external-dns
       containers:
@@ -24,8 +27,12 @@ spec:
             - --domain-filter=it.paulus.family
             - --zone-id-filter=c4c79e93d4d2afd6c0abd49d6f26edad
             - --provider=cloudflare
+            - --metrics-address=:7979
             - --cloudflare-dns-records-per-page=5000 # (optional) configure how many DNS records to fetch per request
             - --cloudflare-record-comment="synced from K3s" # (optional) configure comments for provisioned records; <=100 chars for free zones; <=500 chars for paid zones
+          ports:
+            - containerPort: 7979
+              name: metrics
           env:
             - name: CF_API_TOKEN
               valueFrom:
