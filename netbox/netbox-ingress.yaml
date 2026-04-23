@@ -8,6 +8,7 @@ metadata:
     gethomepage.dev/description: Source of truth for infrastructure
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Infrastructure
+    gethomepage.dev/icon: netbox.png
     gethomepage.dev/name: NetBox
     gethomepage.dev/pod-selector: k8s-app=netbox
 spec:

@@ -8,6 +8,7 @@ metadata:
     gethomepage.dev/description: Metrics and alert queries
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Monitoring
+    gethomepage.dev/icon: prometheus.png
     gethomepage.dev/name: Prometheus
     gethomepage.dev/pod-selector: app=prometheus-server
 spec:

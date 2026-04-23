@@ -8,6 +8,7 @@ metadata:
     gethomepage.dev/description: Alert routing and silences
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Monitoring
+    gethomepage.dev/icon: alertmanager.png
     gethomepage.dev/name: Alertmanager
     gethomepage.dev/pod-selector: app=alertmanager-server
 spec:
