@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: homepage
     app.kubernetes.io/name: homepage
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 2
   strategy:
     type: Recreate
