@@ -65,12 +65,6 @@ kind: Ingress
 metadata:
   name: paperless-ext
   annotations:
-    gethomepage.dev/description: Document management
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Documents
-    gethomepage.dev/icon: paperless-ngx.png
-    gethomepage.dev/name: Paperless
-    gethomepage.dev/pod-selector: app=paperless-ngx
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext
     traefik.ingress.kubernetes.io/router.middlewares: paperless-ngx-inject-headers@kubernetescrd,paperless-ngx-jwt-verification@kubernetescrd
 spec:

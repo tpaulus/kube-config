@@ -12,8 +12,6 @@ data:
   docker.yaml: ""
   kubernetes.yaml: |
     mode: cluster
-    ingress: true
-    traefik: true
   services.yaml: |
     []
   settings.yaml: |

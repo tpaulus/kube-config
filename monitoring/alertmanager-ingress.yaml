@@ -4,19 +4,6 @@ kind: Ingress
 metadata:
   name: alertmanager-ui
   namespace: monitoring
-  annotations:
-    gethomepage.dev/description: Alert routing and silences
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Monitoring
-    gethomepage.dev/icon: alertmanager.png
-    gethomepage.dev/name: Alertmanager
-    gethomepage.dev/pod-selector: app=alertmanager-server
-    gethomepage.dev/widget.type: prometheusmetric
-    gethomepage.dev/widget.url: http://prometheus.monitoring.svc.cluster.local:8080
-    gethomepage.dev/widget.metrics[0].label: Firing Alerts
-    gethomepage.dev/widget.metrics[0].query: count(ALERTS{alertstate="firing"})
-    gethomepage.dev/widget.metrics[0].format.type: number
-    gethomepage.dev/widget.metrics[0].format.options.maximumFractionDigits: "0"
 spec:
   rules:
     - host: alertmanager.ing.k3s.brickyard.whitestar.systems

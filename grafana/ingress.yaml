@@ -14,13 +14,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: grafana
-  annotations:
-    gethomepage.dev/description: Metrics dashboards
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Monitoring
-    gethomepage.dev/icon: grafana.png
-    gethomepage.dev/name: Grafana
-    gethomepage.dev/pod-selector: app=grafana
 spec:
   rules:
     - host: grafana.ing.k3s.brickyard.whitestar.systems

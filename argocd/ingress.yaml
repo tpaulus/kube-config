@@ -4,14 +4,6 @@ kind: IngressRoute
 metadata:
   name: argocd-server
   namespace: argocd
-  annotations:
-    gethomepage.dev/description: GitOps control plane
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Infrastructure
-    gethomepage.dev/href: https://argocd.ing.k3s.brickyard.whitestar.systems
-    gethomepage.dev/icon: argo-cd.png
-    gethomepage.dev/name: Argo CD
-    gethomepage.dev/pod-selector: app.kubernetes.io/name=argocd-server
 spec:
   entryPoints: [websecure]
   routes:
