@@ -10,6 +10,7 @@ groups:
         annotations:
           summary: ExternalDNS reconciliation is failing
           description: external-dns has reported consecutive soft errors for at least 10 minutes while reconciling DNS records.
+          dashboard: https://grafana.brickyard.whitestar.systems/d/eea5u_I7z/external-dns
       - alert: ExternalDNSSyncStalled
         expr: time() - max(external_dns_controller_last_sync_timestamp_seconds{kubernetes_namespace="external-dns-sync", kubernetes_app_name="external-dns"}) > 15 * 60
         for: 10m
@@ -18,6 +19,7 @@ groups:
         annotations:
           summary: ExternalDNS has not completed a successful sync recently
           description: external-dns has not reported a successful DNS sync in the last 15 minutes.
+          dashboard: https://grafana.brickyard.whitestar.systems/d/eea5u_I7z/external-dns
       - alert: ExternalDNSSourceErrors
         expr: sum(increase(external_dns_source_errors_total{kubernetes_namespace="external-dns-sync", kubernetes_app_name="external-dns"}[15m])) > 0
         for: 0s
@@ -26,6 +28,7 @@ groups:
         annotations:
           summary: ExternalDNS source errors detected
           description: external-dns has encountered source errors while reading Kubernetes resources in the last 15 minutes.
+          dashboard: https://grafana.brickyard.whitestar.systems/d/eea5u_I7z/external-dns
       - alert: ExternalDNSRegistryErrors
         expr: sum(increase(external_dns_registry_errors_total{kubernetes_namespace="external-dns-sync", kubernetes_app_name="external-dns"}[15m])) > 0
         for: 0s
@@ -34,3 +37,4 @@ groups:
         annotations:
           summary: ExternalDNS registry errors detected
           description: external-dns has encountered registry errors while comparing or applying DNS records in the last 15 minutes.
+          dashboard: https://grafana.brickyard.whitestar.systems/d/eea5u_I7z/external-dns
