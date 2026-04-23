@@ -29,6 +29,7 @@ spec:
               gethomepage.dev/description: Distributed block storage
               gethomepage.dev/enabled: "true"
               gethomepage.dev/group: Storage
+              gethomepage.dev/icon: longhorn.png
               gethomepage.dev/name: Longhorn
           longhornManager:
             serviceAnnotations:

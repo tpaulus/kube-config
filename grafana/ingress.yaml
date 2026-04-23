@@ -18,6 +18,7 @@ metadata:
     gethomepage.dev/description: Metrics dashboards
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Monitoring
+    gethomepage.dev/icon: grafana.png
     gethomepage.dev/name: Grafana
     gethomepage.dev/pod-selector: app=grafana
 spec:

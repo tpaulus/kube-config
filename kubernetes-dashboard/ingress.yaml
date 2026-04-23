@@ -8,6 +8,7 @@ metadata:
     gethomepage.dev/description: Kubernetes dashboard
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Infrastructure
+    gethomepage.dev/icon: kubernetes-dashboard.png
     gethomepage.dev/name: Kubernetes Dashboard
     gethomepage.dev/pod-selector: k8s-app=kubernetes-dashboard
 spec:

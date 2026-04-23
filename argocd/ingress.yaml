@@ -9,6 +9,7 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Infrastructure
     gethomepage.dev/href: https://argocd.ing.k3s.brickyard.whitestar.systems
+    gethomepage.dev/icon: argocd.png
     gethomepage.dev/name: Argo CD
     gethomepage.dev/pod-selector: app.kubernetes.io/name=argocd-server
 spec:
