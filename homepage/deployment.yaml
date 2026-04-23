@@ -18,21 +18,42 @@ spec:
     metadata:
       labels: *labels
     spec:
-      serviceAccountName: homepage
-      automountServiceAccountToken: true
       initContainers:
-        - name: bootstrap-config
+        - name: homepage-config-init
+          image: registry.k8s.io/git-sync/git-sync:v4.6.0
+          args:
+            - --repo=git@github.com:tpaulus/homepage-config.git
+            - --ssh-key-file=/run/ssh-key/private
+            - --ssh-known-hosts=true
+            - --ssh-known-hosts-file=/run/ssh-known-hosts/known_hosts
+            - --root=/git
+            - --link=current
+            - --one-time
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+            runAsUser: 0
+          volumeMounts:
+            - name: homepage-config-repo
+              mountPath: /git
+            - name: homepage-config-ssh-key
+              mountPath: /run/ssh-key
+            - name: homepage-ssh-known-hosts
+              mountPath: /run/ssh-known-hosts
+        - name: homepage-config-bootstrap
           image: busybox:1.37
-          command: [sh, -c, cp -R /bootstrap/. /config/]
+          command: [sh, -c, "cp -R /git/current/. /config/"]
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: 0
             runAsGroup: 0
           volumeMounts:
-            - name: homepage-bootstrap-config
-              mountPath: /bootstrap
+            - name: homepage-config-repo
+              mountPath: /git
             - name: homepage-config
               mountPath: /config
+      automountServiceAccountToken: false
       containers:
         - name: homepage
           image: ghcr.io/gethomepage/homepage:v1.12.3
@@ -146,13 +167,8 @@ spec:
                 sleep 5
               done
               while true; do
-                for file in services.yaml bookmarks.yaml; do
-                  if [ -f "/git/current/$file" ]; then
-                    cp "/git/current/$file" "/config/$file"
-                  else
-                    cp "/bootstrap/$file" "/config/$file"
-                  fi
-                done
+                find /config -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+                cp -R /git/current/. /config/
                 sleep 30
               done
           resources:
@@ -168,17 +184,12 @@ spec:
             runAsNonRoot: false
             runAsUser: 0
           volumeMounts:
-            - name: homepage-bootstrap-config
-              mountPath: /bootstrap
             - name: homepage-config
               mountPath: /config
             - name: homepage-config-repo
               mountPath: /git
       dnsPolicy: ClusterFirst
       volumes:
-        - name: homepage-bootstrap-config
-          configMap:
-            name: homepage-bootstrap-config
         - name: homepage-config
           emptyDir: {}
         - name: homepage-config-repo
