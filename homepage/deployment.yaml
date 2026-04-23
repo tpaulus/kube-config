@@ -18,6 +18,7 @@ spec:
     metadata:
       labels: *labels
     spec:
+      serviceAccountName: homepage
       initContainers:
         - name: homepage-config-init
           image: registry.k8s.io/git-sync/git-sync:v4.6.0
@@ -53,7 +54,7 @@ spec:
               mountPath: /git
             - name: homepage-config
               mountPath: /config
-      automountServiceAccountToken: false
+      automountServiceAccountToken: true
       containers:
         - name: homepage
           image: ghcr.io/gethomepage/homepage:v1.12.3
