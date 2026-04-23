@@ -6,7 +6,10 @@ metadata:
 spec:
   secretName: default-ingress-cert
   duration: 2160h0m0s  # 90 days
-  dnsNames: ['*.ing.k3s.brickyard.whitestar.systems', '*.it.paulus.family']
+  dnsNames:
+    - '*.ing.k3s.brickyard.whitestar.systems'
+    - '*.it.paulus.family'
+    - it.paulus.family
   issuerRef:
     name: letsencrypt-cf-prod
     kind: ClusterIssuer

@@ -14,6 +14,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: grafana
+  annotations:
+    gethomepage.dev/description: Metrics dashboards
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Monitoring
+    gethomepage.dev/name: Grafana
+    gethomepage.dev/pod-selector: app=grafana
 spec:
   rules:
     - host: grafana.ing.k3s.brickyard.whitestar.systems
@@ -34,7 +40,7 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      issuers: ["https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs"]
       headerName: Cf-Access-Jwt-Assertion
       require:
         aud: 383cd50986ddcddc0018638011ea367e4a2dc57dd0b59635b18b9f8be0c144f7

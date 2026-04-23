@@ -4,6 +4,14 @@ kind: IngressRoute
 metadata:
   name: traefik-dashboard
   namespace: traefik
+  annotations:
+    gethomepage.dev/description: Kubernetes ingress controller
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Infrastructure
+    gethomepage.dev/href: https://traefik.ing.k3s.brickyard.whitestar.systems
+    gethomepage.dev/icon: traefik.png
+    gethomepage.dev/name: Traefik
+    gethomepage.dev/pod-selector: app.kubernetes.io/name=traefik
 spec:
   entryPoints: [websecure]
   routes:

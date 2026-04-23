@@ -4,6 +4,12 @@ kind: Ingress
 metadata:
   name: netbox
   namespace: netbox
+  annotations:
+    gethomepage.dev/description: Source of truth for infrastructure
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Infrastructure
+    gethomepage.dev/name: NetBox
+    gethomepage.dev/pod-selector: k8s-app=netbox
 spec:
   rules:
     - host: netbox.ing.k3s.brickyard.whitestar.systems
@@ -25,7 +31,7 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      issuers: ["https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs"]
       headerName: Cf-Access-Jwt-Assertion
       require:
         aud: 268fe8ea853dbd153ec9023eb2187d88b33c0a45be66dea14a9113a26292c0cb

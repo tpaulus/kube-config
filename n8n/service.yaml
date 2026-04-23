@@ -22,6 +22,12 @@ kind: Ingress
 metadata:
   name: n8n-ingress
   namespace: n8n
+  annotations:
+    gethomepage.dev/description: Workflow automation
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Automation
+    gethomepage.dev/name: n8n
+    gethomepage.dev/pod-selector: app=n8n
 spec:
   rules:
     - host: n8n.ing.k3s.brickyard.whitestar.systems
@@ -42,7 +48,7 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      issuers: ["https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs"]
       headerName: Cf-Access-Jwt-Assertion
       require:
         aud: ef26a6100d89e6f3fa04694054ea9b865369ae2e0579a02fb7e95ee751d8d0e7

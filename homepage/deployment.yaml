@@ -1,0 +1,175 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage
+  namespace: homepage
+  labels: &labels
+    app.kubernetes.io/instance: homepage
+    app.kubernetes.io/name: homepage
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      serviceAccountName: homepage
+      automountServiceAccountToken: true
+      initContainers:
+        - name: bootstrap-config
+          image: busybox:1.37
+          command: [sh, -c, cp -R /bootstrap/. /config/]
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 0
+            runAsGroup: 0
+          volumeMounts:
+            - name: homepage-bootstrap-config
+              mountPath: /bootstrap
+            - name: homepage-config
+              mountPath: /config
+      containers:
+        - name: homepage
+          image: ghcr.io/gethomepage/homepage:v1.12.3
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: HOMEPAGE_ALLOWED_HOSTS
+              value: "$(MY_POD_IP):3000,it.paulus.family"
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: homepage-config
+              mountPath: /app/config
+        - name: homepage-config-git-sync
+          image: registry.k8s.io/git-sync/git-sync:v4.6.0
+          args:
+            - --repo=git@github.com:tpaulus/homepage-config.git
+            - --ssh-key-file=/run/ssh-key/private
+            - --ssh-known-hosts=true
+            - --ssh-known-hosts-file=/run/ssh-known-hosts/known_hosts
+            - --root=/git
+            - --link=current
+            - --period=1m
+            - --http-metrics
+            - --http-bind=:1234
+          ports:
+            - containerPort: 1234
+              name: metrics
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+            runAsUser: 0
+          volumeMounts:
+            - name: homepage-config-repo
+              mountPath: /git
+            - name: homepage-config-ssh-key
+              mountPath: /run/ssh-key
+            - name: homepage-ssh-known-hosts
+              mountPath: /run/ssh-known-hosts
+        - name: homepage-config-sync
+          image: busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              while [ ! -d /git/current ]; do
+                sleep 5
+              done
+              while true; do
+                for file in services.yaml bookmarks.yaml; do
+                  if [ -f "/git/current/$file" ]; then
+                    cp "/git/current/$file" "/config/$file"
+                  else
+                    cp "/bootstrap/$file" "/config/$file"
+                  fi
+                done
+                sleep 30
+              done
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+            runAsUser: 0
+          volumeMounts:
+            - name: homepage-bootstrap-config
+              mountPath: /bootstrap
+            - name: homepage-config
+              mountPath: /config
+            - name: homepage-config-repo
+              mountPath: /git
+      dnsPolicy: ClusterFirst
+      volumes:
+        - name: homepage-bootstrap-config
+          configMap:
+            name: homepage-bootstrap-config
+        - name: homepage-config
+          emptyDir: {}
+        - name: homepage-config-repo
+          emptyDir: {}
+        - name: homepage-config-ssh-key
+          secret:
+            secretName: homepage-config-ssh-key
+            items:
+              - key: private-key
+                path: private
+            defaultMode: 0400
+        - name: homepage-ssh-known-hosts
+          configMap:
+            name: homepage-ssh-known-hosts

@@ -4,6 +4,13 @@ kind: IngressRoute
 metadata:
   name: argocd-server
   namespace: argocd
+  annotations:
+    gethomepage.dev/description: GitOps control plane
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Infrastructure
+    gethomepage.dev/href: https://argocd.ing.k3s.brickyard.whitestar.systems
+    gethomepage.dev/name: Argo CD
+    gethomepage.dev/pod-selector: app.kubernetes.io/name=argocd-server
 spec:
   entryPoints: [websecure]
   routes:
@@ -52,7 +59,7 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      issuers: ["https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs"]
       headerName: Cf-Access-Jwt-Assertion
       require:
         aud: f2d6259e0bc9268137d8382a2b145834130153c17ddefae081fa8e4c60603998

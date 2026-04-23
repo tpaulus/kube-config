@@ -25,6 +25,11 @@ spec:
           ingress:
             enabled: true
             host: longhorn.ing.k3s.brickyard.whitestar.systems
+            annotations:
+              gethomepage.dev/description: Distributed block storage
+              gethomepage.dev/enabled: "true"
+              gethomepage.dev/group: Storage
+              gethomepage.dev/name: Longhorn
           longhornManager:
             serviceAnnotations:
               prometheus.io/scrape: 'true'

@@ -4,6 +4,12 @@ kind: Ingress
 metadata:
   name: dashboard-ingress
   namespace: kubernetes-dashboard
+  annotations:
+    gethomepage.dev/description: Kubernetes dashboard
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Infrastructure
+    gethomepage.dev/name: Kubernetes Dashboard
+    gethomepage.dev/pod-selector: k8s-app=kubernetes-dashboard
 spec:
   rules:
     - host: dashboard.ing.k3s.brickyard.whitestar.systems

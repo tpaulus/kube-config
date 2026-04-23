@@ -44,7 +44,7 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      issuers: ["https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs"]
       headerName: Cf-Access-Jwt-Assertion
       require:
         aud: ab89878146c48c2038f0d52aa9339f3178521120e145bcbb400f1c515407fae3
@@ -65,6 +65,11 @@ kind: Ingress
 metadata:
   name: paperless-ext
   annotations:
+    gethomepage.dev/description: Document management
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Documents
+    gethomepage.dev/name: Paperless
+    gethomepage.dev/pod-selector: app=paperless-ngx
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext
     traefik.ingress.kubernetes.io/router.middlewares: paperless-ngx-inject-headers@kubernetescrd,paperless-ngx-jwt-verification@kubernetescrd
 spec:

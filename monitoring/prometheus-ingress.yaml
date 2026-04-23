@@ -4,6 +4,12 @@ kind: Ingress
 metadata:
   name: prometheus-ui
   namespace: monitoring
+  annotations:
+    gethomepage.dev/description: Metrics and alert queries
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Monitoring
+    gethomepage.dev/name: Prometheus
+    gethomepage.dev/pod-selector: app=prometheus-server
 spec:
   rules:
     - host: prometheus.ing.k3s.brickyard.whitestar.systems
@@ -25,7 +31,7 @@ metadata:
 spec:
   plugin:
     jwt:
-      issuers: [https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs]
+      issuers: ["https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs"]
       headerName: Cf-Access-Jwt-Assertion
       require:
         aud: fa3dd83c769193080cdc3a7156abea0e265e6f87c8b788551d7a7f87c521e75a
@@ -71,4 +77,3 @@ spec:
                   number: 8080
             path: /
             pathType: Prefix
-

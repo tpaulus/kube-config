@@ -29,7 +29,7 @@ spec:
             - --provider=cloudflare
             - --metrics-address=:7979
             - --cloudflare-dns-records-per-page=5000 # (optional) configure how many DNS records to fetch per request
-            - --cloudflare-record-comment="synced from K3s" # (optional) configure comments for provisioned records; <=100 chars for free zones; <=500 chars for paid zones
+            - --cloudflare-record-comment='synced from K3s' # (optional) configure comments for provisioned records; <=100 chars for free zones; <=500 chars for paid zones
           ports:
             - containerPort: 7979
               name: metrics
