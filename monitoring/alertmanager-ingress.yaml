@@ -11,6 +11,15 @@ metadata:
     gethomepage.dev/icon: alertmanager.png
     gethomepage.dev/name: Alertmanager
     gethomepage.dev/pod-selector: app=alertmanager-server
+    gethomepage.dev/widget.type: prometheusmetric
+    gethomepage.dev/widget.url: http://prometheus.monitoring.svc.cluster.local:8080
+    gethomepage.dev/widget.metrics: |-
+      - label: Firing Alerts
+        query: count(ALERTS{alertstate="firing"})
+        format:
+          type: number
+          options:
+            maximumFractionDigits: 0
 spec:
   rules:
     - host: alertmanager.ing.k3s.brickyard.whitestar.systems
