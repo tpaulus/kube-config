@@ -22,7 +22,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: cloudprober
-          image: cloudprober/cloudprober:v0.14.2
+          image: cloudprober/cloudprober:v0.14.3
           args: [--config_file, /config/cloudprober.cfg]
           ports:
             - containerPort: 9313
