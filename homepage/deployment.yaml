@@ -86,6 +86,11 @@ spec:
                 secretKeyRef:
                   name: bazarr-api-key
                   key: api-key
+            - name: HOMEPAGE_VAR_PAPERLESS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-api-key
+                  key: api-key
           ports:
             - name: http
               containerPort: 3000
