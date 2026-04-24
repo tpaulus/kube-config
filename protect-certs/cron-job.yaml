@@ -10,7 +10,7 @@ spec:
         spec:
           containers:
           - name: cert-sync-container
-            image: ubuntu:24.04
+            image: ubuntu:26.04
             command: ["/bin/sh", "-c", "/app/sync.sh"]
             volumeMounts:
             - name: script-volume
