@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: homepage
     app.kubernetes.io/name: homepage
 spec:
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 2
   strategy:
     type: RollingUpdate
