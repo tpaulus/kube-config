@@ -19,7 +19,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: ghost
-          image: ghost:6.32
+          image: ghost:6.35
           resources:
             requests:
               memory: 512Mi
