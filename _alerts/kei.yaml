@@ -1,21 +1,21 @@
 ---
 groups:
-  - name: icloudpd
+  - name: kei
     rules:
       - alert: Photos Backup Started
-        expr: kube_cronjob_status_active{namespace="icloudpd", cronjob="backup-icloud-mel"} > 0
+        expr: kube_cronjob_status_active{namespace="kei", cronjob="backup-kei-mel"} > 0
         for: 0s
         keep_firing_for: 5m
         labels:
           severity: info
           notify: email-mel
         annotations:
-          summary: iCloud Photos Backup Started for Mel's Library
+          summary: kei photo backup started for Mel's library
       - alert: Photo Backup Not Running
-        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="icloudpd"}) / 60 / 60) >= 25
+        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="kei"}) / 60 / 60) >= 25
         for: 0s
         labels:
           severity: high
         annotations:
-          summary: iCloud Photo Backups not running for {{ $labels.cronjob }}
+          summary: kei photo backups not running for {{ $labels.cronjob }}
           description: "{{ $labels.cronjob }} has not run in the last 24 hours, when it should be running every 12 hours."

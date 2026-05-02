@@ -1,0 +1,117 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-kei-mel
+  namespace: kei
+spec:
+  schedule: "0 2,14 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+            fsGroupChangePolicy: OnRootMismatch
+          restartPolicy: Never
+          initContainers:
+            - name: prepare-data-dir
+              image: busybox:1.37
+              command:
+                - sh
+                - -ec
+                - |
+                  mkdir -p /kei-data
+                  cp -f /session-seed/. /kei-data/
+              securityContext:
+                allowPrivilegeEscalation: false
+                runAsNonRoot: true
+                runAsUser: 65534
+                runAsGroup: 65534
+              volumeMounts:
+                - name: data
+                  mountPath: /kei-data
+                - name: session-seed
+                  mountPath: /session-seed
+          containers:
+            - name: backup-photos
+              image: ghcr.io/rhoopr/kei:v0.12.1
+              command:
+                - bash
+                - -ec
+              args:
+                - |
+                  if [ ! -f /kei-data/state.db ]; then
+                    kei import-existing \
+                      --username "${ICLOUD_USERNAME}" \
+                      --download-dir /photos \
+                      --data-dir /kei-data \
+                      --password-file /credentials/ICLOUD_PASSWORD \
+                      --folder-structure "%Y/%m/%d" \
+                      --no-progress-bar \
+                      --log-level debug
+                  fi
+
+                  exec kei sync \
+                    --username "${ICLOUD_USERNAME}" \
+                    --download-dir /photos \
+                    --data-dir /kei-data \
+                    --password-file /credentials/ICLOUD_PASSWORD \
+                    --folder-structure "%Y/%m/%d" \
+                    --no-progress-bar \
+                    --log-level debug
+              env:
+                - name: ICLOUD_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: mel-icloud
+                      key: ICLOUD_USERNAME
+              volumeMounts:
+                - name: storage
+                  mountPath: /photos
+                - name: data
+                  mountPath: /kei-data
+                - name: credentials
+                  mountPath: /credentials
+                  readOnly: true
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: false
+                runAsNonRoot: false
+          volumes:
+            - name: storage
+              nfs:
+                server: woodlandpark.brickyard.whitestar.systems
+                path: /mnt/tank/icloud/mel
+                readOnly: false
+            - name: data
+              persistentVolumeClaim:
+                claimName: kei-data-mel
+            - name: credentials
+              secret:
+                secretName: mel-icloud
+            - name: session-seed
+              secret:
+                secretName: mel-icloud-cookie
+          dnsConfig:
+            nameservers: [1.1.1.1, 1.0.0.1]
+          dnsPolicy: None
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: mel-icloud
+  namespace: kei
+spec:
+  itemPath: vaults/K3S/items/icloud-mel-login
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: mel-icloud-cookie
+  namespace: kei
+spec:
+  itemPath: vaults/K3S/items/icloud-mel-cookie
