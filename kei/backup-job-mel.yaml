@@ -51,8 +51,7 @@ spec:
                       --data-dir /kei-data \
                       --password-file /credentials/ICLOUD_PASSWORD \
                       --folder-structure "%Y/%m/%d" \
-                      --no-progress-bar \
-                      --log-level debug
+                      --no-progress-bar
                   fi
 
                   exec kei sync \
@@ -61,8 +60,7 @@ spec:
                     --data-dir /kei-data \
                     --password-file /credentials/ICLOUD_PASSWORD \
                     --folder-structure "%Y/%m/%d" \
-                    --no-progress-bar \
-                    --log-level debug
+                    --no-progress-bar
               env:
                 - name: ICLOUD_USERNAME
                   valueFrom:
