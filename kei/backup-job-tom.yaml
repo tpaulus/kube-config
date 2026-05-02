@@ -25,7 +25,7 @@ spec:
                 - -ec
                 - |
                   mkdir -p /kei-data
-                  cp -f /session-seed/. /kei-data/
+                  cp -af /session-seed/. /kei-data/
               securityContext:
                 allowPrivilegeEscalation: false
                 runAsNonRoot: true
