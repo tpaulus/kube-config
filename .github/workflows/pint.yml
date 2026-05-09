@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run pint
-        uses: prymitive/pint-action@258f9987e2cc139b0ee168f825f36337342cdeae # v1.103
+        uses: prymitive/pint-action@008052b5809c373b1618e81accb11b3a092628d5 # v1.104
         with:
           token: ${{ github.token }}
         env:
