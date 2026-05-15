@@ -23,7 +23,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: prometheus-nut-exporter
-          image: ghcr.io/druggeri/nut_exporter:3.2.5
+          image: ghcr.io/druggeri/nut_exporter:3.3.0
           ports:
             - containerPort: 9199
               name: metrics
