@@ -62,6 +62,8 @@ spec:
                     --folder-structure "%Y/%m/%d" \
                     --no-progress-bar
               env:
+                - name: KEI_WATCH_WITH_INTERVAL
+                  value: ""
                 - name: ICLOUD_USERNAME
                   valueFrom:
                     secretKeyRef:
