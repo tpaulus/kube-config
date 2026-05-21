@@ -87,6 +87,10 @@ spec:
         login:
           ingress: 
             enabled: true
+        tools:
+          kubectl:
+            image:
+              tag: "1.33.12"
   project: default
   syncPolicy:
     automated:
