@@ -15,16 +15,6 @@ spec:
         - name: prometheus.namespace
           value: monitoring
       values: |
-        controller:
-          podAnnotations:
-            prometheus.io/scrape: 'true'
-            prometheus.io/scheme: https
-            prometheus.io/port: '9120'
-        speaker:
-          podAnnotations:
-            prometheus.io/scrape: 'true'
-            prometheus.io/scheme: https
-            prometheus.io/port: '9120'
         frr-k8s:
           prometheus:
             serviceMonitor:
