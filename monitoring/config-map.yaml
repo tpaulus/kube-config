@@ -204,19 +204,19 @@ data:
           group_wait: 30s
           matchers:
             - notify=~"(.+ )?email-mel( .+)?"
-      receivers:
-        - name: 'deployment-alert-restarter'
-          webhook_configs:
-            - url: 'http://deployment-alert-restarter.monitoring.svc.cluster.local:8080'
-              send_resolved: true
-        - name: 'email-tom'
-          email_configs:
-            - to: tom@tompaulus.com
-              send_resolved: true
-        - name: 'email-mel'
-          email_configs:
-            - to: alerts@mel.earth
-              send_resolved: false
+    receivers:
+      - name: 'deployment-alert-restarter'
+        webhook_configs:
+          - url: 'http://deployment-alert-restarter.monitoring.svc.cluster.local:8080'
+            send_resolved: true
+      - name: 'email-tom'
+        email_configs:
+          - to: tom@tompaulus.com
+            send_resolved: true
+      - name: 'email-mel'
+        email_configs:
+          - to: alerts@mel.earth
+            send_resolved: false
     global:
       smtp_from: alertmanager@whitestar.systems
       smtp_smarthost: "smtp-relay.smtp-relay.svc.cluster.local:25"
