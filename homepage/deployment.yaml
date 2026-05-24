@@ -43,7 +43,7 @@ spec:
             - name: homepage-ssh-known-hosts
               mountPath: /run/ssh-known-hosts
         - name: homepage-config-bootstrap
-          image: busybox:1.37
+          image: busybox:1.38
           command: [sh, -c, "cp -R /git/current/. /config/"]
           securityContext:
             allowPrivilegeEscalation: false
@@ -163,7 +163,7 @@ spec:
             - name: homepage-ssh-known-hosts
               mountPath: /run/ssh-known-hosts
         - name: homepage-config-sync
-          image: busybox:1.37
+          image: busybox:1.38
           command:
             - sh
             - -c

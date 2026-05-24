@@ -22,7 +22,7 @@ spec:
       automountServiceAccountToken: false
       initContainers:
         - name: volume-permissions
-          image: busybox:1.37
+          image: busybox:1.38
           command: [sh, -c, chown nobody:nobody /data]
           securityContext:
             allowPrivilegeEscalation: false
