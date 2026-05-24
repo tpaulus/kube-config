@@ -85,6 +85,7 @@ spec:
         metrics:
           enabled: true
         login:
+          loginServiceKeySecretName: "zitadel-login-service-key"
           ingress: 
             enabled: true
         tools:
