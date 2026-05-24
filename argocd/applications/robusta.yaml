@@ -1,0 +1,52 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: robusta
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: robusta
+      repoURL: https://robusta-charts.storage.googleapis.com
+      targetRevision: 0.39.0
+      helm:
+        values: |
+          clusterName: brickyard-k3s
+          sinksConfig:
+            - robusta_sink:
+                name: robusta_ui_sink
+                token: "{{ env.ROBUSTA_UI_TOKEN }}"
+          globalConfig:
+            account_id: "{{ env.ROBUSTA_ACCOUNT_ID }}"
+            signing_key: "{{ env.ROBUSTA_SIGNING_KEY }}"
+            prometheus_url: http://prometheus.monitoring.svc.cluster.local:8080
+            alertmanager_url: http://alertmanager.monitoring.svc.cluster.local:8080
+          runner:
+            additional_env_vars:
+              - name: ROBUSTA_ACCOUNT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: robusta-secrets
+                    key: account_id
+              - name: ROBUSTA_SIGNING_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: robusta-secrets
+                    key: signing_key
+              - name: ROBUSTA_UI_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: robusta-secrets
+                    key: ui-token
+    - path: robusta
+      repoURL: git@github.com:tpaulus/kube-config.git
+      targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: robusta
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

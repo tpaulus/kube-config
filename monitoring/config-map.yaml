@@ -188,23 +188,33 @@ data:
       repeat_interval: 4h
       receiver: 'email-tom'  # Default Receiver
       routes:
-      - receiver: 'email-tom'
-        group_wait: 30s
-        matchers:
-        - notify=~"(.+ )?email-tom( .+)?"
-      - receiver: 'email-mel'
-        group_wait: 30s
-        matchers:
-        - notify=~"(.+ )?email-mel( .+)?"
-    receivers:
-    - name: 'email-tom'
-      email_configs:
-      - to: tom@tompaulus.com
-        send_resolved: true
-    - name: 'email-mel'
-      email_configs:
-      - to: alerts@mel.earth
-        send_resolved: false
+        - receiver: 'robusta'
+          group_by: ['...']
+          group_wait: 1s
+          group_interval: 1s
+          repeat_interval: 4h
+          continue: true
+        - receiver: 'email-tom'
+          group_wait: 30s
+          matchers:
+            - notify=~"(.+ )?email-tom( .+)?"
+        - receiver: 'email-mel'
+          group_wait: 30s
+          matchers:
+            - notify=~"(.+ )?email-mel( .+)?"
+      receivers:
+        - name: 'robusta'
+          webhook_configs:
+            - url: 'http://robusta-runner.robusta.svc.cluster.local/api/alerts'
+              send_resolved: true
+        - name: 'email-tom'
+          email_configs:
+            - to: tom@tompaulus.com
+              send_resolved: true
+        - name: 'email-mel'
+          email_configs:
+            - to: alerts@mel.earth
+              send_resolved: false
     global:
       smtp_from: alertmanager@whitestar.systems
       smtp_smarthost: "smtp-relay.smtp-relay.svc.cluster.local:25"
