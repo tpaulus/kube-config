@@ -5,7 +5,7 @@ metadata:
   name: prometheus-server-conf
   namespace: monitoring
 data:
-  prometheus.rules: ''
+  prometheus.rules: ""
   prometheus.yml: |-
     global:
       scrape_interval: 5s
@@ -188,12 +188,14 @@ data:
       repeat_interval: 4h
       receiver: 'email-tom'  # Default Receiver
       routes:
-        - receiver: 'robusta'
+        - receiver: 'deployment-alert-restarter'
           group_by: ['...']
           group_wait: 1s
           group_interval: 1s
-          repeat_interval: 4h
+          repeat_interval: 15m
           continue: true
+          matchers:
+            - action="restart-deployment"
         - receiver: 'email-tom'
           group_wait: 30s
           matchers:
@@ -203,9 +205,9 @@ data:
           matchers:
             - notify=~"(.+ )?email-mel( .+)?"
       receivers:
-        - name: 'robusta'
+        - name: 'deployment-alert-restarter'
           webhook_configs:
-            - url: 'http://robusta-runner.robusta.svc.cluster.local/api/alerts'
+            - url: 'http://deployment-alert-restarter.monitoring.svc.cluster.local:8080'
               send_resolved: true
         - name: 'email-tom'
           email_configs:
