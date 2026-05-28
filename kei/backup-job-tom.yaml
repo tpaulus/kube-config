@@ -24,8 +24,8 @@ spec:
                 - sh
                 - -ec
                 - |
-                  mkdir -p /kei-data
-                  cp -af /session-seed/. /kei-data/
+                  mkdir -p /config
+                  cp -af /session-seed/. /config/
               securityContext:
                 allowPrivilegeEscalation: false
                 runAsNonRoot: true
@@ -33,37 +33,27 @@ spec:
                 runAsGroup: 65534
               volumeMounts:
                 - name: data
-                  mountPath: /kei-data
+                  mountPath: /config
                 - name: session-seed
                   mountPath: /session-seed
           containers:
             - name: backup-photos
               image: ghcr.io/rhoopr/kei:0.20.4
               command:
-                - bash
+                - sh
                 - -ec
               args:
                 - |
-                  if [ ! -f /kei-data/state.db ]; then
+                  if [ ! -f /config/state.db ]; then
                     kei import-existing \
-                      --username "${ICLOUD_USERNAME}" \
-                      --download-dir /photos \
-                      --data-dir /kei-data \
-                      --password-file /credentials/ICLOUD_PASSWORD \
-                      --folder-structure "%Y/%m/%d" \
-                      --no-progress-bar
+                      --config /config/config.toml \
+                      --password-file /credentials/ICLOUD_PASSWORD
                   fi
 
                   exec kei sync \
-                    --username "${ICLOUD_USERNAME}" \
-                    --download-dir /photos \
-                    --data-dir /kei-data \
-                    --password-file /credentials/ICLOUD_PASSWORD \
-                    --folder-structure "%Y/%m/%d" \
-                    --no-progress-bar
+                    --config /config/config.toml \
+                    --password-file /credentials/ICLOUD_PASSWORD
               env:
-                - name: KEI_WATCH_WITH_INTERVAL
-                  value: ""
                 - name: ICLOUD_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -73,7 +63,11 @@ spec:
                 - name: storage
                   mountPath: /photos
                 - name: data
-                  mountPath: /kei-data
+                  mountPath: /config
+                - name: kei-config
+                  mountPath: /config/config.toml
+                  subPath: config.toml
+                  readOnly: true
                 - name: credentials
                   mountPath: /credentials
                   readOnly: true
@@ -90,6 +84,9 @@ spec:
             - name: data
               persistentVolumeClaim:
                 claimName: kei-data-tom
+            - name: kei-config
+              configMap:
+                name: kei-config
             - name: credentials
               secret:
                 secretName: tom-icloud

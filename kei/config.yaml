@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kei-config
+  namespace: kei
+data:
+  config.toml: |
+    data_dir = "/config"
+
+    [download]
+    directory = "/photos"
+    folder_structure = "%Y/%m/%d"
+
+    [ui]
+    progress_bar = false
