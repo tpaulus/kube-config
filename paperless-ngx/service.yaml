@@ -136,7 +136,7 @@ spec:
           readOnlyRootFilesystem: false
       # Samba sidecar for scanner file ingestion
       - name: samba-server
-        image: dockurr/samba:4.23.7
+        image: dockurr/samba:4.23.8
         env:
           - name: "NAME"
             value: "paperless"
