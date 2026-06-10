@@ -388,9 +388,6 @@ data:
         endpoint {
           name: "devicehub-00-titan-dfc-prod-na.alarmnet.com"
         }
-        endpoint {
-          name: "files.alarmnet.com"
-        }
       }
 
       additional_label {
