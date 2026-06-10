@@ -36,15 +36,6 @@ data:
       }
       http_probe {
         protocol: HTTPS
-        
-        header {
-          key: "CF-Access-Client-Id"
-          value: "{{env "CF_ACCESS_ID" }}"
-        }
-        header {
-          key: "CF-Access-Client-Secret"
-          value: "{{env "CF_ACCESS_SECRET" }}"
-        }
       }
       validator {
           name: "status_code_2xx"
@@ -76,7 +67,7 @@ data:
       }
       http_probe {
         protocol: HTTPS
-        
+
         header {
           key: "CF-Access-Client-Id"
           value: "{{env "CF_ACCESS_ID" }}"
@@ -116,7 +107,7 @@ data:
       }
       http_probe {
         protocol: HTTPS
-        
+
         header {
           key: "CF-Access-Client-Id"
           value: "{{env "CF_ACCESS_ID" }}"
@@ -237,6 +228,41 @@ data:
     }
 
     probe {
+      name: "Plex"
+      type: HTTP
+      targets {
+        endpoint {
+          name: "woodlandpark.brickyard.whitestar.systems"
+          port: 32400
+        }
+      }
+      http_probe {
+        protocol: HTTP
+        relative_url: "/identity"
+      }
+      validator {
+          name: "status_code_2|3xx"
+          http_validator {
+              success_status_codes: "200-399"
+          }
+      }
+      validator {
+          name: "expected_content"
+          regex: "MediaContainer"
+      }
+      additional_label {
+        key: "location"
+        value: "internal"
+      }
+      additional_label {
+        key: "type"
+        value: "service"
+      }
+      interval_msec: 5000  # 5s
+      timeout_msec: 1000   # 1s
+    }
+
+    probe {
       name: "Svalbard NAS"
       type: HTTP
       targets {
@@ -244,7 +270,7 @@ data:
       }
       http_probe {
         protocol: HTTPS
-        
+
         header {
           key: "CF-Access-Client-Id"
           value: "{{env "CF_ACCESS_ID" }}"
