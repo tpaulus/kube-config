@@ -57,7 +57,7 @@ spec:
       automountServiceAccountToken: true
       containers:
         - name: homepage
-          image: ghcr.io/gethomepage/homepage:v1.13.1
+          image: ghcr.io/gethomepage/homepage:v1.13.2
           imagePullPolicy: IfNotPresent
           env:
             - name: MY_POD_IP
