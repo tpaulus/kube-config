@@ -16,7 +16,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: relay
-          image: juanluisbaptiste/postfix:1.9.0
+          image: juanluisbaptiste/postfix:1.10.0
           resources:
             requests:
               cpu: 50m
