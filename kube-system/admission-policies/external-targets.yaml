@@ -15,15 +15,17 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["services"]
+  matchConditions:
+    - name: target-annotation-missing
+      expression: >
+        object.metadata.annotations == null ||
+        !("external-dns.kubernetes.io/target" in object.metadata.annotations)
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:
         expression: >
-          object.metadata.annotations != null &&
-          "external-dns.kubernetes.io/target" in object.metadata.annotations ?
-          Object{} :
           Object{
-            metadata: Object{
+            metadata: Object.metadata{
               annotations: {
                 "external-dns.kubernetes.io/target": "lfp.it.paulus.family"
               }
