@@ -10,7 +10,6 @@ metadata:
 data:
   url: https://argocd.ing.k3s.brickyard.whitestar.systems
   additionalUrls: |
-    - https://argocd.tailbbff3.ts.net
     - https://argocd.auth-ing.k3s.brickyard.whitestar.systems
   resource.customizations: |
     extensions/Ingress:
@@ -18,6 +17,13 @@ data:
         hs = {}
         hs.status = "Healthy"
         return hs
+    ignoreDifferences:
+        networking.k8s.io_Ingress:
+          jqPathExpressions:
+            - .metadata.annotations."external-dns.kubernetes.io/target"
+        _Service:
+          jqPathExpressions:
+            - .metadata.annotations."external-dns.kubernetes.io/target"
   oidc.config: |
     name: Zitadel
     issuer: https://auth.whitestar.systems
@@ -29,7 +35,7 @@ data:
       - email
       - groups
     logoutURL: https://auth.whitestar.systems/oidc/v1/end_session
-  admin.enabled: 'false'
+  admin.enabled: "false"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -40,7 +46,7 @@ metadata:
   name: argocd-cmd-params-cm
   namespace: argocd
 data:
-  server.insecure: 'true'
+  server.insecure: "true"
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
@@ -58,8 +64,8 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: argocd-rbac-cm
 data:
-  scopes: '[groups]'
+  scopes: "[groups]"
   policy.csv: |
     g, argocd_administrators, role:admin
     g, argocd_users, role:readonly
-  policy.default: ''
+  policy.default: ""

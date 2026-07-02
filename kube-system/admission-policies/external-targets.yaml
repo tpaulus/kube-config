@@ -1,0 +1,39 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingAdmissionPolicy
+metadata:
+  name: add-external-dns-target
+spec:
+  failurePolicy: Fail
+  reinvocationPolicy: IfNeeded
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["networking.k8s.io"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["ingresses"]
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["services"]
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: >
+          object.metadata.annotations != null &&
+          "external-dns.kubernetes.io/target" in object.metadata.annotations ?
+          Object{} :
+          Object{
+            metadata: Object{
+              annotations: {
+                "external-dns.kubernetes.io/target": "lfp.it.paulus.family"
+              }
+            }
+          }
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingAdmissionPolicyBinding
+metadata:
+  name: add-external-dns-target-binding
+spec:
+  policyName: add-external-dns-target
+  matchResources: {}

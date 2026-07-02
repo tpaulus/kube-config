@@ -1,0 +1,90 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internal-dns
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: internal-dns
+  template:
+    metadata:
+      labels:
+        app: internal-dns
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "7979"
+    spec:
+      serviceAccountName: dns-sync
+      containers:
+        - name: external-dns
+          image: registry.k8s.io/external-dns/external-dns:v0.21.0
+          args:
+            - --annotation-prefix=internal.paulus.family/
+            - --source=service
+            - --source=ingress
+            - --domain-filter=it.paulus.family
+            - --provider=webhook
+            - --webhook-provider-url=http://localhost:8888
+            - --policy=sync
+            - --registry=txt
+            - --metrics-address=:7979
+          ports:
+            - containerPort: 7979
+              name: metrics
+          resources:
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+        - name: opnsense-webhook
+          image: ghcr.io/crutonjohn/external-dns-opnsense-webhook:main
+          securityContext:
+            runAsUser: 65532
+            runAsGroup: 65532
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          args:
+            - --log-level=info
+            - --retry-max=5
+            - --retry-wait-max=60s
+          ports:
+            - containerPort: 8888
+              name: http-wh-server
+            - containerPort: 8080
+              name: http-wh-metrics
+          env:
+            - name: OPNSENSE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: opnsense-api-token
+                  key: api_key
+            - name: OPNSENSE_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: opnsense-api-token
+                  key: api_secret
+            - name: OPNSENSE_HOST
+              value: https://10.0.1.1
+            - name: OPNSENSE_SKIP_TLS_VERIFY
+              value: "true"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http-wh-metrics
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http-wh-metrics
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
