@@ -5,7 +5,7 @@ metadata:
   name: argocd-server
   namespace: argocd
 spec:
-  entryPoints: [websecure]
+  entryPoints: [websecure, web-mtls]
   routes:
     - kind: Rule
       match: Host(`argocd.ing.k3s.brickyard.whitestar.systems`)
@@ -63,7 +63,7 @@ metadata:
   name: argocd-server-ext
   namespace: argocd
 spec:
-  entryPoints: [web-ext]
+  entryPoints: [web-ext, web-mtls]
   routes:
     - kind: Rule
       match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`)

@@ -5,7 +5,7 @@ metadata:
   name: traefik-dashboard
   namespace: traefik
 spec:
-  entryPoints: [websecure]
+  entryPoints: [websecure, web-mtls]
   routes:
     - kind: Rule
       match: Host(`traefik.ing.k3s.brickyard.whitestar.systems`)

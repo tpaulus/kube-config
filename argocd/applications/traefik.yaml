@@ -26,6 +26,17 @@ spec:
                   permanent: true
           websecure:
             asDefault: true
+          web-mtls:
+            asDefault: true
+            port: 9443
+            exposedPort: 9443
+            expose:
+              default: false
+            protocol: TCP
+            http:
+              tls:
+                enabled: true
+                options: traefik-require-client-cert@kubernetescrd
           web-ext:
             port: 9200
             exposedPort: 9200

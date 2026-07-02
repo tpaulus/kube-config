@@ -13,7 +13,7 @@ kind: Ingress
 metadata:
   name: blog-ext
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: blog-inject-headers@kubernetescrd
 spec:
   rules:

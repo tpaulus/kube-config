@@ -52,7 +52,7 @@ kind: Ingress
 metadata:
   name: n8n-ext
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: n8n-jwt-verification@kubernetescrd
 spec:
   rules:

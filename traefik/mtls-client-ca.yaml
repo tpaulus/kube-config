@@ -1,0 +1,76 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: mtls-client-selfsigned
+  namespace: traefik
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mtls-client-ca
+  namespace: traefik
+spec:
+  secretName: mtls-client-ca
+  commonName: Traefik mTLS Client CA
+  duration: 87600h0m0s
+  renewBefore: 720h0m0s
+  isCA: true
+  privateKey:
+    algorithm: RSA
+    size: 4096
+  subject:
+    organizations:
+      - Paulus Family
+  usages:
+    - cert sign
+    - crl sign
+  issuerRef:
+    name: mtls-client-selfsigned
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: mtls-client-ca
+  namespace: traefik
+spec:
+  ca:
+    secretName: mtls-client-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tom-laptop-client-cert
+  namespace: traefik
+spec:
+  secretName: tom-laptop-client-cert
+  commonName: tom-laptop
+  duration: 8760h0m0s
+  renewBefore: 720h0m0s
+  privateKey:
+    algorithm: RSA
+    size: 2048
+  subject:
+    organizations:
+      - Paulus Family
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  issuerRef:
+    name: mtls-client-ca
+    kind: Issuer
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: require-client-cert
+  namespace: traefik
+spec:
+  clientAuth:
+    secretNames:
+      - mtls-client-ca
+    clientAuthType: RequireAndVerifyClientCert

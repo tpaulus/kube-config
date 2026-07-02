@@ -45,7 +45,7 @@ metadata:
   name: netbox-ext
   namespace: netbox
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: netbox-inject-headers@kubernetescrd,netbox-jwt-verification@kubernetescrd
 spec:
   rules:

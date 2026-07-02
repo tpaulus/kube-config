@@ -46,7 +46,7 @@ kind: Ingress
 metadata:
   name: paperless-ext
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: paperless-ngx-inject-headers@kubernetescrd,paperless-ngx-jwt-verification@kubernetescrd
 spec:
   rules:

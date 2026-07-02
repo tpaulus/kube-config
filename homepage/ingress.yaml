@@ -5,7 +5,7 @@ metadata:
   name: homepage
   namespace: homepage
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web-mtls
 spec:
   ingressClassName: traefik
   rules:
