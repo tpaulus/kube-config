@@ -204,10 +204,10 @@ data:
       name: "Paperless"
       type: HTTP
       targets {
-        host_names: "paperless.paulus.family"
+        host_names: "paperless-ngx.paperless-ngx"
       }
       http_probe {
-        protocol: HTTPS
+        protocol: HTTP
       }
       validator {
           name: "status_code_2|3xx"
