@@ -22,6 +22,7 @@ spec:
         - name: external-dns
           image: registry.k8s.io/external-dns/external-dns:v0.21.0
           args:
+            - --annotation-prefix=external-dns.kubernetes.io/
             - --source=service
             - --source=ingress
             - --domain-filter=it.paulus.family
