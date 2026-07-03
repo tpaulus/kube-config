@@ -24,7 +24,7 @@ spec:
       dnsConfig:
         options:
           - name: ndots
-            value: '1'
+            value: "1"
       dnsPolicy: ClusterFirst
       containers:
         - name: jellyplex-watched
@@ -39,9 +39,9 @@ spec:
               cpu: 500m
           env:
             - name: PUID
-              value: '1000'
+              value: "1000"
             - name: PGID
-              value: '1000'
+              value: "1000"
           envFrom:
             - configMapRef:
                 name: jellyplex-watched-config
@@ -66,26 +66,27 @@ metadata:
   name: jellyplex-watched-config
   namespace: jellyfin
 data:
-  DRYRUN: 'False'
+  DRYRUN: "False"
   DEBUG_LEVEL: DEBUG
-  RUN_ONLY_ONCE: 'False'
-  SLEEP_DURATION: '3600'
+  RUN_ONLY_ONCE: "False"
+  SLEEP_DURATION: "3600"
   LOG_FILE: /tmp/jellyplex-watched.log
   MARK_FILE: /tmp/jellyplex-watched-mark.log
-  REQUEST_TIMEOUT: '300'
-  MAX_THREADS: '1'
-  GENERATE_GUIDS: 'True'
-  GENERATE_LOCATIONS: 'True'
-  SSL_BYPASS: 'False'
-  SYNC_FROM_PLEX_TO_JELLYFIN: 'True'
-  SYNC_FROM_JELLYFIN_TO_PLEX: 'True'
-  SYNC_FROM_PLEX_TO_PLEX: 'False'
-  SYNC_FROM_PLEX_TO_EMBY: 'False'
-  SYNC_FROM_JELLYFIN_TO_JELLYFIN: 'False'
-  SYNC_FROM_JELLYFIN_TO_EMBY: 'False'
-  SYNC_FROM_EMBY_TO_PLEX: 'False'
-  SYNC_FROM_EMBY_TO_JELLYFIN: 'False'
-  SYNC_FROM_EMBY_TO_EMBY: 'False'
+  REQUEST_TIMEOUT: "300"
+  MAX_THREADS: "1"
+  GENERATE_GUIDS: "True"
+  GENERATE_LOCATIONS: "True"
+  SSL_BYPASS: "False"
+  SYNC_FROM_PLEX_TO_JELLYFIN: "True"
+  SYNC_FROM_JELLYFIN_TO_PLEX: "True"
+  SYNC_FROM_PLEX_TO_PLEX: "False"
+  SYNC_FROM_PLEX_TO_EMBY: "False"
+  SYNC_FROM_JELLYFIN_TO_JELLYFIN: "False"
+  SYNC_FROM_JELLYFIN_TO_EMBY: "False"
+  SYNC_FROM_EMBY_TO_PLEX: "False"
+  SYNC_FROM_EMBY_TO_JELLYFIN: "False"
+  SYNC_FROM_EMBY_TO_EMBY: "False"
+  LIBRARY_MAPPING: '{ "Shows": "TV Shows", "Movie": "Movies" }'
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
