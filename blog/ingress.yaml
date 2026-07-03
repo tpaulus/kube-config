@@ -11,26 +11,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: blog-ext
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
-    traefik.ingress.kubernetes.io/router.middlewares: blog-inject-headers@kubernetescrd
-spec:
-  rules:
-    - host: blog.auth-ing.k3s.brickyard.whitestar.systems
-      http: &rules
-        paths:
-          - backend:
-              service:
-                name: ghost
-                port:
-                  number: 2368
-            path: /
-            pathType: Prefix
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
   name: blog-cloudflare-origin-pull
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
@@ -67,23 +47,3 @@ spec:
   issuerRef:
     name: letsencrypt-cf-prod
     kind: ClusterIssuer
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: blog-tailscale
-spec:
-  ingressClassName: tailscale
-  tls:
-    - hosts:
-        - blog
-  rules:
-    - http:
-        paths:
-          - backend:
-              service:
-                name: ghost
-                port:
-                  number: 2368
-            path: /
-            pathType: Prefix

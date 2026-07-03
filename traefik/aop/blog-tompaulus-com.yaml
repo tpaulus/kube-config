@@ -7,7 +7,7 @@ metadata:
 spec:
   secretName: blog-cloudflare-origin-pull-client-cert
   commonName: blog.tompaulus.com
-  duration: 8760h0m0s
+  duration: 8760h0m0s # TODO - CF Limits this to 1 year, so we should reduce this to match and automate the upload
   renewBefore: 720h0m0s
   privateKey:
     algorithm: RSA
