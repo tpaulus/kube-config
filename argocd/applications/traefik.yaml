@@ -44,6 +44,20 @@ spec:
             http:
               middlewares:
                 - traefik-rewrite-cf-tunnel-headers@kubernetescrd
+        accessLog:
+          enabled: true
+          format: json
+          filters:
+            statusCodes: 400-599
+          fields:
+            headers:
+              defaultMode: drop
+              names:
+                CF-Connecting-IP: keep
+                CF-Ray: keep
+                User-Agent: keep
+                X-Forwarded-For: keep
+                X-Forwarded-Proto: keep
         experimental:
           plugins:
             jwt:
