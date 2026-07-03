@@ -24,8 +24,8 @@ data:
         key: "type"
         value: "dns"
       }
-      interval_msec: 5000  # 5s
-      timeout_msec: 1000   # 1s
+      interval_msec: 30000  # 30s
+      timeout_msec: 5000   # 5s
     }
 
     probe {
