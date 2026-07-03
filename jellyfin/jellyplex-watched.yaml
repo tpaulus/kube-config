@@ -67,7 +67,7 @@ metadata:
   namespace: jellyfin
 data:
   DRYRUN: 'False'
-  DEBUG_LEVEL: INFO
+  DEBUG_LEVEL: DEBUG
   RUN_ONLY_ONCE: 'False'
   SLEEP_DURATION: '3600'
   LOG_FILE: /tmp/jellyplex-watched.log
