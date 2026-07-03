@@ -54,6 +54,7 @@ spec:
               version: v1.3.3
         providers:
           kubernetesIngress:
+            allowExternalNameServices: true
             publishedService:
               enabled: true
     repoURL: https://traefik.github.io/charts

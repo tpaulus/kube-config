@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+spec:
+  secretName: home-assistant-tls
+  duration: 720h0m0s # 30 days
+  dnsNames:
+    - home.paulus.family
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer

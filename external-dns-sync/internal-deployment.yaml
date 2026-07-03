@@ -26,6 +26,7 @@ spec:
             - --source=service
             - --source=ingress
             - --domain-filter=it.paulus.family
+            - --domain-filter=home.paulus.family
             - --provider=webhook
             - --webhook-provider-url=http://localhost:8888
             - --policy=sync

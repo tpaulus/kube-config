@@ -1,0 +1,26 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+  annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
+    internal.paulus.family/target: broadmoor.brickyard.whitestar.systems
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - home.paulus.family
+      secretName: home-assistant-tls
+  rules:
+    - host: home.paulus.family
+      http:
+        paths:
+          - backend:
+              service:
+                name: home-assistant
+                port:
+                  number: 8123
+            path: /
+            pathType: Prefix
