@@ -1,0 +1,24 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mel-iphone-client-cert
+  namespace: traefik
+spec:
+  secretName: mel-iphone-client-cert
+  commonName: mel-iphone
+  duration: 8760h0m0s
+  renewBefore: 720h0m0s
+  privateKey:
+    algorithm: RSA
+    size: 2048
+  subject:
+    organizations:
+      - Paulus Family
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  issuerRef:
+    name: mtls-client-ca
+    kind: Issuer
