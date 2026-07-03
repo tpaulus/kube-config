@@ -14,7 +14,7 @@ spec:
     helm:
       parameters:
         - name: deployment.replicas
-          value: '2'
+          value: "2"
       values: |
         ports:
           web:
@@ -31,7 +31,7 @@ spec:
             port: 9443
             exposedPort: 9443
             expose:
-              default: false
+              default: true
             protocol: TCP
             http:
               tls:
