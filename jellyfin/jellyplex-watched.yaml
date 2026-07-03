@@ -18,6 +18,9 @@ spec:
         app: jellyplex-watched
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: jellyplex-watched
           image: luigi311/jellyplex-watched:latest
@@ -45,6 +48,9 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
       volumes:
         - name: tmp
           emptyDir: {}
