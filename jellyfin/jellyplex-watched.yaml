@@ -87,6 +87,7 @@ data:
   SYNC_FROM_EMBY_TO_JELLYFIN: "False"
   SYNC_FROM_EMBY_TO_EMBY: "False"
   LIBRARY_MAPPING: '{ "Shows": "TV Shows", "Movie": "Movies" }'
+  USER_MAPPING: '{ "tpaulus": "tpaulus", "swimc6": "mel" }'
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
