@@ -13,7 +13,7 @@ kind: Ingress
 metadata:
   name: blog-ext
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
     traefik.ingress.kubernetes.io/router.middlewares: blog-inject-headers@kubernetescrd
 spec:
   rules:
@@ -27,8 +27,46 @@ spec:
                   number: 2368
             path: /
             pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blog-cloudflare-origin-pull
+  annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
+    traefik.ingress.kubernetes.io/router.middlewares: blog-inject-headers@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls.options: traefik-require-cloudflare-origin-pull@kubernetescrd
+spec:
+  tls:
+    - hosts:
+        - blog.tompaulus.com
+      secretName: blog-tompaulus-com-cert
+  rules:
     - host: blog.tompaulus.com
-      http: *rules
+      http:
+        paths:
+          - backend:
+              service:
+                name: ghost
+                port:
+                  number: 2368
+            path: /
+            pathType: Prefix
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: blog-tompaulus-com-cert
+spec:
+  secretName: blog-tompaulus-com-cert
+  duration: 2160h0m0s
+  dnsNames:
+    - blog.tompaulus.com
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

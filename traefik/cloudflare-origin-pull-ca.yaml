@@ -1,0 +1,52 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cloudflare-origin-pull-selfsigned
+  namespace: traefik
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cloudflare-origin-pull-ca
+  namespace: traefik
+spec:
+  secretName: cloudflare-origin-pull-ca
+  commonName: Cloudflare Authenticated Origin Pull CA
+  duration: 87600h0m0s
+  renewBefore: 720h0m0s
+  isCA: true
+  privateKey:
+    algorithm: RSA
+    size: 4096
+  subject:
+    organizations:
+      - Paulus Family
+  usages:
+    - cert sign
+    - crl sign
+  issuerRef:
+    name: cloudflare-origin-pull-selfsigned
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cloudflare-origin-pull-ca
+  namespace: traefik
+spec:
+  ca:
+    secretName: cloudflare-origin-pull-ca
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: require-cloudflare-origin-pull
+  namespace: traefik
+spec:
+  clientAuth:
+    secretNames:
+      - cloudflare-origin-pull-ca
+    clientAuthType: RequireAndVerifyClientCert
