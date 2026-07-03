@@ -173,10 +173,21 @@ data:
       name: "Blog"
       type: HTTP
       targets {
-        host_names: "blog.tompaulus.com"
+        endpoint {
+          name: "ghost.blog.svc.cluster.local"
+          port: 2368
+        }
       }
       http_probe {
-        protocol: HTTPS
+        protocol: HTTP
+        header {
+          key: "Host"
+          value: "blog.tompaulus.com"
+        }
+        header {
+          key: "X-Forwarded-Proto"
+          value: "https"
+        }
       }
       validator {
           name: "status_code_2xx"
