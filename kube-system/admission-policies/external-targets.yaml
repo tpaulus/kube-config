@@ -1,41 +1,85 @@
 apiVersion: admissionregistration.k8s.io/v1
-kind: MutatingAdmissionPolicy
+kind: ValidatingAdmissionPolicy
 metadata:
-  name: add-external-dns-target
+  name: require-external-dns-target-ingress
 spec:
   failurePolicy: Fail
-  reinvocationPolicy: IfNeeded
   matchConstraints:
     resourceRules:
       - apiGroups: ["networking.k8s.io"]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["ingresses"]
+  validations:
+    - expression: >
+        !(
+          (
+            has(object.spec.rules) &&
+            object.spec.rules.exists(rule,
+              has(rule.host) &&
+              (rule.host == "it.paulus.family" || rule.host.endsWith(".it.paulus.family"))
+            )
+          ) ||
+          (
+            has(object.spec.tls) &&
+            object.spec.tls.exists(tls,
+              has(tls.hosts) &&
+              tls.hosts.exists(host, host == "it.paulus.family" || host.endsWith(".it.paulus.family"))
+            )
+          )
+        ) ||
+        (
+          object.metadata.annotations != null &&
+          "external-dns.kubernetes.io/target" in object.metadata.annotations &&
+          object.metadata.annotations["external-dns.kubernetes.io/target"] != ""
+        )
+      message: Ingresses for it.paulus.family hosts must set external-dns.kubernetes.io/target.
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: require-external-dns-target-ingress-binding
+spec:
+  policyName: require-external-dns-target-ingress
+  validationActions: [Deny]
+  matchResources: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: require-external-dns-target-service
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
       - apiGroups: [""]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["services"]
-  matchConditions:
-    - name: target-annotation-missing
-      expression: >
+  validations:
+    - expression: >
         object.metadata.annotations == null ||
-        !("external-dns.kubernetes.io/target" in object.metadata.annotations)
-  mutations:
-    - patchType: ApplyConfiguration
-      applyConfiguration:
-        expression: >
-          Object{
-            metadata: Object.metadata{
-              annotations: {
-                "external-dns.kubernetes.io/target": "lfp.it.paulus.family"
-              }
-            }
-          }
+        !(
+          (
+            "external-dns.kubernetes.io/hostname" in object.metadata.annotations &&
+            object.metadata.annotations["external-dns.kubernetes.io/hostname"].matches("(^|.*,\\s*)([^,]+\\.)?it\\.paulus\\.family\\.?\\s*(,.*|$)")
+          ) ||
+          (
+            "external-dns.alpha.kubernetes.io/hostname" in object.metadata.annotations &&
+            object.metadata.annotations["external-dns.alpha.kubernetes.io/hostname"].matches("(^|.*,\\s*)([^,]+\\.)?it\\.paulus\\.family\\.?\\s*(,.*|$)")
+          )
+        ) ||
+        (
+          "external-dns.kubernetes.io/target" in object.metadata.annotations &&
+          object.metadata.annotations["external-dns.kubernetes.io/target"] != ""
+        )
+      message: Services for it.paulus.family hostnames must set external-dns.kubernetes.io/target.
 ---
 apiVersion: admissionregistration.k8s.io/v1
-kind: MutatingAdmissionPolicyBinding
+kind: ValidatingAdmissionPolicyBinding
 metadata:
-  name: add-external-dns-target-binding
+  name: require-external-dns-target-service-binding
 spec:
-  policyName: add-external-dns-target
+  policyName: require-external-dns-target-service
+  validationActions: [Deny]
   matchResources: {}

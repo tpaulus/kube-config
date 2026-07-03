@@ -5,6 +5,7 @@ metadata:
   name: homepage
   namespace: homepage
   annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
     traefik.ingress.kubernetes.io/router.entrypoints: websecure,web-mtls
 spec:
   ingressClassName: traefik

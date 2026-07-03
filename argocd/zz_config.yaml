@@ -17,13 +17,6 @@ data:
         hs = {}
         hs.status = "Healthy"
         return hs
-    ignoreDifferences:
-        networking.k8s.io_Ingress:
-          jqPathExpressions:
-            - .metadata.annotations."external-dns.kubernetes.io/target"
-        _Service:
-          jqPathExpressions:
-            - .metadata.annotations."external-dns.kubernetes.io/target"
   oidc.config: |
     name: Zitadel
     issuer: https://auth.whitestar.systems
