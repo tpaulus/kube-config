@@ -21,6 +21,11 @@ spec:
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+      dnsConfig:
+        options:
+          - name: ndots
+            value: '1'
+      dnsPolicy: ClusterFirst
       containers:
         - name: jellyplex-watched
           image: luigi311/jellyplex-watched:latest
