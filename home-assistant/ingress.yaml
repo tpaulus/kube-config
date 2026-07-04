@@ -7,6 +7,7 @@ metadata:
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     internal.paulus.family/target: 10.0.10.16 # OPNSense Unbound Only Supports IP Addresses, not CNAMES
+    traefik.ingress.kubernetes.io/service.serversscheme: h2c
 spec:
   ingressClassName: traefik
   tls:
