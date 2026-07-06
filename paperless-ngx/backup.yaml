@@ -18,13 +18,9 @@ data:
     type = b2
     hard_delete = true
 
-    [compress-b2]
-    type = compress
-    remote = b2:paulus-family-paperless
-
     [encrypt-compress-b2]
     type = crypt
-    remote = compress-b2:/
+    remote = b2:paulus-family-paperless/encrypted
     filename_encryption = standard
     directory_name_encryption = true
 ---
@@ -75,6 +71,7 @@ data:
     POD_LABEL="app=paperless-ngx"
     CONTAINER="paperless-ngx"
     EXPORT_PATH="/usr/src/paperless/export"
+    EXPORT_ARCHIVE="paperless-ngx-export.zip"
     LOCAL_BACKUP="/backup"
     
     echo "$(date): Starting Paperless-ngx export..."
@@ -88,16 +85,16 @@ data:
     
     echo "Running document_exporter in pod..."
     kubectl exec -n ${NAMESPACE} ${POD_NAME} -c ${CONTAINER} -- \
-      bash -c "rm -rf ${EXPORT_PATH}/* && document_exporter ${EXPORT_PATH}"
+      bash -c "rm -rf ${EXPORT_PATH}/* && PAPERLESS_SCRATCH_DIR=${EXPORT_PATH}/scratch document_exporter ${EXPORT_PATH} --zip --zip-name ${EXPORT_ARCHIVE%.zip} --no-progress-bar"
     
-    echo "Copying export from pod..."
-    kubectl cp ${NAMESPACE}/${POD_NAME}:${EXPORT_PATH} ${LOCAL_BACKUP} -c ${CONTAINER}
+    echo "Copying export archive from pod..."
+    kubectl cp ${NAMESPACE}/${POD_NAME}:${EXPORT_PATH}/${EXPORT_ARCHIVE} ${LOCAL_BACKUP}/${EXPORT_ARCHIVE} -c ${CONTAINER}
     
     echo "Cleaning up export in pod..."
     kubectl exec -n ${NAMESPACE} ${POD_NAME} -c ${CONTAINER} -- rm -rf ${EXPORT_PATH}/*
     
-    echo "$(date): Export completed! Files in ${LOCAL_BACKUP}:"
-    ls -la ${LOCAL_BACKUP}
+    echo "$(date): Export completed! Backup archive:"
+    ls -lh ${LOCAL_BACKUP}/${EXPORT_ARCHIVE}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -108,11 +105,40 @@ data:
   upload.sh: |
     #!/bin/sh
     set -e
-    
+
+    REMOTE="encrypt-compress-b2:/"
+    B2_BUCKET="b2:paulus-family-paperless"
+    MIGRATION_MARKER=".paperless-backup-layout-v2"
+
     echo "$(date): Uploading backup to B2..."
     rclone --config /rclone-config/rclone.conf \
-      sync /backup encrypt-compress-b2:/
-    
+      sync /backup "${REMOTE}" \
+      --b2-hard-delete
+
+    MARKER_LIST=$(rclone --config /rclone-config/rclone.conf \
+      lsf "${B2_BUCKET}" \
+      --files-only \
+      --include "/${MIGRATION_MARKER}")
+
+    if ! printf '%s\n' "${MARKER_LIST}" | grep -qx "${MIGRATION_MARKER}"; then
+      echo "$(date): Removing old compressed backup layout from B2..."
+      rclone --config /rclone-config/rclone.conf \
+        delete "${B2_BUCKET}" \
+        --filter "- /encrypted/**" \
+        --filter "- /${MIGRATION_MARKER}" \
+        --filter "+ /**" \
+        --b2-hard-delete
+
+      printf 'paperless backup layout v2\n' | \
+        rclone --config /rclone-config/rclone.conf \
+          rcat "${B2_BUCKET}/${MIGRATION_MARKER}"
+    fi
+
+    echo "$(date): Pruning old B2 file versions..."
+    rclone --config /rclone-config/rclone.conf \
+      cleanup "${B2_BUCKET}" \
+      --b2-hard-delete
+
     echo "$(date): Backup uploaded to B2!"
 ---
 apiVersion: batch/v1
