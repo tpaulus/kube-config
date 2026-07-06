@@ -281,15 +281,6 @@ data:
       }
       http_probe {
         protocol: HTTPS
-
-        header {
-          key: "CF-Access-Client-Id"
-          value: "{{env "CF_ACCESS_ID" }}"
-        }
-        header {
-          key: "CF-Access-Client-Secret"
-          value: "{{env "CF_ACCESS_SECRET" }}"
-        }
       }
       validator {
           name: "status_code_2xx"
