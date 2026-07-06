@@ -9,6 +9,8 @@ spec:
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
+      completions: 1
+      parallelism: 1
       backoffLimit: 1
       template:
         spec:
