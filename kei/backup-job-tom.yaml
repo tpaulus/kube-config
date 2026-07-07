@@ -40,7 +40,7 @@ spec:
                   mountPath: /session-seed
           containers:
             - name: backup-photos
-              image: ghcr.io/rhoopr/kei:0.22.10
+              image: ghcr.io/rhoopr/kei:0.22.11
               command:
                 - sh
                 - -ec
