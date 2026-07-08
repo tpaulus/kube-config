@@ -108,37 +108,21 @@ data:
 
     REMOTE="encrypt-compress-b2:/"
     B2_BUCKET="b2:paulus-family-paperless"
-    MIGRATION_MARKER=".paperless-backup-layout-v2"
     RCLONE_FLAGS="--transfers 1 --checkers 4 --b2-upload-concurrency 1 --b2-chunk-size 64Mi --buffer-size 0"
+
+    echo "$(date): Removing backup objects outside the current encrypted layout..."
+    rclone --config /rclone-config/rclone.conf \
+      delete "${B2_BUCKET}" \
+      ${RCLONE_FLAGS} \
+      --disable ListR \
+      --exclude "/encrypted/**" \
+      --b2-hard-delete
 
     echo "$(date): Uploading backup to B2..."
     rclone --config /rclone-config/rclone.conf \
       sync /backup "${REMOTE}" \
       ${RCLONE_FLAGS} \
       --b2-hard-delete
-
-    MARKER_LIST=$(rclone --config /rclone-config/rclone.conf \
-      lsf "${B2_BUCKET}" \
-      ${RCLONE_FLAGS} \
-      --files-only \
-      --include "/${MIGRATION_MARKER}")
-
-    if ! printf '%s\n' "${MARKER_LIST}" | grep -qx "${MIGRATION_MARKER}"; then
-      echo "$(date): Removing old compressed backup layout from B2..."
-      rclone --config /rclone-config/rclone.conf \
-        delete "${B2_BUCKET}" \
-        ${RCLONE_FLAGS} \
-        --disable ListR \
-        --filter "- /encrypted/**" \
-        --filter "- /${MIGRATION_MARKER}" \
-        --filter "+ /**" \
-        --b2-hard-delete
-
-      printf 'paperless backup layout v2\n' | \
-        rclone --config /rclone-config/rclone.conf \
-          ${RCLONE_FLAGS} \
-          rcat "${B2_BUCKET}/${MIGRATION_MARKER}"
-    fi
 
     echo "$(date): Backup uploaded to B2!"
 ---
