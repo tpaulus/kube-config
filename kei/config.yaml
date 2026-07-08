@@ -11,6 +11,13 @@ data:
     [download]
     directory = "/photos"
     folder_structure = "%Y/%m/%d"
+    threads = 1
+
+    [download.retry]
+    per_transfer = 1
+
+    [photos]
+    file_match_policy = "name-id7"
 
     [ui]
     progress_bar = false
