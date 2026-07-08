@@ -4,11 +4,13 @@ kind: Service
 metadata:
   name: home-assistant
   namespace: home-assistant
+  annotations:
+    traefik.ingress.kubernetes.io/service.serverstransport: home-assistant-upstream-tls@kubernetescrd
 spec:
   type: ExternalName
   externalName: broadmoor.brickyard.whitestar.systems
   ports:
-    - name: http
+    - name: https
       protocol: TCP
-      port: 8123
-      targetPort: 8123
+      port: 443
+      targetPort: 443

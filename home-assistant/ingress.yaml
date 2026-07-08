@@ -7,7 +7,7 @@ metadata:
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     internal.paulus.family/target: 10.0.10.16 # OPNSense Unbound Only Supports IP Addresses, not CNAMES
-    traefik.ingress.kubernetes.io/service.serversscheme: h2c
+    traefik.ingress.kubernetes.io/service.serversscheme: https
 spec:
   ingressClassName: traefik
   tls:
@@ -22,6 +22,6 @@ spec:
               service:
                 name: home-assistant
                 port:
-                  number: 8123
+                  name: https
             path: /
             pathType: Prefix
