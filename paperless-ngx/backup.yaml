@@ -107,24 +107,56 @@ data:
     set -e
 
     REMOTE="encrypt-compress-b2:/"
+    REMOTE_ROOT="${REMOTE}backups"
+    BACKUP_ID=$(date -u +%Y%m%dT%H%M%SZ)
+    BACKUP_REMOTE="${REMOTE_ROOT}/${BACKUP_ID}"
+    BACKUP_RETENTION=4
     B2_BUCKET="b2:paulus-family-paperless"
     RCLONE_FLAGS="--transfers 1 --checkers 4 --b2-upload-concurrency 1 --b2-chunk-size 64Mi --buffer-size 0"
 
-    echo "$(date): Removing backup objects outside the current encrypted layout..."
+    echo "$(date): Uploading backup to B2 generation ${BACKUP_ID}..."
+    rclone --config /rclone-config/rclone.conf \
+      copy /backup "${BACKUP_REMOTE}" \
+      ${RCLONE_FLAGS} \
+      --b2-hard-delete
+
+    echo "$(date): Verifying uploaded backup..."
+    rclone --config /rclone-config/rclone.conf \
+      check /backup "${BACKUP_REMOTE}" \
+      ${RCLONE_FLAGS} \
+      --one-way
+
+    echo "$(date): Removing legacy backup layouts..."
+    rclone --config /rclone-config/rclone.conf \
+      delete "${REMOTE}" \
+      ${RCLONE_FLAGS} \
+      --exclude "/backups/**" \
+      --b2-hard-delete
+
     rclone --config /rclone-config/rclone.conf \
       delete "${B2_BUCKET}" \
       ${RCLONE_FLAGS} \
-      --disable ListR \
       --exclude "/encrypted/**" \
       --b2-hard-delete
 
-    echo "$(date): Uploading backup to B2..."
-    rclone --config /rclone-config/rclone.conf \
-      sync /backup "${REMOTE}" \
+    BACKUPS=$(rclone --config /rclone-config/rclone.conf \
+      lsf "${REMOTE_ROOT}" \
       ${RCLONE_FLAGS} \
-      --b2-hard-delete
+      --dirs-only | sed 's#/$##' | sed '/^$/d' | sort)
+    BACKUP_COUNT=$(printf '%s\n' "${BACKUPS}" | sed '/^$/d' | wc -l)
+    PRUNE_COUNT=$((BACKUP_COUNT - BACKUP_RETENTION))
 
-    echo "$(date): Backup uploaded to B2!"
+    if [ "${PRUNE_COUNT}" -gt 0 ]; then
+      echo "$(date): Pruning ${PRUNE_COUNT} old backup generation(s)..."
+      printf '%s\n' "${BACKUPS}" | head -n "${PRUNE_COUNT}" | while IFS= read -r BACKUP; do
+        rclone --config /rclone-config/rclone.conf \
+          purge "${REMOTE_ROOT}/${BACKUP}" \
+          ${RCLONE_FLAGS} \
+          --b2-hard-delete
+      done
+    fi
+
+    echo "$(date): Backup uploaded to B2 generation ${BACKUP_ID}!"
 ---
 apiVersion: batch/v1
 kind: CronJob
