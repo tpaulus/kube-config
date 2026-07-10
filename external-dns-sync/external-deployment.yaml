@@ -26,6 +26,8 @@ spec:
             - --events
             - --source=service
             - --source=ingress
+            - --source=traefik-proxy
+            - --domain-filter=sso.paulus.family
             - --domain-filter=it.paulus.family
             - --domain-filter=home.paulus.family
             - --domain-filter=tompaulus.com
