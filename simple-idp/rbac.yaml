@@ -81,7 +81,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: sync
-          image: registry.k8s.io/kubectl:v1.33.4
+          image: rancher/kubectl:v1.33.4
           command:
             - /bin/sh
             - -c
@@ -94,6 +94,9 @@ spec:
                 --from-file=tls.crt="${tmp}/ca.crt" \
                 --dry-run=client \
                 -o yaml | kubectl apply -f -
+          env:
+            - name: HOME
+              value: /tmp
           volumeMounts:
             - name: tmp
               mountPath: /tmp
