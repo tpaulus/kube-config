@@ -1,3 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: netbox-whitestar-systems
+  namespace: netbox
+spec:
+  secretName: netbox-whitestar-systems-cert
+  duration: 2160h0m0s
+  dnsNames:
+    - netbox.whitestar.systems
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -48,6 +61,10 @@ metadata:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     traefik.ingress.kubernetes.io/router.middlewares: netbox-inject-headers@kubernetescrd
 spec:
+  tls:
+    - hosts:
+        - netbox.whitestar.systems
+      secretName: netbox-whitestar-systems-cert
   rules:
     - host: netbox.whitestar.systems
       http:
