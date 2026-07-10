@@ -58,34 +58,105 @@ spec:
       - name: strip-forwarded-cert-headers
       - name: pass-client-cert
 ---
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-idp-authorize
+  namespace: simple-idp
+  annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: simple-idp-forward-client-cert@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls.options: simple-idp-verify-client-cert-if-given@kubernetescrd
+spec:
+  tls:
+    - hosts:
+        - sso.paulus.family
+      secretName: sso-paulus-family-cert
+  rules:
+    - host: sso.paulus.family
+      http:
+        paths:
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /authorize
+            pathType: Exact
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: simple-idp
   namespace: simple-idp
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: simple-idp-strip-forwarded-cert-headers@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls.options: simple-idp-verify-client-cert-if-given@kubernetescrd
 spec:
-  entryPoints: [websecure]
-  routes:
-    - kind: Rule
-      match: Host(`sso.paulus.family`) && Path(`/authorize`)
-      middlewares:
-        - name: forward-client-cert
-      priority: 20
-      services:
-        - name: simple-idp
-          port: 80
-    - kind: Rule
-      match: Host(`sso.paulus.family`) && (Path(`/.well-known/openid-configuration`) || Path(`/jwks.json`) || Path(`/token`) || Path(`/userinfo`) || Path(`/logout`) || Path(`/oidc/v1/end_session`) || Path(`/healthz`) || Path(`/readyz`))
-      middlewares:
-        - name: strip-forwarded-cert-headers
-      priority: 10
-      services:
-        - name: simple-idp
-          port: 80
   tls:
-    secretName: sso-paulus-family-cert
-    options:
-      name: verify-client-cert-if-given
-      namespace: simple-idp
+    - hosts:
+        - sso.paulus.family
+      secretName: sso-paulus-family-cert
+  rules:
+    - host: sso.paulus.family
+      http:
+        paths:
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /.well-known/openid-configuration
+            pathType: Exact
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /jwks.json
+            pathType: Exact
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /token
+            pathType: Exact
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /userinfo
+            pathType: Exact
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /logout
+            pathType: Exact
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /oidc/v1/end_session
+            pathType: Exact
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /healthz
+            pathType: Exact
+          - backend:
+              service:
+                name: simple-idp
+                port:
+                  number: 80
+            path: /readyz
+            pathType: Exact
