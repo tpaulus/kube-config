@@ -46,7 +46,7 @@ metadata:
   namespace: netbox
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
-    traefik.ingress.kubernetes.io/router.middlewares: netbox-inject-headers@kubernetescrd,netbox-jwt-verification@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: netbox-inject-headers@kubernetescrd
 spec:
   rules:
     - host: netbox.auth-ing.k3s.brickyard.whitestar.systems

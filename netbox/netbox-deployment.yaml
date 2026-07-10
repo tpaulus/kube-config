@@ -64,8 +64,8 @@ spec:
             - name: SOCIAL_AUTH_OIDC_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: netbox-secret
-                  key: SOCIAL_AUTH_OIDC_SECRET
+                  name: simple-idp-secrets
+                  key: NETBOX_OIDC_CLIENT_SECRET
           lifecycle:  # Will run the post-startup scripts detailed in netbox-startup-configmap.yaml
             postStart:
               exec:

@@ -18,17 +18,25 @@ data:
         hs.status = "Healthy"
         return hs
   oidc.config: |
-    name: Zitadel
-    issuer: https://auth.whitestar.systems
-    clientID: 257470643216384018@devops
-    clientSecret: $dex.zitadel.clientSecret
+    name: Simple IDP
+    issuer: https://sso.paulus.family
+    clientID: argocd
+    clientSecret: $simple-idp-secrets:ARGOCD_OIDC_CLIENT_SECRET
     requestedScopes:
       - openid
       - profile
       - email
       - groups
-    logoutURL: https://auth.whitestar.systems/oidc/v1/end_session
+    logoutURL: https://sso.paulus.family/logout
   admin.enabled: "false"
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: simple-idp-secrets
+  namespace: argocd
+spec:
+  itemPath: vaults/K3S/items/simple-idp
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -59,6 +67,7 @@ metadata:
 data:
   scopes: "[groups]"
   policy.csv: |
+    g, family, role:admin
     g, argocd_administrators, role:admin
     g, argocd_users, role:readonly
   policy.default: ""

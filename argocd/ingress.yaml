@@ -67,9 +67,6 @@ spec:
   routes:
     - kind: Rule
       match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`)
-      middlewares:
-        - name: jwt-verification
-          namespace: argocd
       priority: 10
       services:
         - name: argocd-server
@@ -77,9 +74,6 @@ spec:
     - kind: Rule
       match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`) && Header(`Content-Type`,
         `application/grpc`)
-      middlewares:
-        - name: jwt-verification
-          namespace: argocd
       priority: 11
       services:
         - name: argocd-server

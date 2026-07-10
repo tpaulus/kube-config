@@ -10,6 +10,13 @@ spec:
     - port: 3000
       targetPort: 3000
 ---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: simple-idp-secrets
+spec:
+  itemPath: vaults/K3S/items/simple-idp
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -45,7 +52,6 @@ metadata:
   name: grafana-ext
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
-    traefik.ingress.kubernetes.io/router.middlewares: grafana-jwt-verification@kubernetescrd
 spec:
   rules:
     - host: grafana.auth-ing.k3s.brickyard.whitestar.systems
