@@ -52,7 +52,6 @@ metadata:
   name: grafana-ext
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web-ext,web-mtls
 spec:
   rules:
     - host: grafana.auth-ing.k3s.brickyard.whitestar.systems

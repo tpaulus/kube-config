@@ -46,7 +46,6 @@ metadata:
   namespace: netbox
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web-ext,web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: netbox-inject-headers@kubernetescrd
 spec:
   rules:
