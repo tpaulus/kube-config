@@ -67,6 +67,8 @@ spec:
               moduleName: github.com/BetterCorp/cloudflarewarp
               version: v1.3.3
         providers:
+          kubernetesGateway:
+            enabled: true
           kubernetesIngress:
             allowExternalNameServices: true
             publishedService:

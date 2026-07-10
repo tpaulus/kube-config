@@ -1,0 +1,94 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simple-idp-config
+  namespace: simple-idp
+data:
+  config.yaml: |
+    issuer: "https://sso.paulus.family"
+    endpoints:
+      authorization: "https://sso.paulus.family/authorize"
+      token: "https://sso.paulus.family/token"
+      userinfo: "https://sso.paulus.family/userinfo"
+      jwks: "https://sso.paulus.family/jwks.json"
+      logout: "https://sso.paulus.family/logout"
+    http:
+      trustedProxyCIDRs: ["10.42.0.0/16"]
+      readTimeout: "5s"
+      writeTimeout: "10s"
+      idleTimeout: "60s"
+      maxHeaderBytes: 16384
+    forwardedClientCert:
+      pemHeader: "X-Forwarded-Tls-Client-Cert"
+      infoHeader: "X-Forwarded-Tls-Client-Cert-Info"
+      requirePem: true
+      requireInfoCommonName: true
+      caPem: "ENV:CLIENT_CA_CRT"
+    oauth:
+      authorizationCodeTTL: "60s"
+      accessTokenTTL: "10m"
+      idTokenTTL: "10m"
+      issuerClockSkew: "30s"
+      requirePKCES256: false
+      allowClientSecretPost: true
+      maxOutstandingCodes: 512
+    signingKeys:
+      - keyID: "main-rs256"
+        algorithm: "RS256"
+        privateKeyPem: "ENV:OIDC_SIGNING_KEY"
+        active: true
+    clients:
+      - id: paperless
+        name: "Paperless"
+        secret: "ENV:PAPERLESS_OIDC_CLIENT_SECRET"
+        redirectURIs:
+          - "https://paperless.paulus.family/accounts/oidc/simple-idp/login/callback/"
+        postLogoutRedirectURIs:
+          - "https://paperless.paulus.family/"
+        allowedScopes: ["openid", "profile", "email"]
+      - id: grafana
+        name: "Grafana"
+        secret: "ENV:GRAFANA_OIDC_CLIENT_SECRET"
+        redirectURIs:
+          - "https://grafana.brickyard.whitestar.systems/login/generic_oauth"
+        postLogoutRedirectURIs:
+          - "https://grafana.brickyard.whitestar.systems/"
+        allowedScopes: ["openid", "profile", "email"]
+      - id: argocd
+        name: "ArgoCD"
+        secret: "ENV:ARGOCD_OIDC_CLIENT_SECRET"
+        redirectURIs:
+          - "https://argocd.ing.k3s.brickyard.whitestar.systems/auth/callback"
+          - "https://argocd.auth-ing.k3s.brickyard.whitestar.systems/auth/callback"
+        postLogoutRedirectURIs:
+          - "https://argocd.ing.k3s.brickyard.whitestar.systems/"
+          - "https://argocd.auth-ing.k3s.brickyard.whitestar.systems/"
+        allowedScopes: ["openid", "profile", "email", "groups"]
+      - id: netbox
+        name: "NetBox"
+        secret: "ENV:NETBOX_OIDC_CLIENT_SECRET"
+        redirectURIs:
+          - "https://netbox.whitestar.systems/oauth/complete/oidc/"
+        postLogoutRedirectURIs:
+          - "https://netbox.whitestar.systems/"
+        allowedScopes: ["openid", "profile", "email", "groups"]
+    users:
+      - id: tom
+        subject: "user:tom"
+        email: "tom@paulus.family"
+        name: "Tom Paulus"
+        preferredUsername: "tom"
+        emailVerified: true
+        certificateCommonNames: ["tom-laptop", "tom-iphone"]
+        claims:
+          groups: ["family"]
+      - id: mel
+        subject: "user:mel"
+        email: "mel@paulus.family"
+        name: "Mel Paulus"
+        preferredUsername: "mel"
+        emailVerified: true
+        certificateCommonNames: ["mel-laptop", "mel-iphone"]
+        claims:
+          groups: ["family"]

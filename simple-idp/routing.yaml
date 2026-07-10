@@ -1,0 +1,143 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sso-paulus-family
+  namespace: simple-idp
+spec:
+  secretName: sso-paulus-family-cert
+  duration: 2160h0m0s
+  dnsNames:
+    - sso.paulus.family
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: verify-client-cert-if-given
+  namespace: simple-idp
+spec:
+  clientAuth:
+    secretNames:
+      - simple-idp-client-ca
+    clientAuthType: VerifyClientCertIfGiven
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-forwarded-cert-headers
+  namespace: simple-idp
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Tls-Client-Cert: ""
+      X-Forwarded-Tls-Client-Cert-Info: ""
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: pass-client-cert
+  namespace: simple-idp
+spec:
+  passTLSClientCert:
+    pem: true
+    info:
+      subject:
+        commonName: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: forward-client-cert
+  namespace: simple-idp
+spec:
+  chain:
+    middlewares:
+      - name: strip-forwarded-cert-headers
+      - name: pass-client-cert
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: simple-idp
+  namespace: simple-idp
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: websecure
+      protocol: HTTPS
+      port: 8443
+      hostname: sso.paulus.family
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: sso-paulus-family-cert
+        options:
+          traefik.io/tlsoption: simple-idp/verify-client-cert-if-given
+      allowedRoutes:
+        namespaces:
+          from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: simple-idp
+  namespace: simple-idp
+  annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
+spec:
+  parentRefs:
+    - name: simple-idp
+      sectionName: websecure
+  hostnames:
+    - sso.paulus.family
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /authorize
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: traefik.io
+            kind: Middleware
+            name: forward-client-cert
+      backendRefs:
+        - name: simple-idp
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /.well-known/openid-configuration
+        - path:
+            type: Exact
+            value: /jwks.json
+        - path:
+            type: Exact
+            value: /token
+        - path:
+            type: Exact
+            value: /userinfo
+        - path:
+            type: Exact
+            value: /logout
+        - path:
+            type: Exact
+            value: /oidc/v1/end_session
+        - path:
+            type: Exact
+            value: /healthz
+        - path:
+            type: Exact
+            value: /readyz
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: traefik.io
+            kind: Middleware
+            name: strip-forwarded-cert-headers
+      backendRefs:
+        - name: simple-idp
+          port: 80

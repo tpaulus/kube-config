@@ -1,0 +1,106 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: simple-idp-secret-sync
+  namespace: simple-idp
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: read-mtls-client-ca
+  namespace: traefik
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["mtls-client-ca"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: simple-idp-read-mtls-client-ca
+  namespace: traefik
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: read-mtls-client-ca
+subjects:
+  - kind: ServiceAccount
+    name: simple-idp-secret-sync
+    namespace: simple-idp
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: write-client-ca-copy
+  namespace: simple-idp
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "create", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: simple-idp-write-client-ca-copy
+  namespace: simple-idp
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: write-client-ca-copy
+subjects:
+  - kind: ServiceAccount
+    name: simple-idp-secret-sync
+    namespace: simple-idp
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sync-mtls-client-ca
+  namespace: simple-idp
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  template:
+    spec:
+      serviceAccountName: simple-idp-secret-sync
+      automountServiceAccountToken: true
+      restartPolicy: OnFailure
+      containers:
+        - name: sync
+          image: bitnami/kubectl:1.33.12
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              tmp="$(mktemp -d)"
+              kubectl -n traefik get secret mtls-client-ca -o jsonpath='{.data.tls\.crt}' | base64 -d > "${tmp}/ca.crt"
+              kubectl -n simple-idp create secret generic simple-idp-client-ca \
+                --from-file=ca.crt="${tmp}/ca.crt" \
+                --from-file=tls.crt="${tmp}/ca.crt" \
+                --dry-run=client \
+                -o yaml | kubectl apply -f -
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]
+      volumes:
+        - name: tmp
+          emptyDir: {}
