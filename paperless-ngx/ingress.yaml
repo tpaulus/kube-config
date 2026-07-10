@@ -47,7 +47,7 @@ metadata:
   name: paperless-ext
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
-    traefik.ingress.kubernetes.io/router.middlewares: paperless-ngx-inject-headers@kubernetescrd,paperless-ngx-jwt-verification@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: paperless-ngx-inject-headers@kubernetescrd
 spec:
   rules:
     - host: paperless.auth-ing.k3s.brickyard.whitestar.systems
