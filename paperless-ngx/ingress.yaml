@@ -1,3 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: paperless-paulus-family-cert
+  namespace: paperless-ngx
+spec:
+  secretName: paperless-paulus-family-cert
+  duration: 2160h0m0s
+  dnsNames:
+    - paperless.paulus.family
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -6,6 +20,7 @@ spec:
   tls:
     - hosts:
         - paperless.paulus.family
+      secretName: paperless-paulus-family-cert
   rules:
     - host: paperless.paulus.family
       http: &rules
@@ -49,6 +64,10 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: paperless-ngx-inject-headers@kubernetescrd
 spec:
+  tls:
+    - hosts:
+        - paperless.paulus.family
+      secretName: paperless-paulus-family-cert
   rules:
     - host: paperless.auth-ing.k3s.brickyard.whitestar.systems
       http: &rules
