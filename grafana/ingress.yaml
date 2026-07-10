@@ -51,6 +51,7 @@ kind: Ingress
 metadata:
   name: grafana-ext
   annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
 spec:
   rules:

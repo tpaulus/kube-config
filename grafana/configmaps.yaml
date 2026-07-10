@@ -5,6 +5,8 @@ metadata:
   name: grafana-config
 data:
   grafana.ini: |
+    [server]
+    root_url = https://grafana.brickyard.whitestar.systems/
     [users]
     allow_sign_up = false
     auto_assign_org = true
