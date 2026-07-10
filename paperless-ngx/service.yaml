@@ -45,6 +45,7 @@ data:
   
   PAPERLESS_SOCIAL_AUTO_SIGNUP: "true"
   PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
+  PAPERLESS_OIDC_PROVIDER_ID: "simple-idp"
   PAPERLESS_REDIRECT_LOGIN_TO_SSO: "true"
   PAPERLESS_LOGOUT_REDIRECT_URL: "https://sso.paulus.family/logout?post_logout_redirect_uri=https%3A%2F%2Fpaperless.paulus.family%2F"
 
