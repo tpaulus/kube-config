@@ -33,6 +33,8 @@ data:
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
+  labels:
+    app.kubernetes.io/part-of: argocd
   name: simple-idp-secrets
   namespace: argocd
 spec:
