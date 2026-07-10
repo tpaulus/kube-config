@@ -51,10 +51,14 @@ data:
         name: "Grafana"
         secret: "ENV:GRAFANA_OIDC_CLIENT_SECRET"
         redirectURIs:
+          - "https://grafana.ing.k3s.brickyard.whitestar.systems/login/generic_oauth"
+          - "https://grafana.auth-ing.k3s.brickyard.whitestar.systems/login/generic_oauth"
           - "https://grafana.brickyard.whitestar.systems/login/generic_oauth"
         postLogoutRedirectURIs:
+          - "https://grafana.ing.k3s.brickyard.whitestar.systems/"
+          - "https://grafana.auth-ing.k3s.brickyard.whitestar.systems/"
           - "https://grafana.brickyard.whitestar.systems/"
-        allowedScopes: ["openid", "profile", "email"]
+        allowedScopes: ["openid", "profile", "email", "groups"]
       - id: argocd
         name: "ArgoCD"
         secret: "ENV:ARGOCD_OIDC_CLIENT_SECRET"
