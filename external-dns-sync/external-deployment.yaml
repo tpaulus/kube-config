@@ -30,8 +30,10 @@ spec:
             - --domain-filter=sso.paulus.family
             - --domain-filter=it.paulus.family
             - --domain-filter=home.paulus.family
+            - --domain-filter=netbox.whitestar.systems
             - --domain-filter=tompaulus.com
             - --zone-id-filter=c4c79e93d4d2afd6c0abd49d6f26edad # paulus.family
+            - --zone-id-filter=d770ed244e20686c0a5ccd63156b9a44 # whitestar.systems
             - --zone-id-filter=1acfb1bbee8a697913eaa9c047491eb2 # tompaulus.com
             - --provider=cloudflare
             - --metrics-address=:7979

@@ -8,8 +8,8 @@ data:
   # NetBox environment variables
   # More configuration can be added via: https://docs.netbox.dev/en/stable/configuration/miscellaneous/
   ALLOWED_HOSTS: '*'
-  CSRF_TRUSTED_ORIGINS: &csrf_hosts https://netbox.whitestar.systems https://netbox.auth-ing.k3s.whitestar.systems
-    https://netbox.ing.k3s.whitestar.systems http://localhost http://::1 http://127.0.0.1
+  CSRF_TRUSTED_ORIGINS: &csrf_hosts https://netbox.whitestar.systems https://netbox.ing.k3s.brickyard.whitestar.systems
+    http://localhost http://::1 http://127.0.0.1
   CORS_ORIGIN_WHITELIST: *csrf_hosts
   CHANGELOG_RETENTION: '90'
   DB_SSLMODE: disable
