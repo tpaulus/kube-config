@@ -65,7 +65,6 @@ metadata:
   namespace: simple-idp
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.middlewares: simple-idp-forward-client-cert@kubernetescrd
     traefik.ingress.kubernetes.io/router.tls.options: simple-idp-verify-client-cert-if-given@kubernetescrd
 spec:
@@ -92,7 +91,6 @@ metadata:
   namespace: simple-idp
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.middlewares: simple-idp-strip-forwarded-cert-headers@kubernetescrd
     traefik.ingress.kubernetes.io/router.tls.options: simple-idp-verify-client-cert-if-given@kubernetescrd
 spec:
