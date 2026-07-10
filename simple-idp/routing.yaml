@@ -63,6 +63,8 @@ kind: Gateway
 metadata:
   name: simple-idp
   namespace: simple-idp
+  annotations:
+    traefik.io/tlsoptions: simple-idp/verify-client-cert-if-given
 spec:
   gatewayClassName: traefik
   listeners:
