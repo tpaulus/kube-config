@@ -82,7 +82,7 @@ data:
         emailVerified: true
         certificateCommonNames: ["tom-laptop", "tom-iphone"]
         claims:
-          groups: ["family"]
+          groups: ["family", "netbox_admin", "netbox_staff"]
       - id: mel
         subject: "user:mel"
         email: "mel@paulus.family"
