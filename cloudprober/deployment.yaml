@@ -34,9 +34,6 @@ spec:
             limits:
               memory: 256Mi
               cpu: 200m
-          envFrom:
-            - secretRef:
-                name: cf-access-keys
           volumeMounts:
             - name: config
               mountPath: /config

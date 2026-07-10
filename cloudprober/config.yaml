@@ -63,19 +63,14 @@ data:
       name: "Grafana"
       type: HTTP
       targets {
-        host_names: "grafana.brickyard.whitestar.systems"
+        endpoint {
+          name: "grafana.grafana"
+          port: 3000
+        }
       }
       http_probe {
-        protocol: HTTPS
-
-        header {
-          key: "CF-Access-Client-Id"
-          value: "{{env "CF_ACCESS_ID" }}"
-        }
-        header {
-          key: "CF-Access-Client-Secret"
-          value: "{{env "CF_ACCESS_SECRET" }}"
-        }
+        protocol: HTTP
+        relative_url: "/api/health"
       }
       validator {
           name: "status_code_2xx"
@@ -85,7 +80,7 @@ data:
       }
       validator {
           name: "expected_content"
-          regex: "app-grafana"
+          regex: "\"database\": \"ok\""
       }
       additional_label {
         key: "location"
@@ -103,19 +98,14 @@ data:
       name: "Netbox"
       type: HTTP
       targets {
-        host_names: "netbox.whitestar.systems"
+        endpoint {
+          name: "netbox.netbox"
+          port: 80
+        }
       }
       http_probe {
-        protocol: HTTPS
-
-        header {
-          key: "CF-Access-Client-Id"
-          value: "{{env "CF_ACCESS_ID" }}"
-        }
-        header {
-          key: "CF-Access-Client-Secret"
-          value: "{{env "CF_ACCESS_SECRET" }}"
-        }
+        protocol: HTTP
+        relative_url: "/login/"
       }
       validator {
           name: "status_code_2xx"
@@ -474,11 +464,3 @@ data:
         value: "HAM"
       }
     }
-
----
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-metadata:
-  name: cf-access-keys
-spec:
-  itemPath: "vaults/K3S/items/CloudProber"
