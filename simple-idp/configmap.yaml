@@ -6,13 +6,13 @@ metadata:
   namespace: simple-idp
 data:
   config.yaml: |
-    issuer: "https://sso.paulus.family"
+    issuer: "https://sign-on-config.paulus.family"
     endpoints:
       authorization: "https://sso.paulus.family/authorize"
-      token: "https://sso.paulus.family/token"
-      userinfo: "https://sso.paulus.family/userinfo"
-      jwks: "https://sso.paulus.family/jwks.json"
-      logout: "https://sso.paulus.family/logout"
+      token: "https://sign-on-config.paulus.family/token"
+      userinfo: "https://sign-on-config.paulus.family/userinfo"
+      jwks: "https://sign-on-config.paulus.family/jwks.json"
+      logout: "https://sign-on-config.paulus.family/logout"
     http:
       trustedProxyCIDRs: ["10.42.0.0/16"]
       readTimeout: "5s"

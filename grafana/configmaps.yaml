@@ -21,8 +21,8 @@ data:
     client_secret = $__env{GRAFANA_OIDC_CLIENT_SECRET}
     scopes = openid profile email groups
     auth_url = https://sso.paulus.family/authorize
-    token_url = https://sso.paulus.family/token
-    api_url = https://sso.paulus.family/userinfo
+    token_url = https://sign-on-config.paulus.family/token
+    api_url = https://sign-on-config.paulus.family/userinfo
     login_attribute_path = preferred_username
     name_attribute_path = name
     email_attribute_path = email

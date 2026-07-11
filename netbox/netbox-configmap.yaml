@@ -37,8 +37,8 @@ data:
   REMOTE_AUTH_BACKEND: social_core.backends.open_id_connect.OpenIdConnectAuth
   EXTRA_CONFIGURATION: "from .authentik import *"
   # python-social-auth config
-  SOCIAL_AUTH_OIDC_OIDC_ENDPOINT: https://sso.paulus.family
+  SOCIAL_AUTH_OIDC_OIDC_ENDPOINT: https://sign-on-config.paulus.family
   SOCIAL_AUTH_OIDC_KEY: netbox
-  LOGOUT_REDIRECT_URL: https://sso.paulus.family/logout
+  LOGOUT_REDIRECT_URL: https://sign-on-config.paulus.family/logout
 
   SKIP_SUPERUSER: 'true'
