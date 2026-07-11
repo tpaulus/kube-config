@@ -9,6 +9,19 @@ spec:
   duration: 2160h0m0s
   dnsNames:
     - sso.paulus.family
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sign-on-config-paulus-family
+  namespace: simple-idp
+spec:
+  secretName: sign-on-config-paulus-family-cert
+  duration: 2160h0m0s
+  dnsNames:
     - sign-on-config.paulus.family
   issuerRef:
     name: letsencrypt-cf-prod
@@ -96,7 +109,7 @@ spec:
   tls:
     - hosts:
         - sign-on-config.paulus.family
-      secretName: sso-paulus-family-cert
+      secretName: sign-on-config-paulus-family-cert
   rules:
     - host: sign-on-config.paulus.family
       http:
