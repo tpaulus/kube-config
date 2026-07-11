@@ -2,10 +2,10 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: sso-paulus-family
+  name: sso-paulus-family-auth
   namespace: simple-idp
 spec:
-  secretName: sso-paulus-family-cert
+  secretName: sso-paulus-family-auth-cert
   duration: 2160h0m0s
   dnsNames:
     - sso.paulus.family
@@ -85,7 +85,7 @@ spec:
   tls:
     - hosts:
         - sso.paulus.family
-      secretName: sso-paulus-family-cert
+      secretName: sso-paulus-family-auth-cert
   rules:
     - host: sso.paulus.family
       http:
