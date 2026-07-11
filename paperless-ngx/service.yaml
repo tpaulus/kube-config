@@ -47,7 +47,7 @@ data:
   PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
   PAPERLESS_OIDC_PROVIDER_ID: "simple-idp"
   PAPERLESS_REDIRECT_LOGIN_TO_SSO: "true"
-  PAPERLESS_LOGOUT_REDIRECT_URL: "https://sign-on-config.paulus.family/logout?post_logout_redirect_uri=https%3A%2F%2Fpaperless.paulus.family%2F"
+  PAPERLESS_LOGOUT_REDIRECT_URL: "https://sso.paulus.family/logout?post_logout_redirect_uri=https%3A%2F%2Fpaperless.paulus.family%2F"
 
   PAPERLESS_APP_TITLE: "Paulus Family Docs"
 
@@ -111,7 +111,7 @@ spec:
                 name: simple-idp-secrets
                 key: PAPERLESS_OIDC_CLIENT_SECRET
           - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
-            value: '{"openid_connect":{"APPS":[{"provider_id":"simple-idp","name":"Simple IDP","client_id":"paperless","secret":"$(PAPERLESS_OIDC_CLIENT_SECRET)","settings":{"server_url":"https://sign-on-config.paulus.family/.well-known/openid-configuration"}}]}}'
+            value: '{"openid_connect":{"APPS":[{"provider_id":"simple-idp","name":"Simple IDP","client_id":"paperless","secret":"$(PAPERLESS_OIDC_CLIENT_SECRET)","settings":{"server_url":"https://sso.paulus.family/.well-known/openid-configuration"}}]}}'
         resources:
           requests:
             cpu: 2560m
