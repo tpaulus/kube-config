@@ -50,24 +50,3 @@ spec:
                   number: 8080
             path: /
             pathType: Prefix
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: prometheus-tailscale
-  namespace: monitoring
-spec:
-  ingressClassName: tailscale
-  tls:
-    - hosts:
-        - prometheus
-  rules:
-    - http:
-        paths:
-          - backend:
-              service:
-                name: prometheus
-                port:
-                  number: 8080
-            path: /
-            pathType: Prefix
