@@ -9,6 +9,7 @@ spec:
   duration: 2160h0m0s
   dnsNames:
     - sso.paulus.family
+    - sign-on-config.paulus.family
   issuerRef:
     name: letsencrypt-cf-prod
     kind: ClusterIssuer
@@ -16,13 +17,13 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: verify-client-cert-if-given
+  name: require-client-cert
   namespace: simple-idp
 spec:
   clientAuth:
     secretNames:
       - simple-idp-client-ca
-    clientAuthType: VerifyClientCertIfGiven
+    clientAuthType: RequireAndVerifyClientCert
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -66,7 +67,7 @@ metadata:
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     traefik.ingress.kubernetes.io/router.middlewares: simple-idp-forward-client-cert@kubernetescrd
-    traefik.ingress.kubernetes.io/router.tls.options: simple-idp-verify-client-cert-if-given@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls.options: simple-idp-require-client-cert@kubernetescrd
 spec:
   tls:
     - hosts:
@@ -91,14 +92,13 @@ metadata:
   namespace: simple-idp
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: simple-idp-strip-forwarded-cert-headers@kubernetescrd
-    traefik.ingress.kubernetes.io/router.tls.options: simple-idp-verify-client-cert-if-given@kubernetescrd
 spec:
   tls:
     - hosts:
-        - sso.paulus.family
+        - sign-on-config.paulus.family
       secretName: sso-paulus-family-cert
   rules:
-    - host: sso.paulus.family
+    - host: sign-on-config.paulus.family
       http:
         paths:
           - backend:

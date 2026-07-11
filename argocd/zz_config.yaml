@@ -19,7 +19,7 @@ data:
         return hs
   oidc.config: |
     name: Simple IDP
-    issuer: https://sso.paulus.family
+    issuer: https://sign-on-config.paulus.family
     clientID: argocd
     clientSecret: $simple-idp-secrets:ARGOCD_OIDC_CLIENT_SECRET
     requestedScopes:
@@ -27,7 +27,7 @@ data:
       - profile
       - email
       - groups
-    logoutURL: https://sso.paulus.family/logout
+    logoutURL: https://sign-on-config.paulus.family/logout
   admin.enabled: "false"
 ---
 apiVersion: onepassword.com/v1
