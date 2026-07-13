@@ -12,7 +12,7 @@ spec:
       targetRevision: HEAD
     - path: config/crd/standard
       repoURL: https://github.com/kubernetes-sigs/external-dns.git
-      targetRevision: master
+      targetRevision: 8aa2eeadbc9a995f8b0322401cbdf3248fcd95fd
       directory:
         include: '{dnsendpoints.externaldns.k8s.io.yaml,dnsrecords.externaldns.k8s.io.yaml}'
   destination:
