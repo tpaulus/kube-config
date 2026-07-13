@@ -27,9 +27,7 @@ spec:
             - --source=service
             - --source=ingress
             - --source=traefik-proxy
-            - --zone-id-filter=c4c79e93d4d2afd6c0abd49d6f26edad # paulus.family
-            - --zone-id-filter=d770ed244e20686c0a5ccd63156b9a44 # whitestar.systems
-            - --zone-id-filter=1acfb1bbee8a697913eaa9c047491eb2 # tompaulus.com
+            - --source=crd
             - --provider=cloudflare
             - --metrics-address=:7979
             - --cloudflare-dns-records-per-page=5000 # (optional) configure how many DNS records to fetch per request
