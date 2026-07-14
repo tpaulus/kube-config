@@ -1,4 +1,12 @@
 ---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: netbox-dns-sync-secret
+  namespace: netbox
+spec:
+  itemPath: vaults/K3S/items/Netbox-DNS-Sync-Token
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -66,8 +74,8 @@ spec:
             - name: NETBOX_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: netbox-secret
-                  key: superuser_api_token
+                  name: netbox-dns-sync-secret
+                  key: password
             - name: DOMAIN_ALLOWLIST
               value: brickyard.whitestar.systems,brickyard.ipmi.whitestar.systems
             - name: TARGET_NAMESPACE
