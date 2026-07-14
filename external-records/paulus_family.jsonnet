@@ -22,5 +22,8 @@ ep.new('paulus-family', namespace,
     ep.endpoint('pm-bounces.' + zone, 'CNAME', ['pm.mtasv.net']),
     // Paperless-ngx via Cloudflare Tunnel (proxied)
     ep.endpoint('paperless.' + zone, 'CNAME', ['paperless.auth-ing.k3s.brickyard.whitestar.systems'], providerSpecific=ep.cloudflareProxied),
+
+    // VPN CNAME
+    ep.endpoint('lfp-vpn.it.' + zone, 'CNAME', ['lfp.it.paulus.family']),
   ]
 )
