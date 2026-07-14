@@ -1,0 +1,97 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: netbox-dns-sync
+  namespace: netbox
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: netbox-dns-sync
+  namespace: external-records
+rules:
+  - apiGroups: ["externaldns.k8s.io"]
+    resources: ["dnsendpoints"]
+    verbs: ["list", "create", "update", "delete"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: netbox-dns-sync
+  namespace: external-records
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: netbox-dns-sync
+subjects:
+  - kind: ServiceAccount
+    name: netbox-dns-sync
+    namespace: netbox
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netbox-dns-sync
+  namespace: netbox
+  labels:
+    app.kubernetes.io/name: netbox-dns-sync
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: netbox-dns-sync
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: netbox-dns-sync
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8080'
+        prometheus.io/path: /metrics
+    spec:
+      serviceAccountName: netbox-dns-sync
+      containers:
+        - name: netbox-dns-sync
+          image: ghcr.io/tpaulus/netbox-to-external-dns-controller:sha-86f7102@sha256:d79caadb78dd062a689c92b1a59ff672a0dbdbfd236a906409bebd75fe737d3b
+          env:
+            - name: NETBOX_URL
+              value: http://netbox.netbox.svc.cluster.local
+            - name: NETBOX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: netbox-secret
+                  key: superuser_api_token
+            - name: DOMAIN_ALLOWLIST
+              value: brickyard.whitestar.systems,brickyard.ipmi.whitestar.systems
+            - name: TARGET_NAMESPACE
+              value: external-records
+            - name: SYNC_INTERVAL
+              value: 5m
+            - name: MAX_CHANGES_PER_RUN
+              value: '100'
+            - name: METRICS_ADDRESS
+              value: :8080
+          ports:
+            - name: metrics
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
