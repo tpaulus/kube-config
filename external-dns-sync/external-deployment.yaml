@@ -22,7 +22,7 @@ spec:
         - name: external-dns
           # Includes kubernetes-sigs/external-dns#6383, which lets DNSEndpoint
           # SRV targets use the RFC-required trailing dot.
-          image: gcr.io/k8s-staging-external-dns/external-dns:v20260509-v0.21.0-46-ge74f8d9f@sha256:1de3bfe4bd4296774d6b9e7998ece505cd38695a378b1b19b1d5fadc42104d42
+          image: ghcr.io/tpaulus/external-dns:89e31479
           args:
             - --annotation-prefix=external-dns.kubernetes.io/
             - --events
