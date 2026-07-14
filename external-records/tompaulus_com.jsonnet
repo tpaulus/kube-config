@@ -35,8 +35,6 @@ ep.new('tompaulus-com', namespace,
   [
     // Keybase domain verification
     ep.endpoint(zone, 'TXT', ['keybase-site-verification=ANVrHna38pR4HiCmhXorD3QPw0bqpsqIGKtDvNLTtwA']),
-    // Apex CNAME to Cloudflare Pages (proxied)
-    ep.endpoint(zone, 'CNAME', ['tom-www.pages.dev'], providerSpecific=ep.cloudflareProxied),
     // WWW CNAME (proxied)
     ep.endpoint('www.' + zone, 'CNAME', [zone], providerSpecific=ep.cloudflareProxied),
   ]

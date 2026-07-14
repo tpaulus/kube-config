@@ -19,7 +19,5 @@ ep.new('melinda-tom-wedding', namespace,
   [
     // WWW AAAA placeholder (proxied; required for Cloudflare redirect rule targeting www)
     ep.endpoint('www.' + zone, 'AAAA', ['100::'], providerSpecific=ep.cloudflareProxied),
-    // Apex CNAME to Cloudflare Pages (proxied)
-    ep.endpoint(zone, 'CNAME', ['melinda-tom-wedding.pages.dev'], providerSpecific=ep.cloudflareProxied),
   ]
 )
