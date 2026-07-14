@@ -41,16 +41,16 @@ local mxServers = [
     +
     // Optional client auto-configuration SRV records
     (if createClientConfigurationRecords then [
-      ep.endpoint('_submission._tcp.' + zone, 'SRV', ['0 1 587 smtp.fastmail.com']),
+      ep.endpoint('_submission._tcp.' + zone, 'SRV', ['0 1 587 smtp.fastmail.com.']),
       ep.endpoint('_imap._tcp.' + zone, 'SRV', ['0 0 0 .']),
-      ep.endpoint('_imaps._tcp.' + zone, 'SRV', ['0 1 993 imap.fastmail.com']),
+      ep.endpoint('_imaps._tcp.' + zone, 'SRV', ['0 1 993 imap.fastmail.com.']),
       ep.endpoint('_pop3._tcp.' + zone, 'SRV', ['0 0 0 .']),
-      ep.endpoint('_pop3s._tcp.' + zone, 'SRV', ['10 1 995 pop.fastmail.com']),
-      ep.endpoint('_jmap._tcp.' + zone, 'SRV', ['0 1 443 api.fastmail.com']),
+      ep.endpoint('_pop3s._tcp.' + zone, 'SRV', ['10 1 995 pop.fastmail.com.']),
+      ep.endpoint('_jmap._tcp.' + zone, 'SRV', ['0 1 443 api.fastmail.com.']),
       ep.endpoint('_cardav._tcp.' + zone, 'SRV', ['0 0 0 .']),
-      ep.endpoint('_carddavs._tcp.' + zone, 'SRV', ['0 1 443 carddav.fastmail.com']),
+      ep.endpoint('_carddavs._tcp.' + zone, 'SRV', ['0 1 443 carddav.fastmail.com.']),
       ep.endpoint('_caldav._tcp.' + zone, 'SRV', ['0 0 0 .']),
-      ep.endpoint('_caldavs._tcp.' + zone, 'SRV', ['0 1 443 caldav.fastmail.com']),
+      ep.endpoint('_caldavs._tcp.' + zone, 'SRV', ['0 1 443 caldav.fastmail.com.']),
     ] else [])
   ),
 }
