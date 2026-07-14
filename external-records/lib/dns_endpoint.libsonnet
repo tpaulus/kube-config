@@ -26,6 +26,6 @@
 
   // providerSpecific entry to enable Cloudflare orange-cloud proxying.
   cloudflareProxied:: [
-    { name: 'external-dns.alpha.kubernetes.io/cloudflare-proxied', value: 'true' },
+    { name: 'external-dns.kubernetes.io/cloudflare-proxied', value: 'true' },
   ],
 }

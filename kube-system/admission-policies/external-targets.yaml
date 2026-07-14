@@ -65,8 +65,8 @@ spec:
             object.metadata.annotations["external-dns.kubernetes.io/hostname"].matches("(^|.*,\\s*)([^,]+\\.)?it\\.paulus\\.family\\.?\\s*(,.*|$)")
           ) ||
           (
-            "external-dns.alpha.kubernetes.io/hostname" in object.metadata.annotations &&
-            object.metadata.annotations["external-dns.alpha.kubernetes.io/hostname"].matches("(^|.*,\\s*)([^,]+\\.)?it\\.paulus\\.family\\.?\\s*(,.*|$)")
+            "external-dns.kubernetes.io/hostname" in object.metadata.annotations &&
+            object.metadata.annotations["external-dns.kubernetes.io/hostname"].matches("(^|.*,\\s*)([^,]+\\.)?it\\.paulus\\.family\\.?\\s*(,.*|$)")
           )
         ) ||
         (
