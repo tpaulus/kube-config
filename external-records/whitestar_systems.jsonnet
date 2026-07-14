@@ -25,9 +25,12 @@ ep.new('whitestar-systems', namespace,
     ep.endpoint('_dmarc.' + zone, 'TXT', ['v=DMARC1; p=quarantine; rua=mailto:64203f8a3e304420b20686d30874ffc9@dmarc-reports.cloudflare.net']),
     // UniFi controller alias
     ep.endpoint('ubnt.brickyard.' + zone, 'CNAME', ['unifi-controller.brickyard.' + zone], ttl=30),
+
     // K3s ingress wildcard (MetalLB VIP)
     ep.endpoint('*.ing.k3s.brickyard.' + zone, 'A', ['10.30.0.0']),
     // K3s auth-ingress wildcard via Cloudflare Tunnel (proxied)
     ep.endpoint('*.auth-ing.k3s.brickyard.' + zone, 'CNAME', ['6bd25c6e-9222-43e6-bdb3-f989da6cbdb2.cfargotunnel.com'], providerSpecific=ep.cloudflareProxied),
+    // K3s Primaries
+    ep.endpoint('k3s.brickyard.' + zone, 'A', ['10.0.40.2', '10.0.40.3', '10.0.40.4']),
   ]
 )
