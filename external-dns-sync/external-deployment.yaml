@@ -32,8 +32,9 @@ spec:
             - --source=crd
             - --provider=cloudflare
             - --registry=txt
-            - --txt-prefix=external-dns-
-            - --txt-wildcard-replacement=wildcard
+            # Keep ownership TXT records under a per-record-type metadata namespace.
+            - --txt-prefix=%{record_type}._metadata.
+            - --txt-wildcard-replacement=_all
             - --managed-record-types=A
             - --managed-record-types=AAAA
             - --managed-record-types=CNAME
