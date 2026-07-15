@@ -31,6 +31,9 @@ spec:
             - --source=traefik-proxy
             - --source=crd
             - --provider=cloudflare
+            - --registry=txt
+            - --txt-prefix=external-dns-
+            - --txt-wildcard-replacement=wildcard
             - --managed-record-types=A
             - --managed-record-types=AAAA
             - --managed-record-types=CNAME
