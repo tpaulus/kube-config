@@ -67,7 +67,7 @@ spec:
       serviceAccountName: netbox-dns-sync
       containers:
         - name: netbox-dns-sync
-          image: ghcr.io/tpaulus/netbox-to-external-dns-controller:sha-86f7102@sha256:d79caadb78dd062a689c92b1a59ff672a0dbdbfd236a906409bebd75fe737d3b
+          image: ghcr.io/tpaulus/netbox-to-external-dns-controller:latest@sha256:7c32baf71cf8e9f42399f0b374dab1ecc89c9c921234e93de56f7a487d5e0e40
           env:
             - name: NETBOX_URL
               value: http://netbox.netbox.svc.cluster.local
