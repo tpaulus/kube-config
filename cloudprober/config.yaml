@@ -229,17 +229,17 @@ data:
     }
 
     probe {
-      name: "Plex"
+      name: "Jellyfin"
       type: HTTP
       targets {
         endpoint {
           name: "woodlandpark.brickyard.whitestar.systems"
-          port: 32400
+          port: 30013
         }
       }
       http_probe {
         protocol: HTTP
-        relative_url: "/identity"
+        relative_url: "/web/"
       }
       validator {
           name: "status_code_2|3xx"
@@ -249,7 +249,7 @@ data:
       }
       validator {
           name: "expected_content"
-          regex: "MediaContainer"
+          regex: "<meta name=\"application-name\" content=\"Jellyfin\">"
       }
       additional_label {
         key: "location"
