@@ -82,7 +82,7 @@ data:
         name: "Tom Paulus"
         preferredUsername: "tom"
         emailVerified: true
-        certificateCommonNames: ["tom-laptop", "tom-iphone"]
+        certificateCommonNames: ["tom-laptop", "tom-iphone", "tom-ipad"]
         claims:
           groups: ["family", "netbox_admin", "netbox_staff"]
       - id: mel
