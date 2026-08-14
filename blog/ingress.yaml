@@ -50,6 +50,7 @@ spec:
         - name: inject-headers
           namespace: blog
   tls:
+    secretName: blog-tompaulus-com-cert
     options:
       name: require-client-cert
       namespace: traefik
