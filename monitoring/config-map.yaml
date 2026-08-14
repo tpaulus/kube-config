@@ -196,6 +196,14 @@ data:
           continue: true
           matchers:
             - action="restart-deployment"
+        - receiver: 'n8n-alertmanager-todoist'
+          group_by: ['...']
+          group_wait: 1s
+          group_interval: 1s
+          repeat_interval: 15m
+          continue: true
+          matchers:
+            - notify=~"(.+ )?todoist( .+)?"
         - receiver: 'email-tom'
           group_wait: 30s
           matchers:
@@ -208,6 +216,10 @@ data:
       - name: 'deployment-alert-restarter'
         webhook_configs:
           - url: 'http://deployment-alert-restarter.monitoring.svc.cluster.local:8080'
+            send_resolved: true
+      - name: 'n8n-alertmanager-todoist'
+        webhook_configs:
+          - url: 'http://n8n-service.n8n.svc.cluster.local/webhook/alertmanager-todoist'
             send_resolved: true
       - name: 'email-tom'
         email_configs:
