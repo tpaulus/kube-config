@@ -89,9 +89,9 @@ spec:
             periodSeconds: 30
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /xmltv.xml
               port: 8080
-            initialDelaySeconds: 5
+            initialDelaySeconds: 30
             periodSeconds: 15
           resources:
             limits:
@@ -126,6 +126,9 @@ spec:
             name: zap2xml-nginx
         - name: tmp
           emptyDir: {}
+      dnsConfig:
+        nameservers: [1.1.1.1, 1.0.0.1]
+      dnsPolicy: None
 ---
 apiVersion: v1
 kind: Service
