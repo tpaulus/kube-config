@@ -15,6 +15,15 @@ spec:
     targetRevision: HEAD
     directory:
       recurse: true
+  ignoreDifferences:
+    - group: traefik.io
+      kind: Middleware
+      name: github-webhook-ip-allowlist
+      namespace: argocd
+      jsonPointers:
+        - /spec/ipAllowList/sourceRange
   syncPolicy:
     automated:
       prune: true
+    syncOptions:
+      - RespectIgnoreDifferences=true
