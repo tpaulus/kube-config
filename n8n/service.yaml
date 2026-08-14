@@ -1,4 +1,18 @@
 ---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: n8n-it-paulus-family
+  namespace: n8n
+spec:
+  secretName: n8n-it-paulus-family-cert
+  duration: 2160h0m0s
+  dnsNames:
+    - n8n.it.paulus.family
+  issuerRef:
+    name: letsencrypt-cf-prod
+    kind: ClusterIssuer
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -51,10 +65,16 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: n8n-ext
+  namespace: n8n
   annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
     traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: n8n-jwt-verification@kubernetescrd
 spec:
+  tls:
+    - hosts:
+        - n8n.it.paulus.family
+      secretName: n8n-it-paulus-family-cert
   rules:
     - host: n8n.auth-ing.k3s.brickyard.whitestar.systems
       http: &ingress-rule
@@ -66,5 +86,5 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
-    - host: n8n.brickyard.whitestar.systems
+    - host: n8n.it.paulus.family
       http: *ingress-rule
