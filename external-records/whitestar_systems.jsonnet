@@ -26,8 +26,6 @@ ep.new('whitestar-systems', namespace,
     // UniFi controller alias
     ep.endpoint('ubnt.brickyard.' + zone, 'CNAME', ['unifi-controller.brickyard.' + zone], ttl=30),
 
-    // Argo CD webhook mTLS endpoint
-    ep.endpoint('argocd-webhook.ing.k3s.brickyard.' + zone, 'CNAME', ['lfp.it.paulus.family']),
     // K3s ingress wildcard (MetalLB VIP)
     ep.endpoint('*.ing.k3s.brickyard.' + zone, 'A', ['10.30.0.0']),
     // K3s auth-ingress wildcard via Cloudflare Tunnel (proxied)

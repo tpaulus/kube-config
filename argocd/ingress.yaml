@@ -45,6 +45,8 @@ kind: IngressRoute
 metadata:
   name: argocd-webhook
   namespace: argocd
+  annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
 spec:
   entryPoints: [web-mtls]
   routes:
