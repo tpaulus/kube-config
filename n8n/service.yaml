@@ -68,7 +68,7 @@ metadata:
   namespace: n8n
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: web-ext,web-mtls
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web-ext,web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: n8n-jwt-verification@kubernetescrd
 spec:
   tls:
