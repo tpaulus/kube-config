@@ -19,7 +19,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`blog.tompaulus.com`) && !PathPrefix(`/ghost`) && !PathPrefix(`/members/api`)
+    - match: Host(`blog.tompaulus.com`) && !PathPrefix(`/members/api`) && (!PathPrefix(`/ghost`) || PathPrefix(`/ghost/api/content/authors`) || PathPrefix(`/ghost/api/content/tags`) || PathPrefix(`/ghost/api/content/posts`))
       kind: Rule
       services:
         - name: ghost
@@ -41,7 +41,7 @@ spec:
   entryPoints:
     - web-mtls
   routes:
-    - match: Host(`blog.tompaulus.com`) && (PathPrefix(`/ghost`) || PathPrefix(`/members/api`))
+    - match: Host(`blog.tompaulus.com`) && (PathPrefix(`/members/api`) || (PathPrefix(`/ghost`) && !PathPrefix(`/ghost/api/content/authors`) && !PathPrefix(`/ghost/api/content/tags`) && !PathPrefix(`/ghost/api/content/posts`)))
       kind: Rule
       services:
         - name: ghost
