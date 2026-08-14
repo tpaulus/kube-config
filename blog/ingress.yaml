@@ -26,6 +26,7 @@ spec:
           port: 2368
       middlewares:
         - name: inject-headers
+          namespace: blog
   tls:
     secretName: blog-tompaulus-com-cert
     options:
@@ -47,6 +48,11 @@ spec:
           port: 2368
       middlewares:
         - name: inject-headers
+          namespace: blog
+  tls:
+    options:
+      name: require-client-cert
+      namespace: traefik
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
