@@ -21,3 +21,11 @@ groups:
           summary: Argo Application {{ $labels.name }} is {{ $labels.health_status }}
           description: "{{ $labels.name }} is stuck in {{ $labels.health_status }}."
           dashboard: https://argocd.ing.k3s.brickyard.whitestar.systems/applications/argocd/{{ $labels.name }}
+      - alert: GitHub Webhook IP Sync Not Running
+        expr: ((time() - kube_cronjob_status_last_successful_time{namespace="argocd", cronjob="github-webhook-ip-sync"}) / 60 / 60) >= 12 or absent(kube_cronjob_status_last_successful_time{namespace="argocd", cronjob="github-webhook-ip-sync"})
+        for: 0s
+        labels:
+          severity: warning
+        annotations:
+          summary: GitHub webhook IP sync not running
+          description: "github-webhook-ip-sync in argocd has not run successfully in the last 12 hours, even though it is scheduled every 6 hours."
