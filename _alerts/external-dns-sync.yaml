@@ -16,6 +16,7 @@ groups:
         for: 10m
         labels:
           severity: high
+          notify: todoist email-tom
         annotations:
           summary: ExternalDNS has not completed a successful sync recently
           description: external-dns has not reported a successful DNS sync in the last 15 minutes.

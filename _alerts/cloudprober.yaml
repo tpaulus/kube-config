@@ -9,6 +9,7 @@ groups:
         for: 3m
         labels:
           severity: high
+          notify: todoist email-tom
         annotations:
           summary: '{{ $labels.probe }} Is Down'
           description: '{{ $labels.probe }} is failing Cloudprober Healthchecks'
@@ -18,6 +19,7 @@ groups:
         for: 1m
         labels:
           severity: warn
+          notify: todoist email-tom
         annotations: 
           summary: '{{ $labels.dst }} SSL Cert Expiring'
           description: 'The SSL Certificate for {{ $labels.dst }} is expiring within the next 5 days.'
@@ -31,6 +33,7 @@ groups:
         for: 3m
         labels:
           severity: high
+          notify: todoist email-tom
         annotations:
           title: IPMI for Node {{ $labels.dst }} is down
           description: Pings toward {{ $labels.dst }} are not successful. Node appears

@@ -24,6 +24,7 @@ groups:
         for: 10m
         labels:
           severity: warning
+          notify: todoist email-tom
         annotations:
           summary: Container {{ $labels.namespace }}/{{ $labels.pod }} is crash looping
           description: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been in CrashLoopBackOff for more than 10 minutes.
@@ -35,6 +36,7 @@ groups:
         for: 10m
         labels:
           severity: warning
+          notify: todoist email-tom
         annotations:
           summary: Container {{ $labels.namespace }}/{{ $labels.pod }} cannot pull its image
           description: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been stuck in {{ $labels.reason }} for more than 10 minutes.
@@ -55,6 +57,7 @@ groups:
         for: 10m
         labels:
           severity: warning
+          notify: todoist email-tom
         annotations:
           summary: Deployment {{ $labels.namespace }}/{{ $labels.deployment }} has unavailable replicas
           description: Deployment {{ $labels.namespace }}/{{ $labels.deployment }} has {{ $value }} unavailable replicas for more than 10 minutes.
@@ -64,6 +67,7 @@ groups:
         for: 10m
         labels:
           severity: critical
+          notify: todoist email-tom
         annotations:
           summary: Node {{ $labels.node }} is not ready
           description: Kubernetes node {{ $labels.node }} has been NotReady for more than 10 minutes.

@@ -8,6 +8,7 @@ groups:
         for: 1m
         labels:
           severity: moderate
+          notify: todoist email-tom
         annotations:
           summary: K3s Snapshot Backup Missing for {{ $labels.netbox_device_name }}
           description: It has been over a day since a k3s etcd snapshot was backed

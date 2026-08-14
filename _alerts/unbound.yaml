@@ -7,6 +7,7 @@ groups:
         for: 3m
         labels:
           severity: critical
+          notify: todoist email-tom
         annotations:
           summary: "Unbound Exporter is unable to scrape Unbound (instance {{ $labels.instance }})"
           description: "The Unbound Exporter at {{ $labels.instance }} is reporting that it is unable to scrape metrics from Unbound."
@@ -57,6 +58,7 @@ groups:
         for: 3m
         labels:
           severity: high
+          notify: todoist email-tom
         annotations:
           summary: "Non-zero number of SERVFAIL being returned (instance {{ $labels.instance }})"
           description: "The Unbound DNS server at {{ $labels.instance }} is returning {{ $value | humanize }} ServFails per sec. This indicates that the server was unable to get a valid response from an Authoritative DNS Service."

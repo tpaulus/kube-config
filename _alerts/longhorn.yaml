@@ -24,6 +24,7 @@ groups:
         labels:
           issue: Longhorn volume {{$labels.volume}} is Fault.
           severity: critical
+          notify: todoist email-tom
       - alert: LonghornVolumeStatusWarning
         annotations:
           description: Longhorn volume {{$labels.volume}} on {{$labels.node}} is Degraded
@@ -66,6 +67,7 @@ groups:
         labels:
           issue: Longhorn nodes are offline
           severity: critical
+          notify: todoist email-tom
       - alert: LonghornIntanceManagerCPUUsageWarning
         annotations:
           description: Longhorn instance manager {{$labels.instance_manager}} on {{$labels.node}}
@@ -98,6 +100,7 @@ groups:
         for: 0s
         labels:
           severity: critical
+          notify: todoist email-tom
         annotations:
           summary: 'Longhorn Hourly Snapshots Not Running'
           description: It has been over 7 hours since the last snapshot job was successful, which is scheduled to run every 3 hours.
@@ -107,6 +110,7 @@ groups:
         for: 0s
         labels:
           severity: critical
+          notify: todoist email-tom
         annotations:
           summary: 'Longhorn Twice-Daily Backups Not Running'
           description: It has been over 24 hours since the last twice-daily backup job was successful

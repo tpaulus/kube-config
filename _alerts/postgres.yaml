@@ -8,6 +8,7 @@ groups:
     for: 5m
     labels:
       severity: critical
+      notify: todoist email-tom
     annotations:
       summary: "PostgreSQL is down on {{$labels.namespace}}/{{ $labels.instance }}"
       description: "PostgreSQL has been down for more than 5 minutes on {{ $labels.instance }}"

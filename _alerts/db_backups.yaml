@@ -7,6 +7,7 @@ groups:
         for: 0s
         labels:
           severity: high
+          notify: todoist email-tom
         annotations:
           summary: DB Backup Not Running for {{ $labels.namespace }}
           description: "{{ $labels.cronjob }} in {{ $labels.namespace }} has not run in the last 25 hours, when it should be running every 12 hours."
@@ -15,6 +16,7 @@ groups:
         for: 0s
         labels:
           severity: high
+          notify: todoist email-tom
         annotations:
           summary: DB Backup Not Running for {{ $labels.namespace }}
           description: "{{ $labels.cronjob }} in {{ $labels.namespace }} has not run in the last 25 hours, when it should be running every 12 hours."

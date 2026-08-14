@@ -7,6 +7,7 @@ groups:
         for: 1m
         labels:
           severity: high
+          notify: todoist email-tom
         annotations:
           title: MDRAID on node {{ $labels.instance }} is in degrade mode
           description: 'Degraded RAID array {{ $labels.device }} on {{ $labels.instance }}:
@@ -25,6 +26,7 @@ groups:
         for: 5m
         labels:
           severity: critical
+          notify: todoist email-tom
         annotations:
           title: Node {{ $labels.instance }} {{ $labels.device }} is over 95% utilized
       # pint disable promql/regexp
@@ -33,6 +35,7 @@ groups:
         for: 3m
         labels:
           severity: high
+          notify: todoist email-tom
         annotations:
           title: Node {{ $labels.netbox_device_name }} is down
           description: Failed to scrape Node Exporter on {{ $labels.netbox_device_name }}

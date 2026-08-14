@@ -17,6 +17,7 @@ groups:
         for: 10m
         labels:
           severity: critical
+          notify: todoist email-tom
         annotations:
           summary: Argo Application {{ $labels.name }} is {{ $labels.health_status }}
           description: "{{ $labels.name }} is stuck in {{ $labels.health_status }}."
@@ -26,6 +27,7 @@ groups:
         for: 0s
         labels:
           severity: warning
+          notify: todoist email-tom
         annotations:
           summary: GitHub webhook IP sync not running
           description: "github-webhook-ip-sync in argocd has not run successfully in the last 12 hours, even though it is scheduled every 6 hours."
