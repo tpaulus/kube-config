@@ -1,5 +1,13 @@
 ---
 apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: webhook-no-client-cert
+  namespace: argocd
+spec:
+  minVersion: VersionTLS12
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: argocd-server
@@ -21,6 +29,35 @@ spec:
         - name: argocd-server
           port: 80
           scheme: h2c
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: github-webhook-ip-allowlist
+  namespace: argocd
+spec:
+  ipAllowList:
+    sourceRange: []
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd-webhook
+  namespace: argocd
+spec:
+  entryPoints: [web-mtls]
+  routes:
+    - kind: Rule
+      match: Host(`argocd-webhook.ing.k3s.brickyard.whitestar.systems`) &&
+        Path(`/api/webhook`)
+      middlewares:
+        - name: github-webhook-ip-allowlist
+      services:
+        - name: argocd-server
+          port: 80
+  tls:
+    options:
+      name: webhook-no-client-cert
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
