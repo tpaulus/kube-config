@@ -51,7 +51,7 @@ spec:
               args:
                 - |
                   response="$(curl --fail --silent --show-error https://api.github.com/meta)"
-                  hooks="$(printf '%s' "$response" | sed -n 's/.*"hooks"[[:space:]]*:[[:space:]]*\[\([^]]*\)\].*/\1/p' | tr -d '"' | tr -d '[:space:]' | tr ',' ' ')"
+                  hooks="$(printf '%s' "$response" | tr '\n' ' ' | sed -n 's/.*"hooks"[[:space:]]*:[[:space:]]*\[\([^]]*\)\].*/\1/p' | tr -d '"' | tr -d '[:space:]' | tr ',' ' ')"
                   test -n "$hooks"
                   ranges=
                   for cidr in $hooks; do

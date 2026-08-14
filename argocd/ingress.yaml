@@ -58,6 +58,7 @@ spec:
   tls:
     options:
       name: webhook-no-client-cert
+      namespace: argocd
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
