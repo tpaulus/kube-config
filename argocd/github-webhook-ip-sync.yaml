@@ -35,6 +35,9 @@ kind: CronJob
 metadata:
   name: github-webhook-ip-sync
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
   schedule: "17 */6 * * *"
   concurrencyPolicy: Forbid
