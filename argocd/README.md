@@ -7,13 +7,16 @@ client authentication, while the rest of `web-mtls` continues to require
 mTLS. It is limited to GitHub's `hooks` CIDR list by the
 `github-webhook-ip-allowlist` middleware.
 
-`github-webhook-ip-sync` runs every six hours and fetches
-`https://api.github.com/meta`. It replaces the middleware only when the
-response contains a non-empty `hooks` list; a failed or malformed fetch leaves
-the last known-good list in place. GitHub documents this endpoint as the
-source for webhook IP ranges, so the job should be monitored for failures. The
-initial middleware list is intentionally deny-all until the first successful
-sync.
+Argo CD now runs a one-off `github-webhook-ip-sync-postsync` hook after
+deployments. That hook creates an immediate Job from the
+`github-webhook-ip-sync` CronJob, which remains the single source of truth for
+the actual sync behavior and continues refreshing the allowlist every six
+hours. The sync job fetches `https://api.github.com/meta` and only replaces
+the middleware when the response contains a non-empty `hooks` list; a failed
+or malformed fetch leaves the last known-good list in place. GitHub documents
+this endpoint as the source for webhook IP ranges, so the sync jobs should be
+monitored for failures. The initial middleware list is intentionally deny-all
+until the first successful sync.
 
 Add a `webhook.github.secret` field to the existing OnePassword item
 `vaults/K3S/items/argocd`. The OnePassword operator then exposes it through

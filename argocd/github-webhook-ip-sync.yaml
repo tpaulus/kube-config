@@ -15,6 +15,13 @@ rules:
     resources: [middlewares]
     resourceNames: [github-webhook-ip-allowlist]
     verbs: [patch]
+  - apiGroups: [batch]
+    resources: [cronjobs]
+    resourceNames: [github-webhook-ip-sync]
+    verbs: [get]
+  - apiGroups: [batch]
+    resources: [jobs]
+    verbs: [create]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -31,13 +38,52 @@ roleRef:
   name: github-webhook-ip-sync
 ---
 apiVersion: batch/v1
+kind: Job
+metadata:
+  name: github-webhook-ip-sync-postsync
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  template:
+    spec:
+      serviceAccountName: github-webhook-ip-sync
+      automountServiceAccountToken: true
+      restartPolicy: OnFailure
+      containers:
+        - name: trigger
+          image: alpine/k8s:1.36.2
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              name="github-webhook-ip-sync-run-$(date +%s)"
+              kubectl -n argocd create job --from=cronjob/github-webhook-ip-sync "${name}"
+          env:
+            - name: HOME
+              value: /tmp
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: github-webhook-ip-sync
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/hook: PostSync
-    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
   schedule: "17 */6 * * *"
   concurrencyPolicy: Forbid
