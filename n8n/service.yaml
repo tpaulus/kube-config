@@ -68,13 +68,9 @@ metadata:
   namespace: n8n
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web-ext,web-mtls
+    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
     traefik.ingress.kubernetes.io/router.middlewares: n8n-jwt-verification@kubernetescrd
 spec:
-  tls:
-    - hosts:
-        - n8n.it.paulus.family
-      secretName: n8n-it-paulus-family-cert
   rules:
     - host: n8n.auth-ing.k3s.brickyard.whitestar.systems
       http: &ingress-rule
@@ -88,3 +84,28 @@ spec:
             pathType: Prefix
     - host: n8n.it.paulus.family
       http: *ingress-rule
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n-public
+  namespace: n8n
+  annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web-mtls
+spec:
+  tls:
+    - hosts:
+        - n8n.it.paulus.family
+      secretName: n8n-it-paulus-family-cert
+  rules:
+    - host: n8n.it.paulus.family
+      http:
+        paths:
+          - backend:
+              service:
+                name: n8n-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
