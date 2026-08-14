@@ -93,6 +93,9 @@ spec:
         spec:
           serviceAccountName: github-webhook-ip-sync
           restartPolicy: OnFailure
+          dnsConfig:
+            nameservers: [1.1.1.1, 1.0.0.1]
+          dnsPolicy: None
           securityContext:
             runAsNonRoot: true
             runAsUser: 10001
@@ -135,4 +138,4 @@ spec:
                     -H 'Content-Type: application/merge-patch+json' \
                     --data "{\"spec\":{\"ipAllowList\":{\"sourceRange\":[${ranges}]}}}" \
                     -X PATCH \
-                    https://kubernetes.default.svc/apis/traefik.io/v1alpha1/namespaces/argocd/middlewares/github-webhook-ip-allowlist
+                    "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}/apis/traefik.io/v1alpha1/namespaces/argocd/middlewares/github-webhook-ip-allowlist"

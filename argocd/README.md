@@ -15,8 +15,10 @@ hours. The sync job fetches `https://api.github.com/meta` and only replaces
 the middleware when the response contains a non-empty `hooks` list; a failed
 or malformed fetch leaves the last known-good list in place. GitHub documents
 this endpoint as the source for webhook IP ranges, so the sync jobs should be
-monitored for failures. The initial middleware list is intentionally deny-all
-until the first successful sync.
+monitored for failures. The sync pod uses explicit public resolvers and talks
+to the Kubernetes API via the in-cluster service environment variables, so it
+does not depend on cluster DNS for either step. The initial middleware list is
+intentionally deny-all until the first successful sync.
 
 Add a `webhook.github.secret` field to the existing OnePassword item
 `vaults/K3S/items/argocd`. The OnePassword operator then exposes it through
