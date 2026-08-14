@@ -37,7 +37,8 @@ metadata:
   namespace: argocd
 spec:
   ipAllowList:
-    sourceRange: []
+    # Fail closed until the first successful GitHub metadata sync.
+    sourceRange: ["0.0.0.0/32", "::/128"]
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute

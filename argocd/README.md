@@ -11,7 +11,9 @@ mTLS. It is limited to GitHub's `hooks` CIDR list by the
 `https://api.github.com/meta`. It replaces the middleware only when the
 response contains a non-empty `hooks` list; a failed or malformed fetch leaves
 the last known-good list in place. GitHub documents this endpoint as the
-source for webhook IP ranges, so the job should be monitored for failures.
+source for webhook IP ranges, so the job should be monitored for failures. The
+initial middleware list is intentionally deny-all until the first successful
+sync.
 
 Add a `webhook.github.secret` field to the existing OnePassword item
 `vaults/K3S/items/argocd`. The OnePassword operator then exposes it through
