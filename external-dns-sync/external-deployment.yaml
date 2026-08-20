@@ -30,6 +30,7 @@ spec:
             - --source=crd
             - --provider=cloudflare
             - --registry=txt
+            - --policy=sync
             # Keep ownership TXT records under a per-record-type metadata namespace.
             - --txt-prefix=%{record_type}._metadata.
             - --txt-wildcard-replacement=_all
