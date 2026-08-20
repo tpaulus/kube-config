@@ -20,9 +20,7 @@ spec:
       serviceAccountName: dns-sync
       containers:
         - name: external-dns
-          # Includes kubernetes-sigs/external-dns#6383, which lets DNSEndpoint
-          # SRV targets use the RFC-required trailing dot.
-          image: ghcr.io/tpaulus/external-dns:89e31479
+          image: registry.k8s.io/external-dns/external-dns:v0.22.0
           args:
             - --annotation-prefix=external-dns.kubernetes.io/
             - --events
