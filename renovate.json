@@ -36,6 +36,18 @@
         "automerge": true
       },
       "minimumReleaseAge": "1 day"
+    },
+    {
+      "matchManagers": [
+        "kubernetes"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/gethomepage/homepage"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "versioning": "docker"
     }
   ],
   "hostRules": [
