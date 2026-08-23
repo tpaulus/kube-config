@@ -47,7 +47,7 @@
       "matchDatasources": [
         "docker"
       ],
-      "versioning": "docker"
+      "versioning": "semver"
     }
   ],
   "hostRules": [
