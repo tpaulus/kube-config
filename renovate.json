@@ -36,7 +36,7 @@
         "automerge": true
       },
       "minimumReleaseAge": "1 day",
-      "minimumReleaseAgeBehavior": "timestamp-optional"
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
     }
   ],
   "hostRules": [
