@@ -37,18 +37,6 @@
       },
       "minimumReleaseAge": "1 day",
       "minimumReleaseAgeBehavior": "timestamp-optional"
-    },
-    {
-      "matchManagers": [
-        "kubernetes"
-      ],
-      "matchPackageNames": [
-        "ghcr.io/gethomepage/homepage"
-      ],
-      "matchDatasources": [
-        "docker"
-      ],
-      "versioning": "semver"
     }
   ],
   "hostRules": [
