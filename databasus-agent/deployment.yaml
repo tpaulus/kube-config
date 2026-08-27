@@ -37,7 +37,7 @@ spec:
           emptyDir: {}
       containers:
         - name: docker
-          image: docker:28.3.3-dind@sha256:a56b3bdde89315ed2cc0e4906e582b5033d93bf20d9cb9510c2cdd4e7f7690b1
+          image: docker:28.5.2-dind@sha256:2a232a42256f70d78e3cc5d2b5d6b3276710a0de0596c145f627ecfae90282ac
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
