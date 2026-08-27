@@ -1,0 +1,32 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: databasus
+  namespace: argocd
+spec:
+  destination:
+    namespace: databasus
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: databasus
+    repoURL: ghcr.io/databasus/charts
+    targetRevision: 3.55.1
+    helm:
+      values: |
+        image:
+          repository: ghcr.io/databasus/databasus
+        ingress:
+          enabled: true
+          className: traefik
+          hosts:
+            - host: databasus.ing.k3s.brickyard.whitestar.systems
+              paths:
+                - path: /
+                  pathType: Prefix
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
