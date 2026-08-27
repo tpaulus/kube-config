@@ -34,6 +34,12 @@ spec:
               retention_period: 168h  # 7 days
               ingestion_rate_mb: 4
               ingestion_burst_size_mb: 6
+            rulerConfig:
+              alertmanager_url: http://alertmanager.monitoring.svc:8080
+              storage:
+                type: local
+                local:
+                  directory: /rules
           singleBinary:
             replicas: 1
             extraArgs:
@@ -74,6 +80,9 @@ spec:
             enabled: false
           resultsCache:
             enabled: false
+          ruler:
+            enabled: true
+            replicas: 0
   destination:
     server: https://kubernetes.default.svc
     namespace: loki

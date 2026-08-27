@@ -1,0 +1,18 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-rules
+  namespace: argocd
+spec:
+  destination:
+    namespace: loki
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: loki-rules
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true

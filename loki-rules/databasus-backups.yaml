@@ -1,0 +1,43 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: databasus-backups
+  namespace: loki
+  labels:
+    loki_rule: "true"
+data:
+  databasus-backups.yaml: |
+    groups:
+      - name: databasus_backups
+        rules:
+          - alert: DatabasusBackupStale
+            expr: absent_over_time({namespace="databasus", container="databasus"} |= "logical backup finished" |= "database_id=b26b15a0-7ca6-4360-bd92-3059a62bee28" [2h])
+            for: 5m
+            labels:
+              severity: high
+              notify: todoist email-tom
+              database: Ghost
+            annotations:
+              summary: Databasus backup overdue for Ghost
+              description: Databasus has not completed a Ghost backup in over two hours.
+          - alert: DatabasusBackupStale
+            expr: absent_over_time({namespace="databasus", container="databasus"} |= "logical backup finished" |= "database_id=6a5bfd01-6555-4881-a0f9-f092ffc57b26" [2h])
+            for: 5m
+            labels:
+              severity: high
+              notify: todoist email-tom
+              database: Paperless
+            annotations:
+              summary: Databasus backup overdue for Paperless
+              description: Databasus has not completed a Paperless backup in over two hours.
+          - alert: DatabasusBackupStale
+            expr: absent_over_time({namespace="databasus", container="databasus"} |= "logical backup finished" |= "database_id=77f681ca-c793-42c2-8825-77020f0983fb" [26h])
+            for: 5m
+            labels:
+              severity: high
+              notify: todoist email-tom
+              database: Netbox
+            annotations:
+              summary: Databasus backup overdue for Netbox
+              description: Databasus has not completed a Netbox backup in over 26 hours.
