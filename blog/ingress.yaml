@@ -15,6 +15,7 @@ metadata:
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     external-dns.kubernetes.io/cloudflare-proxied: "true"
+    internal.paulus.family/controller: external-dns
     traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: blog-inject-headers@kubernetescrd
     traefik.ingress.kubernetes.io/router.tls.options: traefik-require-cloudflare-origin-pull@kubernetescrd
