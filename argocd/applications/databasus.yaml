@@ -25,6 +25,9 @@ spec:
               paths:
                 - path: /
                   pathType: Prefix
+        extraEnv:
+          - name: IS_DISABLE_ANONYMOUS_TELEMETRY
+            value: "true"
   syncPolicy:
     automated:
       prune: true
