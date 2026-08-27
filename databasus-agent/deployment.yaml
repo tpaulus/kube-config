@@ -1,0 +1,104 @@
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: databasus-agent
+  namespace: databasus
+spec:
+  itemPath: vaults/K3S/items/Databasus-Agent
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: databasus-agent
+  namespace: databasus
+  labels:
+    app: databasus-agent
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: databasus-agent
+  template:
+    metadata:
+      labels:
+        app: databasus-agent
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: docker-socket
+          emptyDir: {}
+        - name: docker-data
+          emptyDir: {}
+        - name: agent-data
+          emptyDir: {}
+      containers:
+        - name: docker
+          image: docker:28.3.3-dind@sha256:a56b3bdde89315ed2cc0e4906e582b5033d93bf20d9cb9510c2cdd4e7f7690b1
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: docker-socket
+              mountPath: /var/run
+            - name: docker-data
+              mountPath: /var/lib/docker
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1
+              memory: 1Gi
+        - name: agent
+          image: ghcr.io/databasus/databasus:v3.55.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - |
+              cat > databasus-verification.json <<EOF
+              {
+                "databasusHost": "https://databasus.ing.k3s.brickyard.whitestar.systems",
+                "agentId": "${AGENT_ID}",
+                "token": "${AGENT_TOKEN}",
+                "maxCpu": 2,
+                "maxRamMb": 4096,
+                "maxDiskGb": 50,
+                "maxConcurrentJobs": 1
+              }
+              EOF
+              until [ -S /var/run/docker.sock ]; do sleep 1; done
+              exec /app/agent-binaries/databasus-verification-agent-linux-amd64 run
+          workingDir: /var/lib/databasus-agent
+          env:
+            - name: AGENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: databasus-agent
+                  key: username
+            - name: AGENT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: databasus-agent
+                  key: password
+            - name: DOCKER_HOST
+              value: unix:///var/run/docker.sock
+          securityContext:
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: docker-socket
+              mountPath: /var/run
+            - name: agent-data
+              mountPath: /var/lib/databasus-agent
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 2
+              memory: 4Gi
