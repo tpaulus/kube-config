@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: databasus-backups
   namespace: loki
+  annotations:
+    k8s-sidecar-target-directory: fake
   labels:
     loki_rule: "true"
 data:
