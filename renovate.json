@@ -37,6 +37,15 @@
       },
       "minimumReleaseAge": "1 day",
       "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
+      "matchPackageNames": [
+        "netboxcommunity/netbox"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "automerge": false
     }
   ],
   "hostRules": [
