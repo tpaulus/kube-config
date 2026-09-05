@@ -207,7 +207,7 @@ spec:
                   memory: 512Mi
           containers:
             - name: uploader
-              image: rclone/rclone:1.75.0
+              image: rclone/rclone:1.75.1
               command: ["/bin/sh", "/scripts/upload.sh"]
               envFrom:
                 - secretRef:
