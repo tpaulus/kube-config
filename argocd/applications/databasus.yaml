@@ -12,7 +12,7 @@ spec:
   source:
     chart: databasus
     repoURL: ghcr.io/databasus/charts
-    targetRevision: 3.55.3
+    targetRevision: 3.56.0
     helm:
       values: |
         image:
