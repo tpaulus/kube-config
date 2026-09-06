@@ -54,7 +54,7 @@ spec:
               cpu: 1
               memory: 1Gi
         - name: agent
-          image: ghcr.io/databasus/databasus:v3.56.0
+          image: ghcr.io/databasus/databasus:v3.57.0
           imagePullPolicy: IfNotPresent
           command:
             - /bin/bash
