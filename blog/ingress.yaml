@@ -38,8 +38,6 @@ metadata:
   name: blog-bunny
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    internal.paulus.family/controller: external-dns
-    internal.paulus.family/target: 10.30.0.5
     traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: blog-blog-bunny-ip-allowlist@kubernetescrd,blog-inject-headers@kubernetescrd
     traefik.ingress.kubernetes.io/router.tls.options: blog-no-client-cert@kubernetescrd
@@ -66,8 +64,6 @@ metadata:
   name: blog-bunny-admin
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    internal.paulus.family/controller: external-dns
-    internal.paulus.family/target: 10.30.0.5
     traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: blog-blog-bunny-ip-allowlist@kubernetescrd,blog-ghost-admin-fail2ban@kubernetescrd,blog-inject-headers@kubernetescrd
     traefik.ingress.kubernetes.io/router.priority: "100"
