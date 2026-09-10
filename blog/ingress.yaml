@@ -32,58 +32,39 @@ metadata:
 spec:
   minVersion: VersionTLS12
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
 metadata:
-  name: blog-bunny
+  name: blog
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
-    traefik.ingress.kubernetes.io/router.middlewares: blog-blog-bunny-ip-allowlist@kubernetescrd,blog-inject-headers@kubernetescrd
-    traefik.ingress.kubernetes.io/router.tls.options: blog-no-client-cert@kubernetescrd
 spec:
+  entryPoints: [web-mtls]
+  routes:
+    - kind: Rule
+      match: Host(`blog.tompaulus.com`) && PathPrefix(`/ghost`)
+      priority: 100
+      middlewares:
+        - name: blog-bunny-ip-allowlist
+        - name: ghost-admin-fail2ban
+        - name: inject-headers
+      services:
+        - name: ghost
+          port: 2368
+    - kind: Rule
+      match: Host(`blog.tompaulus.com`)
+      priority: 10
+      middlewares:
+        - name: blog-bunny-ip-allowlist
+        - name: inject-headers
+      services:
+        - name: ghost
+          port: 2368
   tls:
-    - hosts:
-        - blog.tompaulus.com
-      secretName: blog-tompaulus-com-cert
-  rules:
-    - host: blog.tompaulus.com
-      http:
-        paths:
-          - backend:
-              service:
-                name: ghost
-                port:
-                  number: 2368
-            path: /
-            pathType: Prefix
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: blog-bunny-admin
-  annotations:
-    external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
-    traefik.ingress.kubernetes.io/router.middlewares: blog-blog-bunny-ip-allowlist@kubernetescrd,blog-ghost-admin-fail2ban@kubernetescrd,blog-inject-headers@kubernetescrd
-    traefik.ingress.kubernetes.io/router.priority: "100"
-    traefik.ingress.kubernetes.io/router.tls.options: blog-no-client-cert@kubernetescrd
-spec:
-  tls:
-    - hosts:
-        - blog.tompaulus.com
-      secretName: blog-tompaulus-com-cert
-  rules:
-    - host: blog.tompaulus.com
-      http:
-        paths:
-          - backend:
-              service:
-                name: ghost
-                port:
-                  number: 2368
-            path: /ghost
-            pathType: Prefix
+    secretName: blog-tompaulus-com-cert
+    options:
+      name: no-client-cert
+      namespace: blog
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
