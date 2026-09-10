@@ -15,7 +15,7 @@ metadata:
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     internal.paulus.family/controller: external-dns
-    traefik.ingress.kubernetes.io/router.entrypoints: web-ext
+    traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
     traefik.ingress.kubernetes.io/router.middlewares: blog-bunny-ip-allowlist@kubernetescrd,blog-inject-headers@kubernetescrd
 spec:
   tls:
