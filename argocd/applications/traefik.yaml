@@ -37,13 +37,6 @@ spec:
               tls:
                 enabled: true
                 options: traefik-require-client-cert@kubernetescrd
-          web-ext:
-            port: 9200
-            exposedPort: 9200
-            protocol: TCP
-            http:
-              middlewares:
-                - traefik-rewrite-cf-tunnel-headers@kubernetescrd
         accessLog:
           enabled: true
           format: json
@@ -60,12 +53,6 @@ spec:
                 X-Forwarded-Proto: keep
         experimental:
           plugins:
-            jwt:
-              moduleName: github.com/tpaulus/jwt-middleware
-              version: v1.1.14
-            cloudflarewarp:
-              moduleName: github.com/BetterCorp/cloudflarewarp
-              version: v1.3.3
             fail2ban:
               moduleName: github.com/tomMoulard/fail2ban
               version: v0.9.0
