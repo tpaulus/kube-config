@@ -13,6 +13,15 @@ spec:
     path: blog
     repoURL: git@github.com:tpaulus/kube-config.git
     targetRevision: HEAD
+  ignoreDifferences:
+    - group: traefik.io
+      kind: Middleware
+      name: blog-bunny-ip-allowlist
+      namespace: blog
+      jsonPointers:
+        - /spec/ipAllowList/sourceRange
   syncPolicy:
     automated:
       prune: true
+    syncOptions:
+      - RespectIgnoreDifferences=true
