@@ -33,8 +33,8 @@ spec:
             - --webhook-provider-url=http://localhost:8888
             - --registry=txt
             - --policy=sync
-            # Keep ownership TXT records under a per-record-type metadata namespace.
-            - --txt-prefix=%{record_type}._metadata.
+            # Keep Bunny ownership TXT records separate from the Cloudflare controller.
+            - --txt-prefix=bunny-dns-%{record_type}.
             - --txt-wildcard-replacement=_all
             - --managed-record-types=A
             - --managed-record-types=AAAA
