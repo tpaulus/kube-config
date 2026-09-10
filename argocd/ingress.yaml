@@ -62,39 +62,3 @@ spec:
     options:
       name: webhook-no-client-cert
       namespace: argocd
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: jwt-verification
-  namespace: argocd
-spec:
-  plugin:
-    jwt:
-      issuers: ["https://whitestar.cloudflareaccess.com/cdn-cgi/access/certs"]
-      headerName: Cf-Access-Jwt-Assertion
-      require:
-        aud: f2d6259e0bc9268137d8382a2b145834130153c17ddefae081fa8e4c60603998
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: argocd-server-ext
-  namespace: argocd
-spec:
-  entryPoints: [web-ext, web-mtls]
-  routes:
-    - kind: Rule
-      match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`)
-      priority: 10
-      services:
-        - name: argocd-server
-          port: 80
-    - kind: Rule
-      match: Host(`argocd.auth-ing.k3s.brickyard.whitestar.systems`) && Header(`Content-Type`,
-        `application/grpc`)
-      priority: 11
-      services:
-        - name: argocd-server
-          port: 80
-          scheme: h2c

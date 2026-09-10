@@ -9,8 +9,6 @@ metadata:
   namespace: argocd
 data:
   url: https://argocd.ing.k3s.brickyard.whitestar.systems
-  additionalUrls: |
-    - https://argocd.auth-ing.k3s.brickyard.whitestar.systems
   resource.customizations: |
     extensions/Ingress:
       health.lua: |

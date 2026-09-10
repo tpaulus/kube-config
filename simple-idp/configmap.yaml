@@ -62,10 +62,8 @@ data:
         secret: "ENV:ARGOCD_OIDC_CLIENT_SECRET"
         redirectURIs:
           - "https://argocd.ing.k3s.brickyard.whitestar.systems/auth/callback"
-          - "https://argocd.auth-ing.k3s.brickyard.whitestar.systems/auth/callback"
         postLogoutRedirectURIs:
           - "https://argocd.ing.k3s.brickyard.whitestar.systems/"
-          - "https://argocd.auth-ing.k3s.brickyard.whitestar.systems/"
         allowedScopes: ["openid", "profile", "email", "groups"]
       - id: netbox
         name: "NetBox"
