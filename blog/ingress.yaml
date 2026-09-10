@@ -40,7 +40,7 @@ metadata:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     internal.paulus.family/controller: external-dns
     traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
-    traefik.ingress.kubernetes.io/router.middlewares: blog-bunny-ip-allowlist@kubernetescrd,blog-inject-headers@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: blog-blog-bunny-ip-allowlist@kubernetescrd,blog-inject-headers@kubernetescrd
     traefik.ingress.kubernetes.io/router.tls.options: blog-no-client-cert@kubernetescrd
 spec:
   tls:
@@ -67,7 +67,7 @@ metadata:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     internal.paulus.family/controller: external-dns
     traefik.ingress.kubernetes.io/router.entrypoints: web-mtls
-    traefik.ingress.kubernetes.io/router.middlewares: blog-bunny-ip-allowlist@kubernetescrd,blog-ghost-admin-fail2ban@kubernetescrd,blog-inject-headers@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: blog-blog-bunny-ip-allowlist@kubernetescrd,blog-ghost-admin-fail2ban@kubernetescrd,blog-inject-headers@kubernetescrd
     traefik.ingress.kubernetes.io/router.priority: "100"
     traefik.ingress.kubernetes.io/router.tls.options: blog-no-client-cert@kubernetescrd
 spec:
