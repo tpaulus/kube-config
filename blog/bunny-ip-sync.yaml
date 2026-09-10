@@ -44,7 +44,7 @@ metadata:
   namespace: blog
 spec:
   ipAllowList:
-    # Fail closed until the first successful Bunny node-list sync.
+    # Fail closed until the first successful Bunny CDN edge-list sync.
     sourceRange: ["127.0.0.1/32", "::1/128"]
 ---
 apiVersion: batch/v1
@@ -133,7 +133,7 @@ spec:
               command: [/bin/sh, -ec]
               args:
                 - |
-                  response="$(curl --fail --silent --show-error https://api.bunny.net/mc/nodes/plain)"
+                  response="$(curl --fail --silent --show-error https://api.bunny.net/system/edgeserverlist)"
                   ranges=
                   while IFS= read -r address; do
                     test -n "$address" || continue
@@ -154,7 +154,7 @@ spec:
                     cidr="${address}/32"
                     ranges="${ranges}${ranges:+,}\"${cidr}\""
                   done <<EOF
-                  $response
+                  $(printf '%s' "$response" | tr -d '[]" ' | tr ',' '\n')
                   EOF
                   test -n "$ranges"
                   token="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
