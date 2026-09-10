@@ -66,6 +66,9 @@ spec:
             cloudflarewarp:
               moduleName: github.com/BetterCorp/cloudflarewarp
               version: v1.3.3
+            fail2ban:
+              moduleName: github.com/tomMoulard/fail2ban
+              version: v0.9.0
         providers:
           kubernetesIngress:
             allowExternalNameServices: true
