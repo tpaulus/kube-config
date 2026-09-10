@@ -1,0 +1,95 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bunny-dns
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: bunny-dns
+  template:
+    metadata:
+      labels:
+        app: bunny-dns
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "7979"
+    spec:
+      serviceAccountName: dns-sync
+      containers:
+        - name: external-dns
+          image: registry.k8s.io/external-dns/external-dns:v0.22.0
+          args:
+            - --annotation-prefix=external-dns.kubernetes.io/
+            - --events
+            - --source=service
+            - --source=ingress
+            - --source=traefik-proxy
+            - --source=crd
+            - --provider=webhook
+            - --webhook-provider-url=http://localhost:8888
+            - --registry=txt
+            - --policy=sync
+            # Keep ownership TXT records under a per-record-type metadata namespace.
+            - --txt-prefix=%{record_type}._metadata.
+            - --txt-wildcard-replacement=_all
+            - --managed-record-types=A
+            - --managed-record-types=AAAA
+            - --managed-record-types=CNAME
+            - --managed-record-types=MX
+            - --managed-record-types=TXT
+            - --managed-record-types=SRV
+            - --metrics-address=:7979
+          ports:
+            - containerPort: 7979
+              name: metrics
+          resources:
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+        - name: bunny-webhook
+          image: ghcr.io/contaimlabs/external-dns-bunny-webhook:v0.3.1
+          securityContext:
+            runAsUser: 20000
+            runAsGroup: 20000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: BUNNY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bunny-api-token
+                  key: api-key
+          ports:
+            - containerPort: 8888
+              name: webhook
+            - containerPort: 8080
+              name: health
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
