@@ -35,7 +35,5 @@ ep.new('tompaulus-com', namespace,
   [
     // Keybase domain verification
     ep.endpoint(zone, 'TXT', ['keybase-site-verification=ANVrHna38pR4HiCmhXorD3QPw0bqpsqIGKtDvNLTtwA']),
-    // WWW CNAME (proxied)
-    ep.endpoint('www.' + zone, 'CNAME', [zone], providerSpecific=ep.cloudflareProxied),
   ]
 )
