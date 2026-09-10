@@ -28,6 +28,7 @@ spec:
             - --source=ingress
             - --source=traefik-proxy
             - --source=crd
+            - --exclude-domains=melinda-tom.wedding
             - --provider=webhook
             - --webhook-provider-url=http://localhost:8888
             - --registry=txt
