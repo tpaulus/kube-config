@@ -9,7 +9,7 @@ spec:
   dnsNames:
     - netbox.whitestar.systems
   issuerRef:
-    name: letsencrypt-cf-prod
+    name: letsencrypt-bunny-prod
     kind: ClusterIssuer
 ---
 apiVersion: networking.k8s.io/v1

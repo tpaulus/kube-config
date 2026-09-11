@@ -10,7 +10,7 @@ spec:
   dnsNames:
     - n8n.it.paulus.family
   issuerRef:
-    name: letsencrypt-cf-prod
+    name: letsencrypt-bunny-prod
     kind: ClusterIssuer
 ---
 apiVersion: v1

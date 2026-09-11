@@ -64,5 +64,5 @@ spec:
   dnsNames:
     - ghost.tompaulus.com
   issuerRef:
-    name: letsencrypt-cf-prod
+    name: letsencrypt-bunny-prod
     kind: ClusterIssuer

@@ -9,7 +9,7 @@ spec:
   dnsNames:
     - paperless.paulus.family
   issuerRef:
-    name: letsencrypt-cf-prod
+    name: letsencrypt-bunny-prod
     kind: ClusterIssuer
 ---
 apiVersion: networking.k8s.io/v1

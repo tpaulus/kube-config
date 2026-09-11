@@ -11,7 +11,7 @@ spec:
     - '*.it.paulus.family'
     - it.paulus.family
   issuerRef:
-    name: letsencrypt-cf-prod
+    name: letsencrypt-bunny-prod
     kind: ClusterIssuer
 ---
 apiVersion: traefik.io/v1alpha1

@@ -10,5 +10,5 @@ spec:
   dnsNames:
     - home.paulus.family
   issuerRef:
-    name: letsencrypt-cf-prod
+    name: letsencrypt-bunny-prod
     kind: ClusterIssuer
