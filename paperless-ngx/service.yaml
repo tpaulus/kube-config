@@ -114,7 +114,7 @@ spec:
             value: '{"openid_connect":{"APPS":[{"provider_id":"simple-idp","name":"Simple IDP","client_id":"paperless","secret":"$(PAPERLESS_OIDC_CLIENT_SECRET)","settings":{"server_url":"https://sign-on-config.paulus.family/.well-known/openid-configuration"}}]}}'
         resources:
           requests:
-            cpu: 2560m
+            cpu: 500m
             memory: 2.5Gi
           limits:
             cpu: 10240m
@@ -171,7 +171,7 @@ spec:
         - containerPort: 445
         resources:
           requests:
-            cpu: 256m
+            cpu: 100m
             memory: 512Mi
           limits:
             cpu: 256m
