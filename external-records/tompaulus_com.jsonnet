@@ -35,5 +35,6 @@ ep.new('tompaulus-com', namespace,
   [
     // Keybase domain verification
     ep.endpoint(zone, 'TXT', ['keybase-site-verification=ANVrHna38pR4HiCmhXorD3QPw0bqpsqIGKtDvNLTtwA']),
+    ep.endpoint('blog.' + zone, 'CNAME', ['blog-tompaulus-com.b-cdn.net']),
   ]
 )

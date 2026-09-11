@@ -37,25 +37,13 @@ kind: IngressRoute
 metadata:
   name: blog
   annotations:
-    external-dns.kubernetes.io/target: lfp.it.paulus.family
+    internal.paulus.family/target: 10.30.0.0
 spec:
-  entryPoints: [web-mtls]
+  entryPoints: [web]
   routes:
-    - kind: Rule
-      match: Host(`blog.tompaulus.com`) && PathPrefix(`/ghost`)
-      priority: 100
-      middlewares:
-        - name: blog-bunny-ip-allowlist
-        - name: ghost-admin-fail2ban
-        - name: inject-headers
-      services:
-        - name: ghost
-          port: 2368
-    - kind: Rule
-      match: Host(`blog.tompaulus.com`)
+    - match: Host(`ghost.tompaulus.com`)
       priority: 10
       middlewares:
-        - name: blog-bunny-ip-allowlist
         - name: inject-headers
       services:
         - name: ghost
@@ -74,7 +62,7 @@ spec:
   secretName: blog-tompaulus-com-cert
   duration: 2160h0m0s
   dnsNames:
-    - blog.tompaulus.com
+    - ghost.tompaulus.com
   issuerRef:
     name: letsencrypt-cf-prod
     kind: ClusterIssuer
