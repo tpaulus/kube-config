@@ -36,6 +36,8 @@ groups:
         labels:
           severity: high
           notify: todoist email-tom
+          instance: '{{ $labels.netbox_device_name }}'
+          netbox_instance: '{{ $labels.instance }}'
         annotations:
           title: Node {{ $labels.netbox_device_name }} is down
           description: Failed to scrape Node Exporter on {{ $labels.netbox_device_name }}
