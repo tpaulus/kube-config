@@ -9,7 +9,9 @@ Lists the A, CNAME, MX, TXT, and SRV records in a Bunny DNS zone by default. Add
 --apply to delete the listed records after typing the exact zone name.
 
 All other Bunny record types are preserved, including AAAA, PV, and RDR
-records.
+records. The following names are always preserved when present:
+lfp-primary.it.paulus.family, lfp.it.paulus.family,
+lfp-backup.paulus.family, and vista.whitestar.systems.
 EOF
 }
 
@@ -45,7 +47,8 @@ command -v jq >/dev/null || { echo "jq is required." >&2; exit 1; }
 zones=$(mktemp)
 records=$(mktemp)
 candidates=$(mktemp)
-trap 'rm -f "$zones" "$records" "$candidates"' EXIT
+protected=$(mktemp)
+trap 'rm -f "$zones" "$records" "$candidates" "$protected"' EXIT
 
 curl --fail --silent --show-error \
   --header "AccessKey: $BUNNY_API_KEY" \
@@ -66,11 +69,45 @@ curl --fail --silent --show-error \
   "https://api.bunny.net/dnszone/$zone_id" >"$records"
 
 # Bunny DNS API record types: A=0, CNAME=2, TXT=3, MX=4, SRV=8.
-jq -r '
+jq -r --arg zone "$zone" '
+  def record_name:
+    if .Name == "" or .Name == "@" then $zone
+    elif (.Name | endswith(".")) then .Name | rtrimstr(".")
+    elif (.Name | endswith("." + $zone)) then .Name
+    else .Name + "." + $zone
+    end;
+  def selected_type: .Type == 0 or .Type == 2 or .Type == 3 or .Type == 4 or .Type == 8;
+  def protected_name:
+    record_name as $name
+    | $name == "lfp-primary.it.paulus.family"
+      or $name == "lfp.it.paulus.family"
+      or $name == "lfp-backup.paulus.family"
+      or $name == "vista.whitestar.systems";
+
   .Records[]
-  | select(.Type == 0 or .Type == 2 or .Type == 3 or .Type == 4 or .Type == 8)
+  | select(selected_type and (protected_name | not))
   | [.Id, .Type, .Name, .Value] | @tsv
 ' "$records" >"$candidates"
+
+jq -r --arg zone "$zone" '
+  def record_name:
+    if .Name == "" or .Name == "@" then $zone
+    elif (.Name | endswith(".")) then .Name | rtrimstr(".")
+    elif (.Name | endswith("." + $zone)) then .Name
+    else .Name + "." + $zone
+    end;
+  def selected_type: .Type == 0 or .Type == 2 or .Type == 3 or .Type == 4 or .Type == 8;
+  def protected_name:
+    record_name as $name
+    | $name == "lfp-primary.it.paulus.family"
+      or $name == "lfp.it.paulus.family"
+      or $name == "lfp-backup.paulus.family"
+      or $name == "vista.whitestar.systems";
+
+  .Records[]
+  | select(selected_type and protected_name)
+  | [.Id, .Type, record_name, .Value] | @tsv
+' "$records" >"$protected"
 
 count=$(wc -l <"$candidates" | tr -d ' ')
 printf 'Zone: %s (ID %s)\nCandidate records: %s\n\n' "$zone" "$zone_id" "$count"
@@ -79,6 +116,14 @@ awk -F '\t' 'BEGIN { OFS="\t" } {
   type = ($2 == 0 ? "A" : ($2 == 2 ? "CNAME" : ($2 == 3 ? "TXT" : ($2 == 4 ? "MX" : "SRV"))))
   print $1, type, ($3 == "" ? "@" : $3), $4
 }' "$candidates"
+
+if [[ -s "$protected" ]]; then
+  printf '\nProtected records (not selected for deletion):\n'
+  awk -F '\t' 'BEGIN { OFS="\t" } {
+    type = ($2 == 0 ? "A" : ($2 == 2 ? "CNAME" : ($2 == 3 ? "TXT" : ($2 == 4 ? "MX" : "SRV"))))
+    print $1, type, $3, $4
+  }' "$protected"
+fi
 
 if [[ "$apply" != true ]]; then
   printf '\nDry run only. Re-run with --apply to delete exactly these %s records.\n' "$count"
