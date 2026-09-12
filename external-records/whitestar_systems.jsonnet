@@ -9,12 +9,25 @@
 //   - k3s.brickyard.whitestar.systems  (k3s primary node IPs)
 local ep = import 'lib/dns_endpoint.libsonnet';
 local cfEmailRouting = import 'lib/cloudflare_email_routing.libsonnet';
+local sesDns = import 'lib/ses_dns.libsonnet';
 
 local zone = 'whitestar.systems';
 local namespace = 'external-records';
 
 ep.new('whitestar-systems', namespace,
   cfEmailRouting.endpoints(zone, allowedSenders=['include:amazonses.com'])
+  +
+  sesDns.endpoints(
+    zone,
+    dkimIds=[
+      'iqetko2n6pdct7lwtthepcma3c2vjv2n',
+      'mfadwwo5mry26c7gpicawjd5jtuby7sr',
+      'qfdesenpl4pe67jy2eotdipqms5qffm4',
+    ],
+    txtVerification=[
+      '93XW6+J46HXQ1P9Bp/gCUg9OIOkzgf1DSZiReDqkMa4=',
+    ],
+  )
   +
   [
     // Keybase domain verification
@@ -23,6 +36,7 @@ ep.new('whitestar-systems', namespace,
     ep.endpoint('_github-challenge-ws-systems-org.' + zone, 'TXT', ['5a889d68b4']),
     // DMARC
     ep.endpoint('_dmarc.' + zone, 'TXT', ['v=DMARC1; p=quarantine; rua=mailto:64203f8a3e304420b20686d30874ffc9@dmarc-reports.cloudflare.net']),
+
     // UniFi controller alias
     ep.endpoint('ubnt.brickyard.' + zone, 'CNAME', ['unifi-controller.brickyard.' + zone], ttl=30),
 
