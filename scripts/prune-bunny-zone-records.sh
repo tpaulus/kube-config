@@ -11,7 +11,7 @@ Lists the A, CNAME, MX, TXT, and SRV records in a Bunny DNS zone by default. Add
 All other Bunny record types are preserved, including AAAA, PV, and RDR
 records. The following names are always preserved when present:
 lfp-primary.it.paulus.family, lfp.it.paulus.family,
-lfp-backup.paulus.family, and vista.whitestar.systems.
+lfp-backup.it.paulus.family, and vista.whitestar.systems.
 EOF
 }
 
@@ -81,7 +81,7 @@ jq -r --arg zone "$zone" '
     record_name as $name
     | $name == "lfp-primary.it.paulus.family"
       or $name == "lfp.it.paulus.family"
-      or $name == "lfp-backup.paulus.family"
+      or $name == "lfp-backup.it.paulus.family"
       or $name == "vista.whitestar.systems";
 
   .Records[]
@@ -101,7 +101,7 @@ jq -r --arg zone "$zone" '
     record_name as $name
     | $name == "lfp-primary.it.paulus.family"
       or $name == "lfp.it.paulus.family"
-      or $name == "lfp-backup.paulus.family"
+      or $name == "lfp-backup.it.paulus.family"
       or $name == "vista.whitestar.systems";
 
   .Records[]
