@@ -22,6 +22,7 @@ spec:
             defaultReplicaCount: "2"
             # Rebuild an at-risk last replica before allowing Kured's drain to finish.
             nodeDrainPolicy: block-for-eviction-if-contains-last-replica
+            offline-replica-rebuilding: true
             priorityClass: longhorn-critical
             v2DataEngineGuaranteedInstanceManagerCPU: 7
           ingress:
