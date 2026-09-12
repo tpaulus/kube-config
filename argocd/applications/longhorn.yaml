@@ -20,6 +20,8 @@ spec:
             defaultDataPath: /var/lib/longhorn/
             replicaAutoBalance: best-effort
             defaultReplicaCount: "2"
+            # Rebuild an at-risk last replica before allowing Kured's drain to finish.
+            nodeDrainPolicy: block-for-eviction-if-contains-last-replica
             priorityClass: longhorn-critical
             v2DataEngineGuaranteedInstanceManagerCPU: 7
           ingress:
