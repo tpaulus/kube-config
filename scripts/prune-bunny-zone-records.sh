@@ -5,11 +5,11 @@ usage() {
   cat <<'EOF'
 Usage: BUNNY_API_KEY=... scripts/prune-bunny-zone-records.sh --zone example.com [--apply]
 
-Lists the A, CNAME, and MX records in a Bunny DNS zone by default. Add
+Lists the A, CNAME, MX, TXT, and SRV records in a Bunny DNS zone by default. Add
 --apply to delete the listed records after typing the exact zone name.
 
-All other Bunny record types are preserved, including TXT, SRV, AAAA, PV, and
-RDR records.
+All other Bunny record types are preserved, including AAAA, PV, and RDR
+records.
 EOF
 }
 
@@ -65,10 +65,10 @@ curl --fail --silent --show-error \
   --header "AccessKey: $BUNNY_API_KEY" \
   "https://api.bunny.net/dnszone/$zone_id" >"$records"
 
-# Bunny DNS API record types: A=0, CNAME=2, MX=4.
+# Bunny DNS API record types: A=0, CNAME=2, TXT=3, MX=4, SRV=8.
 jq -r '
   .Records[]
-  | select(.Type == 0 or .Type == 2 or .Type == 4)
+  | select(.Type == 0 or .Type == 2 or .Type == 3 or .Type == 4 or .Type == 8)
   | [.Id, .Type, .Name, .Value] | @tsv
 ' "$records" >"$candidates"
 
@@ -76,7 +76,7 @@ count=$(wc -l <"$candidates" | tr -d ' ')
 printf 'Zone: %s (ID %s)\nCandidate records: %s\n\n' "$zone" "$zone_id" "$count"
 printf 'ID\tTYPE\tNAME\tVALUE\n'
 awk -F '\t' 'BEGIN { OFS="\t" } {
-  type = ($2 == 0 ? "A" : ($2 == 2 ? "CNAME" : "MX"))
+  type = ($2 == 0 ? "A" : ($2 == 2 ? "CNAME" : ($2 == 3 ? "TXT" : ($2 == 4 ? "MX" : "SRV"))))
   print $1, type, ($3 == "" ? "@" : $3), $4
 }' "$candidates"
 
@@ -98,4 +98,4 @@ while IFS=$'\t' read -r record_id _ _ _; do
   printf 'Deleted record ID %s\n' "$record_id"
 done <"$candidates"
 
-printf 'Deleted %s A, CNAME, and MX records from %s.\n' "$count" "$zone"
+printf 'Deleted %s A, CNAME, MX, TXT, and SRV records from %s.\n' "$count" "$zone"
