@@ -9,7 +9,6 @@ local namespace = 'external-records';
 ep.new('runabout-space', namespace,
   fastmail.endpoints(
     zone,
-    dmarcReportAddress='mailto:58a029c6907a487e89a1bbc2830bf93d@dmarc-reports.cloudflare.net',
   )
   +
   [

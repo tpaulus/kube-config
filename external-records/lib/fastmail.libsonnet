@@ -10,7 +10,7 @@ local mxServers = [
 {
   endpoints(
     zone,
-    dmarcReportAddress='mailto:dmarcreports@whitestar.systems',
+    dmarcReportAddress='mailto:dmarc_agg@vali.email',
     allowedSenders=[],
     createWildcardMxRecords=false,
     createClientConfigurationRecords=false,

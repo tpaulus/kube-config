@@ -9,7 +9,6 @@ local namespace = 'external-records';
 ep.new('paulus-family', namespace,
   fastmail.endpoints(
     zone,
-    dmarcReportAddress='mailto:d6b6ea49728e40aabe6f5d3b65646b12@dmarc-reports.cloudflare.net',
     allowedSenders=['include:spf.mtasv.net'],
     createWildcardMxRecords=true,
     createClientConfigurationRecords=false,

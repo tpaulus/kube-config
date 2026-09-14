@@ -10,7 +10,6 @@ local namespace = 'external-records';
 ep.new('tompaulus-com', namespace,
   fastmail.endpoints(
     zone,
-    dmarcReportAddress='mailto:3f08cb85c9d54864871c1d8351cf31e6@dmarc-reports.cloudflare.net',
     allowedSenders=['include:amazonses.com'],
     createWildcardMxRecords=true,
     createClientConfigurationRecords=true,

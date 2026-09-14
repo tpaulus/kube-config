@@ -9,7 +9,6 @@ local namespace = 'external-records';
 ep.new('mel-earth', namespace,
   fastmail.endpoints(
     zone,
-    dmarcReportAddress='mailto:f36e4edc4151420abb491d4495fc879c@dmarc-reports.cloudflare.net',
     createClientConfigurationRecords=true,
   )
 )

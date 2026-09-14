@@ -35,7 +35,7 @@ ep.new('whitestar-systems', namespace,
     // GitHub organisation domain verification
     ep.endpoint('_github-challenge-ws-systems-org.' + zone, 'TXT', ['5a889d68b4']),
     // DMARC
-    ep.endpoint('_dmarc.' + zone, 'TXT', ['v=DMARC1; p=quarantine; rua=mailto:64203f8a3e304420b20686d30874ffc9@dmarc-reports.cloudflare.net']),
+    ep.endpoint('_dmarc.' + zone, 'TXT', ['v=DMARC1; p=quarantine; rua=mailto:dmarc_agg@vali.email']),
 
     // UniFi controller alias
     ep.endpoint('ubnt.brickyard.' + zone, 'CNAME', ['unifi-controller.brickyard.' + zone], ttl=30),
