@@ -65,6 +65,9 @@ spec:
               value: /local/grafana.ini
             - name: GF_PATHS_PROVISIONING
               value: /local/grafana/provisioning
+            # Loki is bundled with Grafana; disable only background plugin replacement on the read-only image filesystem.
+            - name: GF_PLUGINS_PREINSTALL_DISABLED
+              value: 'true'
             - name: GRAFANA_OIDC_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
