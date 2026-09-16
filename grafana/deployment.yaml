@@ -44,7 +44,7 @@ spec:
               mountPath: /data
       containers:
         - name: grafana
-          image: grafana/grafana:13.2.1
+          image: grafana/grafana:13.2.2
           resources:
             requests:
               cpu: 100m
