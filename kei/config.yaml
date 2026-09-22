@@ -16,6 +16,11 @@ data:
     [download.retry]
     per_transfer = 1
 
+    [filters]
+    # Back up the primary library once instead of duplicating media in every album.
+    albums = ["none"]
+    unfiled = true
+
     [photos]
     file_match_policy = "name-id7"
 
