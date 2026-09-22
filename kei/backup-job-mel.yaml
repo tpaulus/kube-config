@@ -46,7 +46,7 @@ spec:
                 - -ec
               args:
                 - |
-                  if [ ! -f /config/state.db ]; then
+                  if ! ls /config/*.db >/dev/null 2>&1; then
                     kei import-existing \
                       --config /config/config.toml \
                       --password-file /credentials/ICLOUD_PASSWORD
