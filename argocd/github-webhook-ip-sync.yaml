@@ -53,7 +53,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: trigger
-          image: alpine/k8s:1.37.0
+          image: alpine/k8s:1.37.1
           command:
             - /bin/sh
             - -c
