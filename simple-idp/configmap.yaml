@@ -73,6 +73,14 @@ data:
         postLogoutRedirectURIs:
           - "https://netbox.whitestar.systems/"
         allowedScopes: ["openid", "profile", "email", "groups"]
+      - id: calibre-web-automated
+        name: "Calibre-Web Automated"
+        secret: "ENV:CALIBRE_WEB_AUTOMATED_OIDC_CLIENT_SECRET"
+        redirectURIs:
+          - "https://calibre-web-automated.it.paulus.family/login/generic/authorized"
+        postLogoutRedirectURIs:
+          - "https://calibre-web-automated.it.paulus.family/"
+        allowedScopes: ["openid", "profile", "email", "groups"]
     users:
       - id: tom
         subject: "user:tom"
@@ -82,7 +90,7 @@ data:
         emailVerified: true
         certificateCommonNames: ["tom-laptop", "tom-iphone", "tom-ipad"]
         claims:
-          groups: ["family", "netbox_admin", "netbox_staff"]
+          groups: ["family", "netbox_admin", "netbox_staff", "calibre_web_admin"]
       - id: mel
         subject: "user:mel"
         email: "mel@paulus.family"

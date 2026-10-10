@@ -64,6 +64,11 @@ spec:
                 secretKeyRef:
                   name: simple-idp-secrets
                   key: NETBOX_OIDC_CLIENT_SECRET
+            - name: CALIBRE_WEB_AUTOMATED_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: simple-idp-secrets
+                  key: CALIBRE_WEB_AUTOMATED_OIDC_CLIENT_SECRET
           volumeMounts:
             - name: config
               mountPath: /etc/simple-idp
