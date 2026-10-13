@@ -35,6 +35,7 @@ spec:
                 containers:
                   main:
                     env:
+                      IMMICH_TELEMETRY_INCLUDE: all
                       DB_HOSTNAME: immich-postgres
                       DB_PORT: "5432"
                       DB_USERNAME:
