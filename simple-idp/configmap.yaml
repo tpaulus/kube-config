@@ -81,6 +81,16 @@ data:
         postLogoutRedirectURIs:
           - "https://calibre-web-automated.it.paulus.family/"
         allowedScopes: ["openid", "profile", "email", "groups"]
+      - id: immich
+        name: "Immich"
+        secret: "ENV:IMMICH_OIDC_CLIENT_SECRET"
+        redirectURIs:
+          - "https://photos.it.paulus.family/auth/login"
+          - "https://photos.it.paulus.family/user-settings"
+          - "app.immich:///oauth-callback"
+        postLogoutRedirectURIs:
+          - "https://photos.it.paulus.family/"
+        allowedScopes: ["openid", "profile", "email"]
     users:
       - id: tom
         subject: "user:tom"
