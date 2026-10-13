@@ -32,6 +32,12 @@ spec:
                 runAsNonRoot: true
             controllers:
               main:
+                pod:
+                  annotations:
+                    prometheus.io/scrape: "true"
+                    prometheus.io/port: "8081"
+                    prometheus.io/path: "/metrics"
+                    prometheus.io/microservices-port: "8082"
                 containers:
                   main:
                     env:
