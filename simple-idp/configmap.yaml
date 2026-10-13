@@ -87,7 +87,7 @@ data:
         redirectURIs:
           - "https://photos.it.paulus.family/auth/login"
           - "https://photos.it.paulus.family/user-settings"
-          - "https://photos.it.paulus.family/api/oauth/mobile-redirect"
+          - "app.immich:///oauth-callback"
         postLogoutRedirectURIs:
           - "https://photos.it.paulus.family/"
         allowedScopes: ["openid", "profile", "email"]

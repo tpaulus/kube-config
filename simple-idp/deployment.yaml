@@ -22,7 +22,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: simple-idp
-          image: ghcr.io/tpaulus/simple-idp:sha-471d3e6cac7f4fbe5245b25e42ae1e58dd586bb1@sha256:2873cb6489cdabdae2a8e8d97169df05b2e8321941d480c2650876b53803d4cf
+          image: ghcr.io/tpaulus/simple-idp:sha-74a06a1b56278c3c4fa04c0b245c2af6535b3b85@sha256:ed4d3c6be198c534ae307ef4f2ad392080b142d1b4ac8dc3a38192b99ca1b812
           args:
             - --config
             - /etc/simple-idp/config.yaml
