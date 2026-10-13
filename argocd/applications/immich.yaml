@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: immich
+  namespace: argocd
+spec:
+  destination:
+    namespace: immich
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+    - repoURL: git@github.com:tpaulus/kube-config.git
+      path: immich
+      targetRevision: HEAD
+    - repoURL: ghcr.io/immich-app/immich-charts
+      chart: immich
+      targetRevision: 0.13.4
+      helm:
+        releaseName: immich
+        values: |
+          controllers:
+            main:
+              containers:
+                main:
+                  image:
+                    tag: v3.2.0
+          server:
+            controllers:
+              main:
+                containers:
+                  main:
+                    env:
+                      DB_HOSTNAME: immich-postgres
+                      DB_PORT: "5432"
+                      DB_USERNAME:
+                        valueFrom:
+                          secretKeyRef:
+                            name: immich-db
+                            key: username
+                      DB_DATABASE_NAME:
+                        valueFrom:
+                          secretKeyRef:
+                            name: immich-db
+                            key: database
+                      DB_PASSWORD:
+                        valueFrom:
+                          secretKeyRef:
+                            name: immich-db
+                            key: password
+          immich:
+            persistence:
+              library:
+                existingClaim: immich-library
+          valkey:
+            enabled: true
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
