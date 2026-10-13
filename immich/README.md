@@ -3,6 +3,7 @@
 Immich stores its photo and video library on the TrueNAS NFS share
 `woodlandpark.brickyard.whitestar.systems:/mnt/tank/Photos`. The PV advertises
 1 Ti for Kubernetes binding; NFS does not enforce that as a quota.
+The Immich server runs as UID/GID 3000 to match the share's ownership.
 
 Before syncing the application, create the 1Password item at
 `vaults/K3S/items/immich-db` with `username`, `password`, and `database` fields.

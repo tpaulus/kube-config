@@ -25,6 +25,11 @@ spec:
                   image:
                     tag: v3.2.0
           server:
+            defaultPodOptions:
+              securityContext:
+                runAsUser: 3000
+                runAsGroup: 3000
+                runAsNonRoot: true
             controllers:
               main:
                 containers:
