@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: home-assistant-cert-reader
+  namespace: home-assistant
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: home-assistant-cert-reader
+  namespace: home-assistant
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["home-assistant-tls"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: home-assistant-cert-reader
+  namespace: home-assistant
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: home-assistant-cert-reader
+subjects:
+  - kind: ServiceAccount
+    name: home-assistant-cert-reader
+    namespace: home-assistant

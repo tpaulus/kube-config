@@ -1,0 +1,28 @@
+# Copy into /config/packages/cert_sync.yaml on HAOS, not into Kubernetes.
+shell_command:
+  sync_cert_manager_certificate: python3 /config/cert-sync/cert_sync.py
+
+automation:
+  - id: cert_manager_certificate_sync
+    alias: Sync cert-manager certificate
+    mode: single
+    triggers:
+      - trigger: time_pattern
+        hours: "/6"
+        minutes: "0"
+      - trigger: homeassistant
+        event: start
+    actions:
+      - action: shell_command.sync_cert_manager_certificate
+        response_variable: certificate_sync
+      - choose:
+          - conditions: "{{ certificate_sync['returncode'] == 0 and certificate_sync['stdout'] | trim == 'changed' }}"
+            sequence:
+              - action: homeassistant.restart
+          - conditions: "{{ certificate_sync['returncode'] != 0 }}"
+            sequence:
+              - action: persistent_notification.create
+                data:
+                  notification_id: cert_manager_certificate_sync
+                  title: Certificate sync failed
+                  message: Check API connectivity, CA trust, token expiry, and the certificate sync configuration. Existing TLS files were not replaced.
