@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Pull the cert-manager TLS Secret from within Home Assistant Core."""
 
+import argparse
 import base64
 import datetime
 import fcntl
@@ -99,6 +100,7 @@ def install_pair(cert_pem, key_pem, destination=DESTINATION):
 
     staging = Path(tempfile.mkdtemp(prefix="generation-", dir=destination))
     link = destination / "next"
+    published = False
     try:
         for name, data in (("fullchain.pem", cert_pem), ("privkey.pem", key_pem)):
             with (staging / name).open("xb") as output:
@@ -113,19 +115,42 @@ def install_pair(cert_pem, key_pem, destination=DESTINATION):
         link.unlink(missing_ok=True)
         link.symlink_to(staging.name)
         # One atomic pointer switch publishes the certificate and key together.
-        os.replace(link, current)
+        blocked = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGALRM})
+        try:
+            os.replace(link, current)
+            published = True
+        finally:
+            signal.pthread_sigmask(signal.SIG_SETMASK, blocked)
     except BaseException:
         link.unlink(missing_ok=True)
-        shutil.rmtree(staging)
+        if not published:
+            shutil.rmtree(staging)
         raise
     return True
+
+
+def activation_pending(destination):
+    current = destination / "current"
+    activated = destination / "activated"
+    return current.is_symlink() and (
+        not activated.is_symlink() or current.readlink() != activated.readlink()
+    )
+
+
+def acknowledge_activation(destination):
+    current = destination / "current"
+    if current.is_symlink():
+        link = destination / "ack-next"
+        link.unlink(missing_ok=True)
+        link.symlink_to(current.readlink())
+        os.replace(link, destination / "activated")
 
 
 def deadline(signum, frame):
     raise TimeoutError("Certificate sync exceeded its 45-second budget")
 
 
-def main():
+def main(acknowledge=False):
     os.umask(0o077)
     signal.signal(signal.SIGALRM, deadline)
     signal.alarm(45)
@@ -133,17 +158,25 @@ def main():
     os.chmod(DESTINATION, 0o700)
     with (DESTINATION / "sync.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        config = json.loads(Path("/config/cert-sync/config.json").read_text())
-        cert_pem, key_pem = fetch_pair(config)
-        validate_pair(cert_pem, key_pem)
-        changed = install_pair(cert_pem, key_pem)
+        if acknowledge:
+            acknowledge_activation(DESTINATION)
+            changed = False
+        else:
+            config = json.loads(Path("/config/cert-sync/config.json").read_text())
+            cert_pem, key_pem = fetch_pair(config)
+            validate_pair(cert_pem, key_pem)
+            install_pair(cert_pem, key_pem)
+            changed = activation_pending(DESTINATION)
     signal.alarm(0)
     print("changed" if changed else "unchanged")
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--acknowledge-startup", action="store_true")
+    args = parser.parse_args()
     try:
-        main()
+        main(acknowledge=args.acknowledge_startup)
     except Exception as error:
         # Never emit API responses, tokens, or private key material to HA logs.
         print(f"Certificate sync failed ({type(error).__name__})", file=sys.stderr)

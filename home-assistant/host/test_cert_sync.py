@@ -103,6 +103,40 @@ class CertificateSyncTests(unittest.TestCase):
                 sync.install_pair(b"invalid", original[1], destination)
             self.assertEqual((destination / "current").readlink(), target)
 
+    def test_deadline_after_publish_keeps_active_pair(self):
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory)
+            original = make_pair()
+            sync.install_pair(*original, destination)
+            renewed = make_pair()
+            real_mask = sync.signal.pthread_sigmask
+
+            def expire_on_unblock(how, mask):
+                result = real_mask(how, mask)
+                if how == sync.signal.SIG_SETMASK:
+                    raise TimeoutError()
+                return result
+
+            with mock.patch.object(sync.signal, "pthread_sigmask", side_effect=expire_on_unblock):
+                with self.assertRaises(TimeoutError):
+                    sync.install_pair(*renewed, destination)
+            self.assertEqual((destination / "current" / "fullchain.pem").read_bytes(), renewed[0])
+            self.assertTrue(sync.activation_pending(destination))
+
+    def test_restart_acknowledgment_and_retry(self):
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory)
+            pair = make_pair()
+            sync.acknowledge_activation(destination)
+            sync.install_pair(*pair, destination)
+            self.assertTrue(sync.activation_pending(destination))
+            self.assertFalse(sync.install_pair(*pair, destination))
+            self.assertTrue(sync.activation_pending(destination))
+            sync.acknowledge_activation(destination)
+            self.assertFalse(sync.activation_pending(destination))
+            sync.install_pair(*make_pair(), destination)
+            self.assertTrue(sync.activation_pending(destination))
+
     def test_fetches_pair_in_one_verified_request(self):
         cert, key = make_pair()
         payload = json.dumps({

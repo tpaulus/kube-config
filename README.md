@@ -52,8 +52,9 @@ creation permissions. No SSH or HAOS host access is needed.
    pair under the writable `/config/cert-sync/tls` instead (see
    [Supervisor's Core mounts](https://github.com/home-assistant/supervisor/blob/main/supervisor/docker/homeassistant.py)).
    Run the script once **inside Core**, before
-   changing Core's TLS paths. Confirm it returns `changed`, and a second run
-   returns `unchanged`. Files are validated for hostname, validity, matching
+   changing Core's TLS paths. Confirm it returns `changed`. It continues
+   returning `changed` until Core startup acknowledges the installed generation.
+   Files are validated for hostname, validity, matching
    key, and TLS chain loading before a single atomic symlink switch publishes
    the pair. Failed fetches/validation leave the active generation untouched.
 8. Point the existing `http` configuration at:
@@ -73,11 +74,17 @@ creation permissions. No SSH or HAOS host access is needed.
    Kubernetes manifest. Check HA configuration and reload automations/restart
    Core to register the shell command. The automation polls every six hours
    and at startup, restarting Core only on a successful changed result.
+   The startup trigger first acknowledges the generation loaded by Core.
+   If a restart is rejected, subsequent polls retry activation even when the
+   Secret has not changed. Do not invoke the startup acknowledgment manually:
+   it must only run after Core starts with the configured managed TLS paths.
 
 The script rejects redirects, uses one bounded Secret fetch, and has a
 45-second deadline within `shell_command`'s 60-second limit. Certificate
 generations are retained for rollback; periodically remove old generations,
-never the directory targeted by `current`, while no sync is running.
+never the directories targeted by `current` or `activated`, while no sync is
+running. The unencrypted PEM private key is required by Core's TLS loader;
+it is stored with mode `0600` in a `0700` directory, not logged or committed.
 
 ### Credential rotation and verification
 

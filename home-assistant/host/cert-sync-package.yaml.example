@@ -1,6 +1,7 @@
 # Copy into /config/packages/cert_sync.yaml on HAOS, not into Kubernetes.
 shell_command:
   sync_cert_manager_certificate: python3 /config/cert-sync/cert_sync.py
+  acknowledge_cert_manager_startup: python3 /config/cert-sync/cert_sync.py --acknowledge-startup
 
 automation:
   - id: cert_manager_certificate_sync
@@ -12,7 +13,14 @@ automation:
         minutes: "0"
       - trigger: homeassistant
         event: start
+        id: startup
     actions:
+      - if: "{{ trigger is defined and trigger.id == 'startup' }}"
+        then:
+          - action: shell_command.acknowledge_cert_manager_startup
+            response_variable: certificate_ack
+          - condition: template
+            value_template: "{{ certificate_ack['returncode'] == 0 }}"
       - action: shell_command.sync_cert_manager_certificate
         response_variable: certificate_sync
       - choose:
