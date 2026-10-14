@@ -46,8 +46,6 @@ spec:
             headers:
               defaultMode: drop
               names:
-                CF-Connecting-IP: keep
-                CF-Ray: keep
                 User-Agent: keep
                 X-Forwarded-For: keep
                 X-Forwarded-Proto: keep
