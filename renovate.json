@@ -40,8 +40,7 @@
     },
     {
       "matchPackageNames": [
-        "netboxcommunity/netbox",
-        "ghcr.io/rhoopr/kei"
+        "netboxcommunity/netbox"
       ],
       "matchUpdateTypes": [
         "minor"
