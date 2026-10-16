@@ -1,0 +1,37 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mdm-it-paulus-family
+  namespace: fleet
+spec:
+  secretName: mdm-it-paulus-family-cert
+  duration: 2160h0m0s
+  dnsNames:
+    - mdm.it.paulus.family
+  issuerRef:
+    name: letsencrypt-bunny-prod
+    kind: ClusterIssuer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fleet
+  namespace: fleet
+  annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
+spec:
+  tls:
+    - hosts:
+        - mdm.it.paulus.family
+      secretName: mdm-it-paulus-family-cert
+  rules:
+    - host: mdm.it.paulus.family
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fleet
+                port:
+                  number: 1337

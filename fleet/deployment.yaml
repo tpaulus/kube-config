@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet
+  namespace: fleet
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: fleet
+  template:
+    metadata:
+      labels:
+        app: fleet
+    spec:
+      automountServiceAccountToken: false
+      initContainers:
+        - name: volume-permissions
+          image: alpine:3.22
+          command: ["sh", "-c", "chown -R 100:101 /logs /data /vulndb"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 0
+            runAsGroup: 0
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: logs
+              mountPath: /logs
+            - name: vulndb
+              mountPath: /vulndb
+      containers:
+        - name: fleet
+          image: fleetdm/fleet:v4.93.0
+          command: ["/bin/sh", "-c"]
+          args:
+            - /usr/bin/fleet prepare db --no-prompt && exec /usr/bin/fleet serve
+          ports:
+            - name: http
+              containerPort: 1337
+          env:
+            - name: FLEET_REDIS_ADDRESS
+              value: redis:6379
+            - name: FLEET_MYSQL_ADDRESS
+              value: mysql:3306
+            - name: FLEET_MYSQL_DATABASE
+              value: fleet
+            - name: FLEET_MYSQL_USERNAME
+              value: fleet
+            - name: FLEET_MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fleet-secrets
+                  key: MYSQL_PASSWORD
+            - name: FLEET_SERVER_ADDRESS
+              value: 0.0.0.0:1337
+            - name: FLEET_SERVER_TLS
+              value: "false"
+            - name: FLEET_SERVER_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: fleet-secrets
+                  key: FLEET_SERVER_PRIVATE_KEY
+            - name: FLEET_SESSION_DURATION
+              value: 24h
+            - name: FLEET_LOGGING_JSON
+              value: "true"
+            - name: FLEET_OSQUERY_STATUS_LOG_PLUGIN
+              value: filesystem
+            - name: FLEET_FILESYSTEM_STATUS_LOG_FILE
+              value: /logs/osqueryd.status.log
+            - name: FLEET_FILESYSTEM_RESULT_LOG_FILE
+              value: /logs/osqueryd.results.log
+            - name: FLEET_OSQUERY_LABEL_UPDATE_INTERVAL
+              value: 1h
+            - name: FLEET_VULNERABILITIES_CURRENT_INSTANCE_CHECKS
+              value: "yes"
+            - name: FLEET_VULNERABILITIES_DATABASES_PATH
+              value: /vulndb
+            - name: FLEET_VULNERABILITIES_PERIODICITY
+              value: 1h
+          volumeMounts:
+            - name: data
+              mountPath: /fleet
+            - name: logs
+              mountPath: /logs
+            - name: vulndb
+              mountPath: /vulndb
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 20
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 100
+            runAsGroup: 101
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: fleet-data
+        - name: logs
+          persistentVolumeClaim:
+            claimName: fleet-logs
+        - name: vulndb
+          persistentVolumeClaim:
+            claimName: fleet-vulndb
