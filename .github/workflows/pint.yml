@@ -16,6 +16,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
+      - name: Check and test Prometheus rules
+        run: |
+          docker run --rm --entrypoint /bin/promtool \
+            -v "$GITHUB_WORKSPACE:/workspace" -w /workspace \
+            prom/prometheus:v3.15.0 check rules _alerts/*.yaml
+          docker run --rm --entrypoint /bin/promtool \
+            -v "$GITHUB_WORKSPACE:/workspace" -w /workspace \
+            prom/prometheus:v3.15.0 test rules tests/prometheus/*.test.yml
       - name: Run pint
         uses: prymitive/pint-action@ae2a0adcf773d6d7974048954ca3facb4fa9f54d # v1.117
         with:

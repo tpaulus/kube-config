@@ -2,6 +2,16 @@
 groups:
   - name: Node
     rules:
+      - alert: NodeRebootRequired
+        expr: node_reboot_required == 1
+        for: 24h
+        labels:
+          severity: warning
+          notify: todoist email-tom
+        annotations:
+          title: Node {{ $labels.instance }} requires a reboot
+          description: Node {{ $labels.instance }} has required a reboot continuously
+            for 24 hours. Automatic reboot may have failed; investigate the host.
       - alert: MDRAID degraded
         expr: (node_md_disks - node_md_disks{state="active"}) != 0
         for: 1m

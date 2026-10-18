@@ -1,0 +1,86 @@
+---
+rule_files:
+  - ../../_alerts/node-exporter.yaml
+
+evaluation_interval: 1m
+
+tests:
+  - name: Reboot alert fires per host only after 24 continuous hours
+    interval: 1m
+    input_series:
+      - series: node_reboot_required{instance="192.0.2.1:9100",job="netbox-devices",netbox_device_name="storage"}
+        values: 1+0x1441
+      - series: node_reboot_required{instance="192.0.2.2:9100",job="netbox-devices",netbox_device_name="compute"}
+        values: 0+0x1441
+      - series: kured_reboot_required{instance="192.0.2.3:8080"}
+        values: 1+0x1441
+    alert_rule_test:
+      - eval_time: 23h59m
+        alertname: NodeRebootRequired
+        exp_alerts: []
+      - eval_time: 24h
+        alertname: NodeRebootRequired
+        exp_alerts:
+          - exp_labels: &storage_labels
+              instance: 192.0.2.1:9100
+              job: netbox-devices
+              netbox_device_name: storage
+              severity: warning
+              notify: todoist email-tom
+            exp_annotations: &storage_annotations
+              title: Node 192.0.2.1:9100 requires a reboot
+              description: Node 192.0.2.1:9100 has required a reboot continuously for 24 hours.
+                Automatic reboot may have failed; investigate the host.
+      - eval_time: 24h1m
+        alertname: NodeRebootRequired
+        exp_alerts:
+          - exp_labels: *storage_labels
+            exp_annotations: *storage_annotations
+
+  - name: Reboot alert clears when the reboot requirement clears
+    interval: 1m
+    input_series:
+      - series: node_reboot_required{instance="192.0.2.1:9100",job="netbox-devices",netbox_device_name="storage"}
+        values: 1+0x1440 0
+    alert_rule_test:
+      - eval_time: 24h
+        alertname: NodeRebootRequired
+        exp_alerts:
+          - exp_labels: *storage_labels
+            exp_annotations: *storage_annotations
+      - eval_time: 24h1m
+        alertname: NodeRebootRequired
+        exp_alerts: []
+
+  - name: Clearing the requirement resets the 24-hour pending timer
+    interval: 1m
+    input_series:
+      - series: node_reboot_required{instance="192.0.2.1:9100",job="netbox-devices",netbox_device_name="storage"}
+        values: 1+0x719 0 1+0x1440
+    alert_rule_test:
+      - eval_time: 24h
+        alertname: NodeRebootRequired
+        exp_alerts: []
+      - eval_time: 36h
+        alertname: NodeRebootRequired
+        exp_alerts: []
+      - eval_time: 36h1m
+        alertname: NodeRebootRequired
+        exp_alerts:
+          - exp_labels: *storage_labels
+            exp_annotations: *storage_annotations
+
+  - name: Reboot alert clears when the metric becomes stale
+    interval: 1m
+    input_series:
+      - series: node_reboot_required{instance="192.0.2.1:9100",job="netbox-devices",netbox_device_name="storage"}
+        values: 1+0x1440 stale
+    alert_rule_test:
+      - eval_time: 24h
+        alertname: NodeRebootRequired
+        exp_alerts:
+          - exp_labels: *storage_labels
+            exp_annotations: *storage_annotations
+      - eval_time: 24h1m
+        alertname: NodeRebootRequired
+        exp_alerts: []
