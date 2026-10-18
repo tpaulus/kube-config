@@ -15,8 +15,3 @@ routing. A zero or stale metric clears the alert and resets its pending timer;
 missing metrics do not indicate a healthy host (the existing `Node down` rule
 handles unreachable exporters). The existing Kured `RebootRequired` alert is
 unchanged.
-
-Run the focused threshold, clearing, and timer-reset tests from the repository
-root with `promtool test rules tests/prometheus/node-reboot-required.test.yml`.
-The pint workflow also checks all alert rules and runs these tests using the
-same Prometheus version as the deployment.
