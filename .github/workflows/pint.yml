@@ -3,10 +3,10 @@ name: pint
 on:
   push:
     branches: [main]
-    paths: [_alerts/**]
+    paths: [_alerts/**, tests/prometheus/**, .github/workflows/pint.yml]
   pull_request:
     branches: [main]
-    paths: [_alerts/**]
+    paths: [_alerts/**, tests/prometheus/**, .github/workflows/pint.yml]
 permissions:
   pull-requests: write
 jobs:
@@ -16,6 +16,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
+      - name: Test NAS maintenance Prometheus rules
+        run: >-
+          docker run --rm --entrypoint /bin/promtool
+          -v "$PWD:/work:ro" -w /work/tests/prometheus
+          prom/prometheus:v3.15.0
+          test rules nas-maintenance.test.yaml
       - name: Run pint
         uses: prymitive/pint-action@ae2a0adcf773d6d7974048954ca3facb4fa9f54d # v1.117
         with:
