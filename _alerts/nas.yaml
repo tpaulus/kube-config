@@ -155,14 +155,6 @@ groups:
         annotations:
           summary: '{{ $labels.disk }} SMART health failed'
           description: 'Disk {{ $labels.disk }} ({{ $labels.role }}) on {{ $labels.netbox_device_name }} reports failed SMART health or a current threshold failure.'
-      - alert: NAS SMART Historical Errors
-        expr: nas_smart_history_warning == 1
-        for: 10m
-        labels:
-          severity: low
-        annotations:
-          summary: '{{ $labels.disk }} has SMART error history'
-          description: 'Disk {{ $labels.disk }} ({{ $labels.role }}) on {{ $labels.netbox_device_name }} has past threshold, error-log or self-test errors. Review smartctl and the journal; this is not a read failure.'
       - alert: NAS SMART Unreadable
         expr: nas_smart_collector_success == 0
         for: 10m
