@@ -23,6 +23,48 @@ groups:
           description: It has been over 6 hours since {{ $labels.share }} has been
             cleaned up against the B2 Bucket {{ $labels.bucket_name }}
           dashboard: https://grafana.brickyard.whitestar.systems/d/p1er_aLVk/backups?orgId=1
+  - name: ShareIntegrity
+    rules:
+      - alert: Share Integrity Check Failed
+        expr: >-
+          max by (netbox_device_name, share, bucket_name) (b2_check_failed > 0)
+          and on (netbox_device_name)
+          (up{instance=~"[0-9.]+:9100", netbox_device_name!=""} == 1)
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.share }} Restic integrity check failed'
+          description: 'The last scheduled integrity check of {{ $labels.share }} on {{ $labels.netbox_device_name }} against B2 bucket {{ $labels.bucket_name }} failed. Inspect the check journal; a successful scheduled check clears this failure.'
+      - alert: Share Integrity Check Overdue
+        expr: >-
+          (time() - max by (netbox_device_name, share, bucket_name)
+          (b2_check_completed) > 691200)
+          and on (netbox_device_name)
+          (up{instance=~"[0-9.]+:9100", netbox_device_name!=""} == 1)
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.share }} Restic integrity check overdue'
+          description: 'The last successful scheduled integrity check of {{ $labels.share }} on {{ $labels.netbox_device_name }} against B2 bucket {{ $labels.bucket_name }} was over 8 days ago. Checks run weekly on Sunday at 02:00 with up to 30 minutes of jitter and read a rotating quarter of repository data. Inspect the scheduler, backup lock and check journal.'
+      - alert: Share Integrity Check Missing
+        expr: >-
+          (max by (netbox_device_name, share, bucket_name) (b2_check_expected == 1)
+          unless on (netbox_device_name, share, bucket_name)
+          (max by (netbox_device_name, share, bucket_name) (b2_check_completed)
+          or max by (netbox_device_name, share, bucket_name) (b2_check_failed)))
+          and on (netbox_device_name)
+          (up{instance=~"[0-9.]+:9100", netbox_device_name!=""} == 1)
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.share }} Restic integrity check result missing'
+          description: 'Expected repository {{ $labels.share }} on {{ $labels.netbox_device_name }} in B2 bucket {{ $labels.bucket_name }} has no scheduled integrity check result. The check has never run or its result textfile is missing. Inspect the scheduler, backup lock and textfile collector.'
   - name: ShareReplication
     rules:
       - alert: Server Offsite Backup Not Running
