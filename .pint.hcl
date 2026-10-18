@@ -1,5 +1,5 @@
 parser {
-  include    = [ "(_alerts/.*)" ]
+  include    = [ "(_alerts/.*[.]yaml)$" ]
 }
 
 ci {

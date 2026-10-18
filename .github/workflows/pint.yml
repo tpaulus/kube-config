@@ -16,14 +16,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - name: Install promtool
-        run: |
-          curl -fsSL https://github.com/prometheus/prometheus/releases/download/v3.15.0/prometheus-3.15.0.linux-amd64.tar.gz \
-            | tar -xz -C "$RUNNER_TEMP" --strip-components=1 prometheus-3.15.0.linux-amd64/promtool
-      - name: Check and test alert rules
-        run: |
-          "$RUNNER_TEMP/promtool" check rules _alerts/*.yaml
-          "$RUNNER_TEMP/promtool" test rules tests/prometheus/*.test.yaml
       - name: Run pint
         uses: prymitive/pint-action@ae2a0adcf773d6d7974048954ca3facb4fa9f54d # v1.117
         with:

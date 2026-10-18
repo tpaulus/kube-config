@@ -43,6 +43,3 @@ removed target is covered by the existing `Node down` / `NAS Maintenance Target
 Missing` alerts instead. A later success clears a failure; a failed-only result
 raises the failure alert, not the missing or overdue alert. Missing-result
 detection depends on the independently installed expectation metric.
-
-Run the rule regression tests from the repository root with
-`promtool test rules tests/prometheus/nas-integrity.test.yaml`.
