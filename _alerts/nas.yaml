@@ -36,14 +36,162 @@ groups:
           description: It has been over 2 hours since the Server Backups has been
             backed up to B2. This job is expected to run hourly.
           dashboard: https://grafana.brickyard.whitestar.systems/d/p1er_aLVk/backups?orgId=1
-      - alert: iCloud Photos Backup Not Running
-        expr: (time() - max(icloudpd_offsite_backup_completed{})) / 60 / 60 > 48
+  - name: NASMaintenance
+    rules:
+      # Central anchor survives disappearance of the NAS and its discovery target.
+      - record: nas:expected_host
+        expr: vector(1)
+        labels:
+          netbox_device_name: WoodlandPark
+      - alert: NAS Maintenance Target Missing
+        expr: >-
+          nas:expected_host unless on (netbox_device_name)
+          (up{instance=~"[0-9.]+:9100", netbox_device_name!=""} == 1)
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.netbox_device_name }} maintenance monitoring target missing'
+          description: The expected NAS node exporter is down or absent from discovery. Scrub and SMART health cannot be verified.
+      - alert: NAS Maintenance Expectations Missing
+        expr: >-
+          (nas:expected_host unless on (netbox_device_name) nas_scrub_pool_expected)
+          or
+          (nas:expected_host unless on (netbox_device_name) nas_smart_disk_expected)
+          or
+          (nas:expected_host unless on (netbox_device_name) nas_scrub_pool_inventory_count)
+          or
+          (nas:expected_host unless on (netbox_device_name) nas_smart_disk_inventory_count)
+          or
+          (max by (netbox_device_name) (nas_scrub_pool_inventory_count)
+          != on (netbox_device_name)
+          (count by (netbox_device_name)
+          (max by (netbox_device_name, pool, guid) (nas_scrub_pool_expected == 1))
+          or on (netbox_device_name) (nas:expected_host * 0)))
+          or
+          (max by (netbox_device_name) (nas_smart_disk_inventory_count)
+          != on (netbox_device_name)
+          (count by (netbox_device_name)
+          (max by (netbox_device_name, disk, role) (nas_smart_disk_expected == 1))
+          or on (netbox_device_name) (nas:expected_host * 0)))
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.netbox_device_name }} expected maintenance inventory missing'
+          description: Expected pool/disk metadata or independent inventory counts are missing or disagree. Missing health series cannot be trusted.
+      - alert: NAS Scrub Telemetry Missing
+        expr: >-
+          nas_scrub_pool_expected unless on (netbox_device_name, pool, guid)
+          (nas_scrub_collector_success
+          and on (netbox_device_name, pool, guid) nas_scrub_observed_timestamp_seconds
+          and on (netbox_device_name, pool, guid) nas_scrub_last_success_timestamp_seconds
+          and on (netbox_device_name, pool, guid) nas_scrub_last_scan_failed
+          and on (netbox_device_name, pool, guid) nas_zpool_healthy)
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.pool }} scrub telemetry missing'
+          description: 'Expected pool {{ $labels.pool }} on {{ $labels.netbox_device_name }} has no scrub collector series.'
+      - alert: NAS Scrub Collector Failed
+        expr: nas_scrub_collector_success == 0
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.pool }} scrub history unreadable'
+          description: 'The scrub collector on {{ $labels.netbox_device_name }} cannot verify pool identity, scan state or durable history. Inspect the journal.'
+      - alert: NAS Pool Unhealthy
+        expr: nas_zpool_healthy == 0
         for: 1m
         labels:
           severity: high
           notify: todoist email-tom
         annotations:
-          summary: 'iCloud Photos not replicated off site'
-          description: It has been over 2 days since the Server Backups has been
-            backed up to B2. This job is expected to run daily.
-          dashboard: https://grafana.brickyard.whitestar.systems/d/p1er_aLVk/backups?orgId=1
+          summary: '{{ $labels.pool }} pool is unhealthy'
+          description: 'Pool {{ $labels.pool }} on {{ $labels.netbox_device_name }} is not verified ONLINE. Inspect zpool status and the collector journal.'
+      - alert: NAS Scrub Telemetry Stale
+        expr: time() - nas_scrub_observed_timestamp_seconds > 900
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.pool }} scrub telemetry stale'
+          description: 'Pool {{ $labels.pool }} on {{ $labels.netbox_device_name }} has not been observed successfully for over 15 minutes.'
+      - alert: NAS Successful Scrub Overdue
+        # Debian cron runs on the second Sunday: intervals can be 35 days.
+        # Allow 3 days for completion; this is NOT TrueNAS's 35-day start gate.
+        expr: >-
+          (nas_scrub_last_success_timestamp_seconds == 0)
+          or (time() - nas_scrub_last_success_timestamp_seconds > 3283200)
+        for: 1h
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.pool }} has no recent successful full scrub'
+          description: 'Pool {{ $labels.pool }} on {{ $labels.netbox_device_name }} has no verified successful full scrub within 38 days. Running, paused, cancelled, error-only scans and resilvers do not reset this deadline.'
+      - alert: NAS Scrub Failed
+        expr: (nas_scrub_last_scan_failed == 1) or (nas_scrub_last_scan_errors > 0)
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.pool }} full scrub failed'
+          description: 'The last full scrub of {{ $labels.pool }} on {{ $labels.netbox_device_name }} was cancelled or completed with errors. A later resilver does not clear this failure.'
+      - alert: NAS SMART Failed
+        expr: nas_smart_health_failed == 1
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.disk }} SMART health failed'
+          description: 'Disk {{ $labels.disk }} ({{ $labels.role }}) on {{ $labels.netbox_device_name }} reports failed SMART health or a current threshold failure.'
+      - alert: NAS SMART Historical Errors
+        expr: nas_smart_history_warning == 1
+        for: 10m
+        labels:
+          severity: low
+        annotations:
+          summary: '{{ $labels.disk }} has SMART error history'
+          description: 'Disk {{ $labels.disk }} ({{ $labels.role }}) on {{ $labels.netbox_device_name }} has past threshold, error-log or self-test errors. Review smartctl and the journal; this is not a read failure.'
+      - alert: NAS SMART Unreadable
+        expr: nas_smart_collector_success == 0
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.disk }} SMART unreadable'
+          description: 'Disk {{ $labels.disk }} ({{ $labels.role }}) on {{ $labels.netbox_device_name }} cannot be read or its serial does not match the expected by-id identity.'
+      - alert: NAS SMART Telemetry Missing
+        expr: >-
+          nas_smart_disk_expected unless on (netbox_device_name, disk, role)
+          ((nas_smart_collector_success == 0) or
+          (nas_smart_collector_success
+          and on (netbox_device_name, disk, role) nas_smart_health_failed
+          and on (netbox_device_name, disk, role) nas_smart_observed_timestamp_seconds))
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.disk }} SMART telemetry missing'
+          description: 'Expected disk {{ $labels.disk }} ({{ $labels.role }}) on {{ $labels.netbox_device_name }} has no SMART collector series.'
+      - alert: NAS SMART Telemetry Stale
+        expr: time() - nas_smart_observed_timestamp_seconds > 900
+        for: 10m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.disk }} SMART telemetry stale'
+          description: 'Disk {{ $labels.disk }} ({{ $labels.role }}) on {{ $labels.netbox_device_name }} has not been read successfully for over 15 minutes.'
