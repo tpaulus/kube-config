@@ -34,6 +34,19 @@ spec:
               retention_period: 168h  # 7 days
               ingestion_rate_mb: 4
               ingestion_burst_size_mb: 6
+              allow_structured_metadata: true
+              otlp_config:
+                resource_attributes:
+                  attributes_config:
+                    - action: index_label
+                      attributes:
+                        - node_name
+                        - job
+                        - app
+                        - container
+                        - system_unit
+                        - user_unit
+                        - priority
             rulerConfig:
               alertmanager_url: http://alertmanager.monitoring.svc:8080
               storage:

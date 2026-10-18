@@ -78,3 +78,135 @@ groups:
         for: 10m
         labels:
           severity: warning
+  - name: nas-collector.rules
+    rules:
+      - alert: NASLogCollectorDown
+        expr: |
+          up{instance="10.0.10.32:12345"} == 0
+          or absent(up{instance="10.0.10.32:12345"})
+        for: 5m
+        labels:
+          severity: critical
+          notify: todoist email-tom
+          node_name: WoodlandPark
+        annotations:
+          summary: WoodlandPark host log collector is not centrally monitored.
+          description: |
+            Central Prometheus cannot scrape Alloy. Check the native service,
+            management firewall and the opt-in NetBox service on TCP 12345.
+            The NAS-local Prometheus is not the collector's monitor.
+      - alert: NASLogDeliveryQueued
+        expr: |
+          sum(otelcol_exporter_queue_size{
+            instance="10.0.10.32:12345"
+          }) > 0
+        for: 10m
+        labels:
+          severity: warning
+          notify: todoist email-tom
+          node_name: WoodlandPark
+        annotations:
+          summary: WoodlandPark cannot reliably deliver logs to Loki.
+          description: |
+            Check private ingestion DNS/TLS, NAS source restriction and Loki
+            availability before the bounded persistent OTLP queue fills or
+            the two-hour retry attempt expires.
+      - alert: NASLogQueuePressure
+        expr: |
+          sum(otelcol_exporter_queue_size{instance="10.0.10.32:12345"})
+          /
+          sum(otelcol_exporter_queue_capacity{instance="10.0.10.32:12345"})
+          > 0.8
+        for: 5m
+        labels:
+          severity: critical
+          notify: todoist email-tom
+          node_name: WoodlandPark
+        annotations:
+          summary: WoodlandPark persistent log queue is close to full.
+          description: |
+            More than 80% of the bounded OTLP payload capacity is occupied.
+            Backpressure can stall journal collection; restore delivery
+            before journal rotation or storage exhaustion causes loss.
+      - alert: NASLogDeliveryDropped
+        expr: |
+          sum(increase(otelcol_exporter_send_failed_log_records_total{
+            instance="10.0.10.32:12345"
+          }[10m])) > 0
+          or sum(increase(otelcol_exporter_enqueue_failed_log_records_total{
+            instance="10.0.10.32:12345"
+          }[10m])) > 0
+        labels:
+          severity: critical
+          notify: todoist email-tom
+          node_name: WoodlandPark
+        annotations:
+          summary: WoodlandPark log delivery has lost entries.
+          description: |
+            Alloy exhausted delivery retries, could not persist queued logs
+            or Loki permanently rejected entries.
+            Inspect response codes and ingestion-age/rate limits;
+            retention is not unlimited.
+      - alert: NASJournalCollectionStalled
+        expr: |
+          (
+            sum(increase(loki_source_journal_target_lines_total{
+              instance="10.0.10.32:12345"
+            }[30m])) == 0
+            or absent(sum(loki_source_journal_target_lines_total{
+              instance="10.0.10.32:12345"
+            }))
+          )
+          and on() (up{instance="10.0.10.32:12345"} == 1)
+        for: 10m
+        labels:
+          severity: warning
+          notify: todoist email-tom
+          node_name: WoodlandPark
+        annotations:
+          summary: WoodlandPark Alloy is running but not reading journals.
+          description: |
+            Check adm/systemd-journal access, persistent journal files and
+            reader errors; process health alone does not prove log collection.
+      - alert: NASJournalParsingErrors
+        expr: |
+          sum(increase(loki_source_journal_target_parsing_errors_total{
+            instance="10.0.10.32:12345"
+          }[10m])) > 0
+        labels:
+          severity: warning
+          notify: todoist email-tom
+          node_name: WoodlandPark
+        annotations:
+          summary: WoodlandPark journal entries cannot be parsed.
+          description: |
+            Inspect Alloy's journal reader and journal integrity;
+            affected entries may be missing from Loki.
+      - alert: NASLogDeliveryStalled
+        expr: |
+          (
+            sum(increase(loki_source_journal_target_lines_total{
+              instance="10.0.10.32:12345"
+            }[15m])) > 0
+          )
+          and on()
+          (
+            sum(increase(otelcol_exporter_sent_log_records_total{
+              instance="10.0.10.32:12345"
+            }[15m])) == 0
+            or absent(sum(otelcol_exporter_sent_log_records_total{
+              instance="10.0.10.32:12345"
+            }))
+          )
+          and on() (up{instance="10.0.10.32:12345"} == 1)
+        for: 10m
+        labels:
+          severity: critical
+          notify: todoist email-tom
+          node_name: WoodlandPark
+        annotations:
+          summary: WoodlandPark reads journals but no logs reach Loki.
+          description: |
+            The journal reader is active but the writer has not delivered
+            entries for at least 15 minutes. Inspect persistent queue/disk errors,
+            backpressure and the private ingestion route.
