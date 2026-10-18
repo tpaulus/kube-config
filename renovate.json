@@ -16,6 +16,19 @@
       "/argocd/applications/.+\\.yaml$/"
     ]
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "^argocd/applications/immich\\.yaml$"
+      ],
+      "matchStrings": [
+        "image:[ \\t]*\\n[ \\t]+tag:[ \\t]*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "ghcr.io/immich-app/immich-server",
+      "datasourceTemplate": "docker"
+    }
+  ],
   "platformAutomerge": true,
   "automergeType": "branch",
   "ignoreTests": true,
