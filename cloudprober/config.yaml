@@ -160,48 +160,6 @@ data:
     }
 
     probe {
-      name: "Blog"
-      type: HTTP
-      targets {
-        endpoint {
-          name: "ghost.blog.svc.cluster.local"
-          port: 2368
-        }
-      }
-      http_probe {
-        protocol: HTTP
-        header {
-          key: "Host"
-          value: "blog.tompaulus.com"
-        }
-        header {
-          key: "X-Forwarded-Proto"
-          value: "https"
-        }
-      }
-      validator {
-          name: "status_code_2xx"
-          http_validator {
-              success_status_codes: "200-299"
-          }
-      }
-      validator {
-          name: "expected_content"
-          regex: "[Jj]ournal"
-      }
-      additional_label {
-        key: "location"
-        value: "internal"
-      }
-      additional_label {
-        key: "type"
-        value: "service"
-      }
-      interval_msec: 5000  # 5s
-      timeout_msec: 1000   # 1s
-    }
-
-    probe {
       name: "Paperless"
       type: HTTP
       targets {
