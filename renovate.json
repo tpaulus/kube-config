@@ -37,7 +37,8 @@
       "matchManagers": [
         "kubernetes",
         "argocd",
-        "dockerfile"
+        "dockerfile",
+        "regex"
       ],
       "major": {
         "automerge": false
