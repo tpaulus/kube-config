@@ -58,7 +58,7 @@ spec:
           spec:
             externalTrafficPolicy: Local
     repoURL: https://traefik.github.io/charts
-    targetRevision: 42.0.0
+    targetRevision: 42.1.0
   syncPolicy:
     automated:
       prune: true
