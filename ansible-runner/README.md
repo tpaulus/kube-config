@@ -17,6 +17,12 @@ Jobs created manually from the CronJob in the Argo CD UI execute immediately.
 There is no date guard in the runner; every invocation applies configuration,
 subject to the same shared concurrency lock.
 
+The Job's work `emptyDir` is mounted at both `/work` and `/home/runner`.
+This keeps Ansible's environment-based home and the runner account's home
+writable, including temporary files and binary caches for tasks delegated to
+localhost. The container's root filesystem remains read-only; managed nodes'
+temporary paths are unchanged.
+
 Each execution clones `tpaulus/ansible`'s `main` branch, installs its pinned
 Galaxy dependencies and applies `playbooks/site.yml` without `--limit`.
 The existing NetBox production inventory and playbook host scopes remain
@@ -162,3 +168,13 @@ validation. Alert rules and Alertmanager configuration can be checked with
 `promtool check rules` and `amtool check-config`. There is no runner unit-test
 suite. Real SSH, NetBox, Vault and external webhook reachability remain
 deployment-time checks once credentials have been provisioned.
+
+If inventory loading fails with `'netbox-version'`, check the preceding
+output for `Permission denied` on `/api/status/`. The pinned NetBox inventory
+plugin substitutes an empty result for HTTP 403, then fails when reading the
+version. Check the `NETBOX_TOKEN` in `K3S/Ansible-Runner`, its enabled/expiry
+and allowed-IP settings, and whether a proxy is denying the request. An
+in-cluster runner may use a different source IP from a workstation. Do not
+disable certificate verification or grant superuser access to work around it.
+The runner prints captured command output on failure so these diagnostics
+are not hidden behind the subprocess traceback.

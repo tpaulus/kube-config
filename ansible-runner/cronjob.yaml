@@ -75,6 +75,8 @@ spec:
                   readOnly: true
                 - name: work
                   mountPath: /work
+                - name: work
+                  mountPath: /home/runner
                 - name: tmp
                   mountPath: /tmp
           volumes:

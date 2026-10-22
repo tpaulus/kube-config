@@ -52,7 +52,15 @@ def release_lock(api, holder):
 
 
 def command(*args, **kwargs):
-    return subprocess.run(args, check=True, **kwargs)
+    try:
+        return subprocess.run(args, check=True, **kwargs)
+    except subprocess.CalledProcessError as error:
+        if error.stdout:
+            output = error.stdout
+            if isinstance(output, bytes):
+                output = output.decode(errors="replace")
+            print(output, file=sys.stderr, end="" if output.endswith("\n") else "\n")
+        raise
 
 
 def apply():
