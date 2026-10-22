@@ -1,4 +1,4 @@
-# Databasus Backup Monitoring
+# Loki Alert Rules
 
 Databasus backups are monitored with Loki ruler alerts, not Kubernetes
 CronJob status. The alert is based on Databasus's `logical backup finished`
@@ -55,3 +55,17 @@ kubectl run -n loki loki-query --rm -i --restart=Never \
   --image=curlimages/curl:8.21.0 -- \
   curl -fsS http://loki.loki.svc:3100/loki/api/v1/rules
 ```
+
+## Ansible host failures
+
+`ansible-runner.yaml` alerts on final Ansible play recap lines with a nonzero
+`failed` count from the runner's `ansible` container. ANSI color is removed
+before parsing, and the inventory hostname is extracted into the `host` label
+and included in the alert summary and description. Kubernetes pod/node labels
+are aggregated away, yielding one alert per failed inventory host.
+
+The alert fires on the next rule evaluation and remains active while a
+matching recap exists within the last hour, even if the Job has exited.
+It routes to `email-tom`, not the runner-in-progress alert's `noop` receiver.
+Rescued/ignored failures with `failed=0` and unreachable-only hosts are not
+matched. A run that aborts before printing a recap is also not covered.

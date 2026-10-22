@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ansible-runner
+  namespace: loki
+  annotations:
+    k8s-sidecar-target-directory: fake
+  labels:
+    loki_rule: "true"
+data:
+  ansible-runner.yaml: |
+    groups:
+      - name: ansible_runner
+        rules:
+          - alert: AnsibleHostFailedTasks
+            expr: |
+              sum by (host) (
+                count_over_time(
+                  {namespace="ansible-runner", container="ansible"}
+                    |= "failed="
+                    | decolorize
+                    | regexp `^(?P<host>\S+)\s+:\s+ok=\d+\s+changed=\d+\s+unreachable=\d+\s+failed=[1-9]\d*`
+                    | host != ""
+                  [1h]
+                )
+              ) > 0
+            labels:
+              severity: high
+              notify: email-tom
+            annotations:
+              summary: Ansible tasks failed on {{ $labels.host }}
+              description: >-
+                Ansible reported failed tasks for {{ $labels.host }} in a final
+                play recap within the last hour. Inspect the Ansible runner logs
+                for the failed tasks.
