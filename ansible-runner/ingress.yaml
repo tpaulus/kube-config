@@ -16,7 +16,7 @@ metadata:
   namespace: ansible-runner
   annotations:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web-mtls
     traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.tls.options: ansible-runner-github-webhook@kubernetescrd
 spec:

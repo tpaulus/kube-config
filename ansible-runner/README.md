@@ -121,7 +121,10 @@ In `tpaulus/ansible`, open **Settings > Webhooks > Add webhook** and configure:
 | Active | Enabled |
 
 The endpoint uses ordinary HTTPS on port **443**, with an explicit
-`NoClientCert` TLS option. No mTLS certificates, SSH keys or trigger workflow
+`NoClientCert` TLS option on both `websecure` and `web-mtls`. The public
+`traefik-mtls` LoadBalancer maps port 443 to `web-mtls`, so the Ingress must
+include that entrypoint even though this webhook does not require mTLS.
+No mTLS certificates, SSH keys or trigger workflow
 are needed in GitHub Actions. DNS and the endpoint must be publicly reachable
 by GitHub. Other ingress routes keep their existing client-certificate policy.
 
