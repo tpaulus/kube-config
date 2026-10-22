@@ -7,11 +7,15 @@ CronJob template; it does not deploy configuration.
 
 ## Execution
 
-At 03:00 UTC each day, the CronJob starts a short-lived pod. Only UTC epoch
-days divisible by five run Ansible, giving exactly five days between eligible
-dates across month/year boundaries. Other days exit without cloning or
-contacting hosts. This is a fixed calendar cadence, not five days after the
-last success; missed windows are not replayed. Webhook runs do not reset it.
+The CronJob runs at 03:00 UTC on days 1, 6, 11, 16, 21, 26 and 31 where
+present (`0 3 */5 * *`). Cron resets at each month boundary, so the gap to
+the next month's first run can be shorter than five days. This is a calendar
+schedule, not five days after the last success; missed windows are not
+replayed. Webhook and manual runs do not reset it.
+
+Jobs created manually from the CronJob in the Argo CD UI execute immediately.
+There is no date guard in the runner; every invocation applies configuration,
+subject to the same shared concurrency lock.
 
 Each execution clones `tpaulus/ansible`'s `main` branch, installs its pinned
 Galaxy dependencies and applies `playbooks/site.yml` without `--limit`.

@@ -20,11 +20,6 @@ LEASE_SECONDS = 18000
 MAX_JOB_SECONDS = 14400
 
 
-def due(now):
-    # Epoch days avoid cron's day-of-month reset at month boundaries.
-    return int(now.timestamp() // 86400) % 5 == 0
-
-
 def acquire_lock(api, holder, now):
     lease = api.read_namespaced_lease(LEASE, NAMESPACE)
     spec = lease.spec
@@ -140,9 +135,6 @@ def run(trigger):
     if trigger not in ("scheduled", "webhook"):
         raise ValueError("Unknown run trigger")
     now = datetime.now(UTC)
-    if trigger == "scheduled" and not due(now):
-        print("Not a five-day schedule date; skipping")
-        return
     config.load_incluster_config()
     api = client.CoordinationV1Api()
     holder = os.environ["POD_UID"]

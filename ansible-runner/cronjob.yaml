@@ -5,8 +5,7 @@ metadata:
   name: ansible-apply
   namespace: ansible-runner
 spec:
-  # runner.py admits only UTC epoch days divisible by five.
-  schedule: "0 3 * * *"
+  schedule: "0 3 */5 * *"
   timeZone: Etc/UTC
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 3600
