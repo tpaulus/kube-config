@@ -62,7 +62,7 @@ def command(*args, **kwargs):
 
 def apply():
     secrets = Path("/secrets")
-    for name in ("deploy_key", "node_key", "vault_password"):
+    for name in ("ssh_key", "vault_password"):
         if not (secrets / name).read_text().strip():
             raise RuntimeError(f"Required credential file is empty: {name}")
     if not os.environ.get("NETBOX_TOKEN") or not os.environ.get("ANSIBLE_REMOTE_USER"):
@@ -70,20 +70,19 @@ def apply():
 
     ssh = Path("/work/.ssh")
     ssh.mkdir(mode=0o700)
-    for name in ("deploy_key", "node_key"):
-        shutil.copyfile(secrets / name, ssh / name)
-        (ssh / name).chmod(0o600)
+    shutil.copyfile(secrets / "ssh_key", ssh / "ssh_key")
+    (ssh / "ssh_key").chmod(0o600)
     (ssh / "known_hosts").touch(mode=0o600, exist_ok=True)
 
     os.environ.update(
         GIT_SSH_COMMAND=(
-            "ssh -i /work/.ssh/deploy_key -o IdentitiesOnly=yes "
+            "ssh -i /work/.ssh/ssh_key -o IdentitiesOnly=yes "
             "-o StrictHostKeyChecking=yes "
             "-o UserKnownHostsFile=/opt/runner/github_known_hosts "
             "-o GlobalKnownHostsFile=/dev/null"
         ),
         GIT_TERMINAL_PROMPT="0",
-        ANSIBLE_PRIVATE_KEY_FILE="/work/.ssh/node_key",
+        ANSIBLE_PRIVATE_KEY_FILE="/work/.ssh/ssh_key",
         ANSIBLE_HOST_KEY_CHECKING="True",
         ANSIBLE_SSH_ARGS=(
             "-o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new "

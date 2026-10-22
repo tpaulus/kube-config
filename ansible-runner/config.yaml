@@ -19,6 +19,14 @@ spec:
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
+  name: ansible-applier-ssh-key
+  namespace: ansible-runner
+spec:
+  itemPath: vaults/K3S/items/Applier SSH Key
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
   name: ansible-webhook-auth
   namespace: ansible-runner
 spec:

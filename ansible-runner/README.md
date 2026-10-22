@@ -58,11 +58,12 @@ Kured has already started.
    published immutable `sha-<commit>` tag. For subsequent image updates, build
    first and change those references in a Git commit; do not restart workloads
    imperatively or rely on a mutable tag refreshing an existing pod.
-2. Provision a read-only GitHub deploy key for `tpaulus/ansible`. Separately,
-   authorize a dedicated node SSH key on every production inventory node.
+2. Use the shared SSH key from `K3S/Applier SSH Key` (field `private key`) as
+   the read-only GitHub deploy key for `tpaulus/ansible` and authorize its public
+   key on every production inventory node.
    The remote account needs the playbooks' privilege-escalation permissions:
    passwordless sudo, or existing vaulted `ansible_become_password` variables.
-   An SSH passphrase prompt is unsupported; use dedicated unencrypted keys
+   An SSH passphrase prompt is unsupported; use an unencrypted key
    protected by the secret manager.
 3. Create the following 1Password items; the existing operator materializes
    the Secrets from the committed `OnePasswordItem` resources. Do **not**
@@ -73,8 +74,12 @@ Kured has already started.
 
 | 1Password item in `K3S` | Fields (exact names) |
 | --- | --- |
-| `Ansible-Runner` | `deploy_key`, `node_key`, `vault_password`, `NETBOX_TOKEN`, `ANSIBLE_REMOTE_USER` |
+| `Applier SSH Key` | `private key` (operator Secret key: `private-key`) |
+| `Ansible-Runner` | `vault_password`, `NETBOX_TOKEN`, `ANSIBLE_REMOTE_USER` |
 | `Ansible-Webhook` | `WEBHOOK_SECRET` (at least 32 random characters) |
+
+The shared SSH key is projected as `/secrets/ssh_key` and copied with mode
+0600 to `/work/.ssh/ssh_key` for both Git and Ansible.
 
 `vault_password` is the existing Ansible Vault password stored in
 `op://Infra/Ansible/password`, delivered as a read-only file. This avoids

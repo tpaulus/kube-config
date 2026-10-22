@@ -34,7 +34,7 @@ spec:
               type: RuntimeDefault
           containers:
             - name: ansible
-              image: ghcr.io/tpaulus/ansible-runner:gitops
+              image: ghcr.io/tpaulus/ansible-runner:sha256-b528fcc4c4025c7ef84f75edfe1c553f35d98713af55ff637ac9c5753cb1bbf2
               args: [run, scheduled]
               envFrom:
                 - configMapRef:
@@ -80,16 +80,19 @@ spec:
                   mountPath: /tmp
           volumes:
             - name: credentials
-              secret:
-                secretName: ansible-runner-auth
+              projected:
                 defaultMode: 0440
-                items:
-                  - key: deploy_key
-                    path: deploy_key
-                  - key: node_key
-                    path: node_key
-                  - key: vault_password
-                    path: vault_password
+                sources:
+                  - secret:
+                      name: ansible-applier-ssh-key
+                      items:
+                        - key: private-key
+                          path: ssh_key
+                  - secret:
+                      name: ansible-runner-auth
+                      items:
+                        - key: vault_password
+                          path: vault_password
             - name: work
               emptyDir:
                 sizeLimit: 2Gi
