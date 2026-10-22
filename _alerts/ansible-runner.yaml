@@ -11,3 +11,14 @@ groups:
         annotations:
           summary: Ansible configuration is in progress
           description: Kured must defer node reboots until all Ansible runner containers have exited.
+      - alert: AnsibleRunStale
+        expr: |
+          time() - max by (netbox_device_name) (ansible_last_run_timestamp_seconds) > 7 * 86400
+        for: 10m
+        labels:
+          severity: warning
+          notify: todoist email-tom
+        annotations:
+          summary: Ansible has not run against {{ $labels.netbox_device_name }} in 7 days
+          description: The last successful site.yml run against {{ $labels.netbox_device_name }} finished
+            {{ $value | humanizeDuration }} ago. Inspect the ansible-runner Jobs and pod logs.

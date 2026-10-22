@@ -43,3 +43,15 @@ removed target is covered by the existing `Node down` / `NAS Maintenance Target
 Missing` alerts instead. A later success clears a failure; a failed-only result
 raises the failure alert, not the missing or overdue alert. Missing-result
 detection depends on the independently installed expectation metric.
+
+## Ansible run freshness
+
+`tpaulus/ansible`'s `site.yml` ends by writing
+`ansible_last_run_timestamp_seconds` (Unix time of the last successful run) to
+the node-exporter textfile directory on every inventory host.
+`AnsibleRunStale` in `_alerts/ansible-runner.yaml` fires per
+`netbox_device_name` when that timestamp is more than seven days old for
+10 minutes, using `severity: warning` and `notify: todoist email-tom`. The
+runner's schedule leaves at most about six days between runs. Hosts that have
+never published the metric, or whose exporter is down, do not raise this alert;
+the existing `Node down` rule covers unreachable exporters.
