@@ -54,6 +54,15 @@
     },
     {
       "matchPackageNames": [
+        "ghcr.io/tpaulus/ansible-runner"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "automerge": true
+    },
+    {
+      "matchPackageNames": [
         "netboxcommunity/netbox"
       ],
       "matchUpdateTypes": [
