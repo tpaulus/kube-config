@@ -225,6 +225,10 @@ data:
       repeat_interval: 4h
       receiver: 'email-tom'  # Default Receiver
       routes:
+        - receiver: 'noop'
+          continue: false
+          matchers:
+            - notify="noop"
         - receiver: 'deployment-alert-restarter'
           group_by: ['...']
           group_wait: 1s
@@ -250,6 +254,7 @@ data:
           matchers:
             - notify=~"(.+ )?email-mel( .+)?"
     receivers:
+      - name: 'noop'
       - name: 'deployment-alert-restarter'
         webhook_configs:
           - url: 'http://deployment-alert-restarter.monitoring.svc.cluster.local:8080'

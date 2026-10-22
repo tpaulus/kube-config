@@ -1,0 +1,98 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ansible-apply
+  namespace: ansible-runner
+spec:
+  # runner.py admits only UTC epoch days divisible by five.
+  schedule: "0 3 * * *"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 14400
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: ansible-runner
+        spec:
+          serviceAccountName: ansible-runner
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 60
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            fsGroup: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: ansible
+              image: ghcr.io/tpaulus/ansible-runner:gitops
+              args: [run, scheduled]
+              envFrom:
+                - configMapRef:
+                    name: ansible-runner
+              env:
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
+                - name: NETBOX_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: ansible-runner-auth
+                      key: NETBOX_TOKEN
+                - name: ANSIBLE_REMOTE_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ansible-runner-auth
+                      key: ANSIBLE_REMOTE_USER
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  cpu: "2"
+                  memory: 2Gi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: [ALL]
+              volumeMounts:
+                - name: credentials
+                  mountPath: /secrets
+                  readOnly: true
+                - name: work
+                  mountPath: /work
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: credentials
+              secret:
+                secretName: ansible-runner-auth
+                defaultMode: 0440
+                items:
+                  - key: deploy_key
+                    path: deploy_key
+                  - key: node_key
+                    path: node_key
+                  - key: vault_password
+                    path: vault_password
+            - name: work
+              emptyDir:
+                sizeLimit: 2Gi
+            - name: tmp
+              emptyDir:
+                sizeLimit: 1Gi

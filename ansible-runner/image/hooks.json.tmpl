@@ -1,0 +1,73 @@
+[
+  {
+    "id": "ansible",
+    "execute-command": "/usr/local/bin/python",
+    "pass-arguments-to-command": [
+      {"source": "string", "name": "/opt/runner/runner.py"},
+      {"source": "string", "name": "submit"},
+      {"source": "header", "name": "X-GitHub-Event"}
+    ],
+    "command-working-directory": "/tmp",
+    "pass-file-to-command": [
+      {"source": "entire-payload", "envname": "WEBHOOK_PAYLOAD"}
+    ],
+    "http-methods": ["POST"],
+    "include-command-output-in-response": true,
+    "include-command-output-in-response-on-error": false,
+    "trigger-rule-mismatch-http-response-code": 403,
+    "trigger-rule": {
+      "and": [
+        {
+          "match": {
+            "type": "payload-hmac-sha256",
+            "secret": "{{ getenv "WEBHOOK_SECRET" | js }}",
+            "parameter": {"source": "header", "name": "X-Hub-Signature-256"}
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "tpaulus/ansible",
+            "parameter": {"source": "payload", "name": "repository.full_name"}
+          }
+        },
+        {
+          "or": [
+            {
+              "match": {
+                "type": "value",
+                "value": "ping",
+                "parameter": {"source": "header", "name": "X-GitHub-Event"}
+              }
+            },
+            {
+              "and": [
+                {
+                  "match": {
+                    "type": "value",
+                    "value": "push",
+                    "parameter": {"source": "header", "name": "X-GitHub-Event"}
+                  }
+                },
+                {
+                  "match": {
+                    "type": "value",
+                    "value": "refs/heads/main",
+                    "parameter": {"source": "payload", "name": "ref"}
+                  }
+                },
+                {
+                  "match": {
+                    "type": "value",
+                    "value": "false",
+                    "parameter": {"source": "payload", "name": "deleted"}
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,27 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ansible-runner
+  namespace: argocd
+spec:
+  destination:
+    namespace: ansible-runner
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: ansible-runner
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  ignoreDifferences:
+    - group: coordination.k8s.io
+      kind: Lease
+      name: ansible-apply
+      namespace: ansible-runner
+      jsonPointers:
+        - /spec
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - RespectIgnoreDifferences=true

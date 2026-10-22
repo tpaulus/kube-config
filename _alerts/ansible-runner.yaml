@@ -1,0 +1,13 @@
+---
+groups:
+  - name: Ansible
+    rules:
+      - alert: AnsibleConfigurationInProgress
+        expr: |
+          sum(kube_pod_container_status_running{namespace="ansible-runner", container="ansible"}) > 0
+        labels:
+          severity: info
+          notify: noop
+        annotations:
+          summary: Ansible configuration is in progress
+          description: Kured must defer node reboots until all Ansible runner containers have exited.

@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ansible-runner
+  namespace: ansible-runner
+data:
+  ANSIBLE_REPOSITORY: git@github.com:tpaulus/ansible.git
+  ANSIBLE_BRANCH: main
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: ansible-runner-auth
+  namespace: ansible-runner
+spec:
+  itemPath: vaults/K3S/items/Ansible-Runner
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: ansible-webhook-auth
+  namespace: ansible-runner
+spec:
+  itemPath: vaults/K3S/items/Ansible-Webhook
