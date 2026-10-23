@@ -31,7 +31,7 @@ groups:
         annotations:
           title: Node {{ $labels.instance }} {{ $labels.device }} is over 80% utilized
       - alert: Disk Usage Critical
-        expr: max(1 - node_filesystem_free_bytes{device!="tmpfs"} / node_filesystem_size_bytes{device!="tmpfs"})
+        expr: max(1 - node_filesystem_free_bytes{device!~"tmpfs|tank/TimeMachine/.*"} / node_filesystem_size_bytes{device!~"tmpfs|tank/TimeMachine/.*"})
           by (device, instance) > .95
         for: 5m
         labels:
