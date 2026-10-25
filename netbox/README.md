@@ -21,6 +21,37 @@ Alternative installation instructions for NetBox using Kubernetes. The main valu
 
 ## Installation
 
+### V2 API token prerequisite
+
+Before deploying NetBox, add a concealed field named `api_token_pepper_1` to the
+1Password item at `vaults/K3S/items/netbox`. Generate a separate random value of
+at least 50 characters (for example, `openssl rand -base64 48`) and store it only
+in 1Password, not in Git. Do not reuse the Django `secret_key`.
+
+The 1Password operator must sync this field into the `netbox-secret` Kubernetes
+Secret before the updated Deployment is rolled out; pods will not start if the
+field is missing. The Deployment mounts it read-only at
+`/run/secrets/api_token_pepper_1`, which the NetBox Docker image loads as
+`API_TOKEN_PEPPERS = {1: ...}` for both the web process and its background worker.
+Without a configured pepper, NetBox cannot create v2 API tokens.
+
+Keep this value stable and shared across all replicas. Changing or losing it
+invalidates tokens hashed with pepper ID `1`. Secret mounts using `subPath` do
+not refresh in running containers, so restart the Deployment after an intentional
+secret update and wait for all replicas to become ready before creating tokens:
+
+```sh
+kubectl rollout restart deployment/netbox -n netbox
+kubectl rollout status deployment/netbox -n netbox
+```
+
+For future pepper rotation, follow the
+[NetBox configuration documentation](https://netboxlabs.com/docs/netbox/configuration/required-parameters/#api_token_peppers):
+introduce a new pepper ID through custom configuration and retain old peppers
+while tokens still depend on them, rather than overwriting pepper ID `1`.
+
+### Deployment steps
+
 To get NetBox up and running on a Kubernetes cluster:
 
 1. Deploy `netbox-namespace.yaml`
