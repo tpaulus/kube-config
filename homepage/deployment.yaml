@@ -24,6 +24,7 @@ spec:
           image: registry.k8s.io/git-sync/git-sync:v4.8.0
           args:
             - --repo=git@github.com:tpaulus/homepage-config.git
+            - --git-config=safe.directory:/git
             - --ssh-key-file=/run/ssh-key/private
             - --ssh-known-hosts=true
             - --ssh-known-hosts-file=/run/ssh-known-hosts/known_hosts

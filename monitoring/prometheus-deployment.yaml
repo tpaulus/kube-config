@@ -76,6 +76,7 @@ spec:
           image: registry.k8s.io/git-sync/git-sync:v4.8.0
           args:
             - --repo=https://github.com/tpaulus/kube-config.git
+            - --git-config=safe.directory:/run/prometheus-rules
             - --root=/run/prometheus-rules
             - --link=kube-config
             - --period=1m
@@ -142,12 +143,12 @@ spec:
             defaultMode: 420
             name: prometheus-server-conf
         - name: prometheus-storage-volume
-          emptyDir: 
+          emptyDir:
             sizeLimit: 55Gi
         - name: kube-config-rules-volume
           emptyDir: {}
         - name: arr-stack-rules-volume
-          emptyDir: {}          
+          emptyDir: {}
         - name: netbox-token
           secret:
             secretName: netbox-token
