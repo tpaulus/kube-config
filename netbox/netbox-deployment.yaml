@@ -95,6 +95,10 @@ spec:
               mountPath: /run/secrets/secret_key
               subPath: secret_key
               readOnly: true
+            - name: api-token-pepper
+              mountPath: /run/secrets/api_token_pepper_1
+              subPath: api_token_pepper_1
+              readOnly: true
             - name: django-psql-certs
               mountPath: /root/.postgresql/
             # Persistent Volume paths
@@ -185,6 +189,12 @@ spec:
             items:
               - key: secret_key
                 path: secret_key
+        - name: api-token-pepper
+          secret:
+            secretName: netbox-secret
+            items:
+              - key: api_token_pepper_1
+                path: api_token_pepper_1
         - name: superuser-password
           secret:
             secretName: netbox-secret
