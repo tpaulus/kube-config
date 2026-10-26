@@ -198,7 +198,7 @@ groups:
           summary: '{{ $labels.disk }} SMART health failed'
           description: 'Disk {{ $labels.disk }} ({{ $labels.role }}) on {{ $labels.netbox_device_name }} reports failed SMART health or a current threshold failure.'
       - alert: NAS SMART Unreadable
-        expr: nas_smart_collector_success == 0
+        expr: nas_smart_collector_success{disk!="S2WANP0J407340B"} == 0  # Exclude External Samsung T3 USB Drive on WoodlandPark
         for: 10m
         labels:
           severity: high
