@@ -163,6 +163,13 @@ labels, multi-architecture build/push, and a GitHub artifact attestation of the
 published digest. Actions are pinned to commit SHAs. It does not trigger
 Ansible or run unit tests.
 
+The runner image stays on Python 3.13, with a file-scoped Renovate constraint
+to prevent incompatible Python minor upgrades. Python 3.15 removes the private
+`dataclasses._is_type` API used by the pinned Ansible version, causing
+`ansible-galaxy` to fail at startup. Revisit the constraint only after verifying
+Ansible compatibility. Image builds check `ansible`, `ansible-galaxy` and
+`ansible-playbook` startup with `--version` before publishing.
+
 Use the existing manifest/schema, YAML and workflow linters for configuration
 validation. Alert rules and Alertmanager configuration can be checked with
 `promtool check rules` and `amtool check-config`. There is no runner unit-test

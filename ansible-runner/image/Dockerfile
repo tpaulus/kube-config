@@ -1,4 +1,4 @@
-FROM python:3.15-slim-trixie
+FROM python:3.13-slim-trixie
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates git openssh-client webhook \
@@ -6,6 +6,9 @@ RUN apt-get update \
 
 COPY requirements.txt /opt/runner/requirements.txt
 RUN pip install --no-cache-dir -r /opt/runner/requirements.txt \
+    && ansible --version \
+    && ansible-galaxy --version \
+    && ansible-playbook --version \
     && useradd --uid 10001 --create-home runner
 
 COPY runner.py hooks.json.tmpl github_known_hosts /opt/runner/
