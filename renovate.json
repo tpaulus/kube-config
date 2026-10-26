@@ -53,6 +53,18 @@
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchFileNames": [
+        "ansible-runner/image/Dockerfile"
+      ],
+      "matchPackageNames": [
+        "python"
+      ],
+      "allowedVersions": ">=3.13 <3.14"
+    },
+    {
       "matchPackageNames": [
         "ghcr.io/tpaulus/ansible-runner"
       ],
