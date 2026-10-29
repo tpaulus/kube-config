@@ -25,7 +25,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: webhook
-          image: ghcr.io/tpaulus/ansible-runner:gitops@sha256:7857da1f5f80ed10ee5c8793b830fc5ed0fc2585d890fe4653c109643029bc05
+          image: ghcr.io/tpaulus/ansible-runner:gitops@sha256:066c3b13dcca6e4c13776085aa58d42c6e1d2d509dccd87d3292d5c3d155b209
           args: [serve]
           ports:
             - name: http
