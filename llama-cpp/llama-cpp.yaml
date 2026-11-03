@@ -1,0 +1,174 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: llama-cpp-models
+  namespace: llama-cpp
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# One llama-server per model: chat on 8080, embeddings on 8081.
+# Models are fetched from Hugging Face on first start into the PVC (LLAMA_CACHE).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-cpp
+  namespace: llama-cpp
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: llama-cpp
+  template:
+    metadata:
+      labels:
+        app: llama-cpp
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: chat
+        image: ghcr.io/ggml-org/llama.cpp:server-b12063@sha256:10a38e6cc91760ab157f0a0a8546218d35f4a314432a70298abfa3d096829ad7
+        args:
+          - --hf-repo
+          - Qwen/Qwen2.5-3B-Instruct-GGUF:Q4_K_M
+          - --alias
+          - qwen2.5-3b
+          - --jinja
+          - --ctx-size
+          - "8192"
+          - --parallel
+          - "1"
+          - --threads
+          - "8"
+          - --port
+          - "8080"
+          - --metrics
+          - --no-webui
+        env: &env
+        - name: HOME
+          value: /tmp
+        - name: LLAMA_CACHE
+          value: /models
+        - name: LLAMA_ARG_HOST
+          value: 0.0.0.0
+        - name: LLAMA_ARG_LOG_VERBOSITY
+          value: "2"
+        ports:
+        - name: chat
+          containerPort: 8080
+        resources:
+          requests:
+            cpu: 500m
+            memory: 3Gi
+          limits:
+            cpu: "8"
+            memory: 4Gi
+        securityContext: &containerSecurityContext
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        startupProbe:
+          httpGet:
+            path: /health
+            port: chat
+          periodSeconds: 10
+          failureThreshold: 90
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: chat
+          periodSeconds: 15
+        livenessProbe:
+          tcpSocket:
+            port: chat
+          periodSeconds: 20
+        volumeMounts: &volumeMounts
+        - name: models
+          mountPath: /models
+      - name: embed
+        image: ghcr.io/ggml-org/llama.cpp:server-b12063@sha256:10a38e6cc91760ab157f0a0a8546218d35f4a314432a70298abfa3d096829ad7
+        args:
+          - --hf-repo
+          - nomic-ai/nomic-embed-text-v1.5-GGUF:Q8_0
+          - --alias
+          - nomic-embed-text
+          - --embeddings
+          # nomic-embed is non-causal: a whole input must fit in one ubatch.
+          - --ctx-size
+          - "2048"
+          - --batch-size
+          - "2048"
+          - --ubatch-size
+          - "2048"
+          - --threads
+          - "4"
+          - --port
+          - "8081"
+          - --metrics
+          - --no-webui
+        env: *env
+        ports:
+        - name: embed
+          containerPort: 8081
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: "4"
+            memory: 1Gi
+        securityContext: *containerSecurityContext
+        startupProbe:
+          httpGet:
+            path: /health
+            port: embed
+          periodSeconds: 10
+          failureThreshold: 90
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: embed
+          periodSeconds: 15
+        livenessProbe:
+          tcpSocket:
+            port: embed
+          periodSeconds: 20
+        volumeMounts: *volumeMounts
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: llama-cpp-models
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llama-cpp
+  namespace: llama-cpp
+spec:
+  selector:
+    app: llama-cpp
+  ports:
+    - name: chat
+      protocol: TCP
+      port: 8080
+      targetPort: chat
+    - name: embed
+      protocol: TCP
+      port: 8081
+      targetPort: embed

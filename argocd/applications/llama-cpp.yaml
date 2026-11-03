@@ -2,13 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ollama
+  name: llama-cpp
 spec:
   destination:
-    namespace: ollama
+    namespace: llama-cpp
     server: https://kubernetes.default.svc
   source:
-    path: ollama
+    path: llama-cpp
     repoURL: git@github.com:tpaulus/kube-config.git
     targetRevision: HEAD
   project: default

@@ -58,14 +58,15 @@ data:
 
   PAPERLESS_OCR_USER_ARGS: "{\"continue_on_soft_render_error\": true}"
 
-  # Chat + embeddings served by the ollama app (CPU-only).
+  # Chat + embeddings served by the llama-cpp app (CPU-only, OpenAI-compatible API).
   PAPERLESS_AI_ENABLED: "true"
-  PAPERLESS_AI_LLM_BACKEND: "ollama"
-  PAPERLESS_AI_LLM_MODEL: "qwen2.5:3b"
-  PAPERLESS_AI_LLM_ENDPOINT: "http://ollama.ollama.svc.cluster.local:11434"
+  PAPERLESS_AI_LLM_BACKEND: "openai-like"
+  PAPERLESS_AI_LLM_MODEL: "qwen2.5-3b"
+  PAPERLESS_AI_LLM_ENDPOINT: "http://llama-cpp.llama-cpp.svc.cluster.local:8080/v1"
   PAPERLESS_AI_LLM_REQUEST_TIMEOUT: "300"
-  PAPERLESS_AI_LLM_EMBEDDING_BACKEND: "ollama"
+  PAPERLESS_AI_LLM_EMBEDDING_BACKEND: "openai-like"
   PAPERLESS_AI_LLM_EMBEDDING_MODEL: "nomic-embed-text"
+  PAPERLESS_AI_LLM_EMBEDDING_ENDPOINT: "http://llama-cpp.llama-cpp.svc.cluster.local:8081/v1"
 
 ---
 apiVersion: apps/v1
