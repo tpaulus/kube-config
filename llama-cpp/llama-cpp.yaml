@@ -54,6 +54,9 @@ spec:
           - --alias
           - qwen3-1.7b
           - --jinja
+          # Qwen3 thinks by default; on CPU that adds minutes per request.
+          - --reasoning
+          - "off"
           - --ctx-size
           - "8192"
           - --parallel
