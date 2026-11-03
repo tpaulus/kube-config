@@ -59,6 +59,11 @@ data:
 
   PAPERLESS_OCR_USER_ARGS: "{\"continue_on_soft_render_error\": true}"
 
+  # Embeddings run in-process on CPU; model is cached in the data PVC (hf_cache).
+  PAPERLESS_AI_ENABLED: "true"
+  PAPERLESS_AI_LLM_EMBEDDING_BACKEND: "huggingface"
+  PAPERLESS_AI_LLM_EMBEDDING_MODEL: "sentence-transformers/all-MiniLM-L6-v2"
+
 ---
 apiVersion: apps/v1
 kind: Deployment
