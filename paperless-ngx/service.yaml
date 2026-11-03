@@ -28,7 +28,7 @@ metadata:
 data:
   PAPERLESS_TIME_ZONE: "America/Los_Angeles"
   PAPERLESS_OCR_LANGUAGE: "eng"
-  
+
   PAPERLESS_URL: "https://paperless.paulus.family"
 
   PAPERLESS_REDIS: "redis://redis.paperless-ngx"
@@ -42,7 +42,7 @@ data:
   PAPERLESS_FILENAME_FORMAT_REMOVE_NONE: "true"
 
   PAPERLESS_APPS: "allauth.socialaccount.providers.openid_connect"
-  
+
   PAPERLESS_SOCIAL_AUTO_SIGNUP: "true"
   PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
   PAPERLESS_OIDC_PROVIDER_ID: "simple-idp"
@@ -54,8 +54,7 @@ data:
   PAPERLESS_EMAIL_HOST: "smtp-relay.smtp-relay.svc.cluster.local"
   PAPERLESS_EMAIL_HOST_USER: "paperless@whitestar.systems"
 
-  PAPERLESS_TASK_WORKERS: "2"
-  PAPERLESS_THREADS_PER_WORKER: "4"
+  PAPERLESS_TASK_WORKERS: "3"
 
   PAPERLESS_OCR_USER_ARGS: "{\"continue_on_soft_render_error\": true}"
 
