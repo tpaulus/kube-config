@@ -9,7 +9,19 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 30Gi
+
+---
+# Below every other workload (default 0): when a node is lost, the scheduler
+# preempts llama-cpp to make room, and it never preempts anything itself.
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: llama-cpp-best-effort
+value: -1000
+preemptionPolicy: Never
+globalDefault: false
+description: Lowest priority; first to be preempted when capacity is short.
 
 ---
 # One llama-server per model: chat on 8080, embeddings on 8081.
@@ -38,6 +50,7 @@ spec:
         prometheus.io/path: /metrics
     spec:
       automountServiceAccountToken: false
+      priorityClassName: llama-cpp-best-effort
       securityContext:
         fsGroup: 1000
         runAsNonRoot: true
@@ -50,13 +63,10 @@ spec:
         image: ghcr.io/ggml-org/llama.cpp:server-b12063@sha256:10a38e6cc91760ab157f0a0a8546218d35f4a314432a70298abfa3d096829ad7
         args:
           - --hf-repo
-          - Qwen/Qwen3-1.7B-GGUF:Q8_0
+          - unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
           - --alias
-          - qwen3-1.7b
+          - qwen3-30b-a3b
           - --jinja
-          # Qwen3 thinks by default; on CPU that adds minutes per request.
-          - --reasoning
-          - "off"
           - --ctx-size
           - "8192"
           - --parallel
@@ -82,10 +92,10 @@ spec:
         resources:
           requests:
             cpu: 500m
-            memory: 3Gi
+            memory: 20Gi
           limits:
             cpu: "8"
-            memory: 4Gi
+            memory: 22Gi
         securityContext: &containerSecurityContext
           allowPrivilegeEscalation: false
           capabilities:

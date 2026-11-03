@@ -61,7 +61,7 @@ data:
   # Chat + embeddings served by the llama-cpp app (CPU-only, OpenAI-compatible API).
   PAPERLESS_AI_ENABLED: "true"
   PAPERLESS_AI_LLM_BACKEND: "openai-like"
-  PAPERLESS_AI_LLM_MODEL: "qwen3-1.7b"
+  PAPERLESS_AI_LLM_MODEL: "qwen3-30b-a3b"
   PAPERLESS_AI_LLM_ENDPOINT: "http://llama-cpp.llama-cpp.svc.cluster.local:8080/v1"
   PAPERLESS_AI_LLM_REQUEST_TIMEOUT: "300"
   PAPERLESS_AI_LLM_EMBEDDING_BACKEND: "openai-like"
