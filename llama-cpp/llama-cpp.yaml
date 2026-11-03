@@ -50,9 +50,9 @@ spec:
         image: ghcr.io/ggml-org/llama.cpp:server-b12063@sha256:10a38e6cc91760ab157f0a0a8546218d35f4a314432a70298abfa3d096829ad7
         args:
           - --hf-repo
-          - Qwen/Qwen2.5-3B-Instruct-GGUF:Q4_K_M
+          - Qwen/Qwen3-1.7B-GGUF:Q8_0
           - --alias
-          - qwen2.5-3b
+          - qwen3-1.7b
           - --jinja
           - --ctx-size
           - "8192"
