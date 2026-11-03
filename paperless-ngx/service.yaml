@@ -59,10 +59,14 @@ data:
 
   PAPERLESS_OCR_USER_ARGS: "{\"continue_on_soft_render_error\": true}"
 
-  # Embeddings run in-process on CPU; model is cached in the data PVC (hf_cache).
+  # Chat + embeddings served by the ollama app (CPU-only).
   PAPERLESS_AI_ENABLED: "true"
-  PAPERLESS_AI_LLM_EMBEDDING_BACKEND: "huggingface"
-  PAPERLESS_AI_LLM_EMBEDDING_MODEL: "sentence-transformers/all-MiniLM-L6-v2"
+  PAPERLESS_AI_LLM_BACKEND: "ollama"
+  PAPERLESS_AI_LLM_MODEL: "qwen2.5:3b"
+  PAPERLESS_AI_LLM_ENDPOINT: "http://ollama.ollama.svc.cluster.local:11434"
+  PAPERLESS_AI_LLM_REQUEST_TIMEOUT: "300"
+  PAPERLESS_AI_LLM_EMBEDDING_BACKEND: "ollama"
+  PAPERLESS_AI_LLM_EMBEDDING_MODEL: "nomic-embed-text"
 
 ---
 apiVersion: apps/v1

@@ -1,0 +1,18 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ollama
+spec:
+  destination:
+    namespace: ollama
+    server: https://kubernetes.default.svc
+  source:
+    path: ollama
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions: [CreateNamespace=true]
