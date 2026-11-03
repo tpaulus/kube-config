@@ -31,6 +31,11 @@ spec:
     metadata:
       labels:
         app: llama-cpp
+      annotations:
+        # No port annotation: the kubernetes-pods job then scrapes each
+        # declared containerPort (chat 8080, embed 8081) as its own target.
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: /metrics
     spec:
       automountServiceAccountToken: false
       securityContext:
