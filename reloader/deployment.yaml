@@ -19,7 +19,6 @@ spec:
       containers:
         - args:
             - '--log-level=info'
-            - '--resources-to-ignore=secrets'
             - '--ignored-workload-types=jobs'
             - '--auto-reload-all=true'
           env:
