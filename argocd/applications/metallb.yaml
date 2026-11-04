@@ -25,6 +25,11 @@ spec:
       kind: "CustomResourceDefinition"
       jsonPointers:
       - /spec/conversion/webhook/clientConfig/caBundle
+    - kind: ConfigMap
+      name: metallb-frr-k8s-frr-startup
+      namespace: metallb-system
+      jsonPointers:
+        - /metadata/annotations/kubectl.kubernetes.io~1last-applied-configuration
   project: default
   syncPolicy:
     managedNamespaceMetadata:
