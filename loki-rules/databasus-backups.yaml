@@ -33,3 +33,13 @@ data:
             annotations:
               summary: Databasus backup overdue for Netbox
               description: Databasus has not completed a Netbox backup in over 26 hours.
+          - alert: DatabasusBackupStale
+            expr: absent_over_time({namespace="databasus", container="databasus"} |= "backup completed" |= "database_id=dc5d6e20-24c7-45e4-a366-2c5794136300" [2h])
+            for: 5m
+            labels:
+              severity: high
+              notify: todoist email-tom
+              database: Immich
+            annotations:
+              summary: Databasus backup overdue for Immich
+              description: Databasus has not completed a Immich backup in over two hours.
