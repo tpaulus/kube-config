@@ -17,7 +17,7 @@ spec:
             annotateNodes: true
             prometheusUrl: 'http://prometheus.monitoring.svc.cluster.local:8080'
             # Ignore list: AnsibleConfigurationInProgress must not match.
-            alertFilterRegexp: '^RebootRequired|Internet Gateway Down|LonghornVolumeActualSpaceUsedWarning|HAM Node Down$'
+            alertFilterRegexp: '^NodeRebootRequired|RebootRequired|Internet Gateway Down|LonghornVolumeActualSpaceUsedWarning|HAM Node Down$'
           service:
             create: true
             annotations:
