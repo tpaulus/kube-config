@@ -33,7 +33,7 @@ spec:
               type: RuntimeDefault
           containers:
             - name: ansible
-              image: ghcr.io/tpaulus/ansible-runner:gitops@sha256:066c3b13dcca6e4c13776085aa58d42c6e1d2d509dccd87d3292d5c3d155b209
+              image: ghcr.io/tpaulus/ansible-runner:gitops@sha256:4460d0662aabe88131e53fa827c9f2c2450b141a3d779c49001d6c905914b87b
               args: [run, scheduled]
               envFrom:
                 - configMapRef:
