@@ -14,7 +14,7 @@ data:
       - name: databasus_backups
         rules:
           - alert: DatabasusBackupStale
-            expr: absent_over_time({namespace="databasus", container="databasus"} |= "logical backup finished" |= "database_id=6a5bfd01-6555-4881-a0f9-f092ffc57b26" [2h])
+            expr: absent_over_time({namespace="databasus", container="databasus"} |= "backup completed" |= "database_id=6a5bfd01-6555-4881-a0f9-f092ffc57b26" [2h])
             for: 5m
             labels:
               severity: high
@@ -24,7 +24,7 @@ data:
               summary: Databasus backup overdue for Paperless
               description: Databasus has not completed a Paperless backup in over two hours.
           - alert: DatabasusBackupStale
-            expr: absent_over_time({namespace="databasus", container="databasus"} |= "logical backup finished" |= "database_id=77f681ca-c793-42c2-8825-77020f0983fb" [26h])
+            expr: absent_over_time({namespace="databasus", container="databasus"} |= "backup completed" |= "database_id=77f681ca-c793-42c2-8825-77020f0983fb" [26h])
             for: 5m
             labels:
               severity: high
