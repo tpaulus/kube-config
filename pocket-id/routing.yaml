@@ -1,0 +1,40 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: id-paulus-family
+  namespace: pocket-id
+spec:
+  secretName: id-paulus-family-cert
+  duration: 2160h0m0s
+  dnsNames:
+    - id.paulus.family
+  issuerRef:
+    name: letsencrypt-bunny-prod
+    kind: ClusterIssuer
+---
+# No entrypoint pin: internal DNS resolves to Traefik's websecure (no client cert),
+# while public DNS (lfp.it) reaches web-mtls, which requires a client cert.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pocket-id
+  namespace: pocket-id
+  annotations:
+    external-dns.kubernetes.io/target: lfp.it.paulus.family
+spec:
+  tls:
+    - hosts:
+        - id.paulus.family
+      secretName: id-paulus-family-cert
+  rules:
+    - host: id.paulus.family
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pocket-id
+                port:
+                  number: 80

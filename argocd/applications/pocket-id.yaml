@@ -1,0 +1,19 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pocket-id
+  namespace: argocd
+spec:
+  destination:
+    namespace: pocket-id
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: pocket-id
+    repoURL: git@github.com:tpaulus/kube-config.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions: [CreateNamespace=true]
