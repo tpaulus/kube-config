@@ -23,7 +23,7 @@ spec:
               containers:
                 main:
                   image:
-                    tag: v3.3.6
+                    tag: v3.4.0
           server:
             defaultPodOptions:
               securityContext:
