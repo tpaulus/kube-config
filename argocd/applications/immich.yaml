@@ -35,10 +35,28 @@ spec:
                 pod:
                   annotations:
                     prometheus.io/scrape: "true"
-                    prometheus.io/port: "8081"
+                    prometheus.io/port: "9081"
                     prometheus.io/path: "/metrics"
-                    prometheus.io/microservices-port: "8082"
+                    prometheus.io/microservices-port: "9082"
                 containers:
+                  # Workaround for https://github.com/immich-app/immich/issues/33173
+                  # Immich 3.4.0 metrics exporters bind to localhost only (8081/8082);
+                  # proxy them onto the pod IP. Remove, and restore the 8081/8082
+                  # annotations, once fixed upstream.
+                  metrics-api-proxy:
+                    image:
+                      repository: alpine/socat
+                      tag: 1.8.0.3
+                    args:
+                      - TCP-LISTEN:9081,fork,reuseaddr
+                      - TCP:127.0.0.1:8081
+                  metrics-microservices-proxy:
+                    image:
+                      repository: alpine/socat
+                      tag: 1.8.0.3
+                    args:
+                      - TCP-LISTEN:9082,fork,reuseaddr
+                      - TCP:127.0.0.1:8082
                   main:
                     env:
                       IMMICH_TELEMETRY_INCLUDE: all
