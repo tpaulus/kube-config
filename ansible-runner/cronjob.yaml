@@ -57,6 +57,8 @@ spec:
                     secretKeyRef:
                       name: ansible-runner-auth
                       key: ANSIBLE_REMOTE_USER
+                - name: COLLECTIONS_ON_ANSIBLE_VERSION_MISMATCH
+                  value: ignore
               resources:
                 requests:
                   cpu: 100m
