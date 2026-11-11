@@ -7,7 +7,7 @@ metadata:
 data:
   ANSIBLE_REPOSITORY: git@github.com:tpaulus/ansible.git
   ANSIBLE_BRANCH: main
-  COLLECTIONS_ON_ANSIBLE_VERSION_MISMATCH: ignore
+  ANSIBLE_COLLECTIONS_ON_ANSIBLE_VERSION_MISMATCH: ignore
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
