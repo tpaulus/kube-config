@@ -24,7 +24,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: prometheus-opnsense-exporter
-          image: ghcr.io/athennamind/opnsense-exporter:v0.0.19
+          image: ghcr.io/athennamind/opnsense-exporter:0.0.19
           ports:
             - containerPort: 8080
               name: metrics
