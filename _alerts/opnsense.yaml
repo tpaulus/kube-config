@@ -3,13 +3,13 @@ groups:
   - name: OPNSense
     rules:
       - alert: Internet Gateway Down
-        expr: gateway_up == 0
+        expr: opnsense_gateways_status != 1
         for: 3m
         labels:
           severity: critical
           notify: todoist email-tom
         annotations:
-          summary: Internet Gateway ({{ $labels.gateway_name }}) is Down
+          summary: Internet Gateway ({{ $labels.name }}) is Down
           dashboard: https://grafana.brickyard.whitestar.systems/d/a6c53492-cfb0-41c9-8f71-cce622706523/internet-uplink
       - alert: Unable to Scrape OPNSense Metrics
         expr: up{kubernetes_app_name="prometheus-opnsense-exporter"} == 0
@@ -20,3 +20,21 @@ groups:
         annotations:
           summary: Unable to Scrape OPNSense Metrics
           description: Prometheus is unable to scrape OPNSense via the Exporter.
+      - alert: Unable to Reach OPNSense API
+        expr: opnsense_up == 0
+        for: 5m
+        labels:
+          severity: critical
+          notify: todoist email-tom
+        annotations:
+          summary: Unable to Reach OPNSense API
+          description: The exporter cannot retrieve OPNSense system health.
+      - alert: Unable to Scrape OPNSense Gateways
+        expr: increase(opnsense_exporter_endpoint_errors_total{endpoint="api/routing/settings/searchGateway"}[5m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          notify: todoist email-tom
+        annotations:
+          summary: Unable to Scrape OPNSense Gateways
+          description: The exporter cannot retrieve OPNSense gateway metrics.
