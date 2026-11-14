@@ -18,13 +18,12 @@ spec:
       annotations:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '8080'
-        prometheus.io/scrape_interval: 1m
-        prometheus.io/scrape_timeout: 50s
     spec:
       automountServiceAccountToken: false
       containers:
         - name: prometheus-opnsense-exporter
-          image: ghcr.io/athennamind/opnsense-exporter:v0.0.19
+          image: ghcr.io/tpaulus/opnsense-exporter:main
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: metrics
@@ -35,22 +34,11 @@ spec:
             limits:
               memory: 256Mi
               cpu: 64m
-          args:
-            - --opnsense.protocol=https
-            - --opnsense.address=10.0.10.1
-            - --opnsense.insecure
-            - --exporter.instance-label=opnsense
-          env:
-            - name: OPNSENSE_EXPORTER_OPS_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: opnsense-creds
-                  key: OPNSENSE_KEY
-            - name: OPNSENSE_EXPORTER_OPS_API_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: opnsense-creds
-                  key: OPNSENSE_SECRET
+          envFrom:
+            - secretRef:
+                name: opnsense-creds
+            - configMapRef:
+                name: opnsense-config
           livenessProbe:
             tcpSocket:
               port: 8080
@@ -62,6 +50,16 @@ spec:
             readOnlyRootFilesystem: true
             runAsUser: 65534
             runAsGroup: 65534
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opnsense-config
+data:
+  METRICS_PORT: '8080'
+  DELAY: '5'
+  OPNSENSE_URL: https://10.0.10.1
+  OPNSENSE_SSL_VERIFY: 'false'
 ---
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
