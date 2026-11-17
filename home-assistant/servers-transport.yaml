@@ -2,7 +2,15 @@
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: upstream-tls
+  name: ha-tls
   namespace: home-assistant
 spec:
   serverName: home.paulus.family
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: music-tls
+  namespace: home-assistant
+spec:
+  serverName: music.paulus.family

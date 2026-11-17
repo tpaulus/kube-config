@@ -13,6 +13,7 @@ spec:
   tls:
     - hosts:
         - home.paulus.family
+        - music.paulus.family
       secretName: home-assistant-tls
   rules:
     - host: home.paulus.family
@@ -21,6 +22,16 @@ spec:
           - backend:
               service:
                 name: home-assistant
+                port:
+                  name: https
+            path: /
+            pathType: Prefix
+    - host: music.paulus.family
+      http:
+        paths:
+          - backend:
+              service:
+                name: music-assistant
                 port:
                   name: https
             path: /
