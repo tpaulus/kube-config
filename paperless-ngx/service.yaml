@@ -30,6 +30,8 @@ data:
   PAPERLESS_OCR_LANGUAGE: "eng"
 
   PAPERLESS_URL: "https://paperless.paulus.family"
+  # External hostname plus every in-cluster form of the paperless-ngx Service
+  PAPERLESS_ALLOWED_HOSTS: "paperless.paulus.family,paperless-ngx,paperless-ngx.paperless-ngx,paperless-ngx.paperless-ngx.svc,paperless-ngx.paperless-ngx.svc.cluster.local,localhost"
 
   PAPERLESS_REDIS: "redis://redis.paperless-ngx"
   PAPERLESS_DBHOST: db.paperless-ngx
