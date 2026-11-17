@@ -141,18 +141,27 @@ spec:
           httpGet:
             path: /
             port: 8000
+            httpHeaders:
+            - name: Host
+              value: paperless.paulus.family
           failureThreshold: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /
             port: 8000
+            httpHeaders:
+            - name: Host
+              value: paperless.paulus.family
           initialDelaySeconds: 10
           periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /
             port: 8000
+            httpHeaders:
+            - name: Host
+              value: paperless.paulus.family
           initialDelaySeconds: 15
           periodSeconds: 10
         securityContext:
