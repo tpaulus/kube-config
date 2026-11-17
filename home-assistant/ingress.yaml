@@ -25,15 +25,6 @@ spec:
                   name: https
             path: /
             pathType: Prefix
-
----
-apiVersion: traefik.io/v1alpha1
-kind: TLSOption
-metadata:
-  name: no-client-cert
-  namespace: home-assistant
-spec:
-  minVersion: VersionTLS12
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -44,7 +35,6 @@ metadata:
     external-dns.kubernetes.io/target: lfp.it.paulus.family
     internal.paulus.family/target: 10.0.10.16 # OPNSense Unbound Only Supports IP Addresses, not CNAMES
     traefik.ingress.kubernetes.io/service.serversscheme: https
-    traefik.ingress.kubernetes.io/router.tls.options: home-assistant-no-client-cert@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
