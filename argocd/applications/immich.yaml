@@ -42,6 +42,9 @@ spec:
                   main:
                     env:
                       IMMICH_TELEMETRY_INCLUDE: all
+                      # Workaround for Prometheus scrapes returning 400 on v3.4.2
+                      # https://github.com/immich-app/immich/issues/33466
+                      IMMICH_HOST: 0.0.0.0
                       DB_HOSTNAME: immich-postgres
                       DB_PORT: "5432"
                       DB_USERNAME:
