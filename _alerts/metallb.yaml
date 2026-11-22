@@ -1,0 +1,67 @@
+---
+groups:
+  - name: MetalLB
+    rules:
+      - alert: MetalLBConfigStale
+        expr: metallb_k8s_client_config_stale_bool == 1
+        for: 5m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: 'MetalLB configuration is stale on {{ $labels.kubernetes_node }}'
+          description: 'Inspect controller/speaker configuration errors. The last valid configuration remains active; do not restart before collecting evidence.'
+      - alert: MetalLBBGPSessionDown
+        expr: frrk8s_bgp_session_up == 0
+        for: 2m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: 'BGP peer {{ $labels.peer }} is down on {{ $labels.kubernetes_node }}'
+          description: 'FRR reports the BGP session down. Check the peer and advertised routes; BFD state is not used as a service-health signal.'
+      - alert: MetalLBMetricsDown
+        expr: up{job="metallb-pods"} == 0
+        for: 5m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: 'MetalLB/FRR metrics unavailable on {{ $labels.kubernetes_node }}'
+          description: 'Cannot scrape {{ $labels.kubernetes_pod_name }} / {{ $labels.kubernetes_container_name }}. Missing metrics do not prove BGP or VIP health.'
+      - alert: MetalLBBGPSessionTelemetryMissing
+        expr: >-
+          up{job="metallb-pods", kubernetes_container_name="frr-metrics"} == 1
+          unless on (instance)
+          frrk8s_bgp_session_up
+        for: 5m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: 'BGP telemetry missing on {{ $labels.kubernetes_node }}'
+          description: 'The FRR exporter is reachable but returns no BGP session metrics. Inspect exporter errors and FRR configuration.'
+  - name: MetalLBExternalPath
+    rules:
+      - alert: MetalLBExternalVIPProbeFailed
+        expr: probe_success{job="metallb-external-probes"} == 0
+        for: 2m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: '{{ $labels.namespace }}/{{ $labels.service }} VIP probe failed from {{ $labels.vantage }}'
+          description: 'The external TCP probe to {{ $labels.instance }} failed. Compare local endpoints, FRR advertisements, router BGP RIB and kernel FIB, and packet captures before restarting speakers. TCP success alone does not prove application or mTLS health.'
+      - alert: MetalLBExternalProbeMonitoringMissing
+        expr: >-
+          up{job=~"metallb-external-(exporter|probes)"} == 0
+          or absent(up{job="metallb-external-exporter"})
+          or (up{job="metallb-external-probes"} == 1
+          unless on (job, instance) probe_success{job="metallb-external-probes"})
+        for: 5m
+        labels:
+          severity: high
+          notify: todoist email-tom
+        annotations:
+          summary: 'External VIP monitoring is unavailable'
+          description: 'Check the HA Blackbox Exporter, its tcp_connect module and the direct-IP scrape path. Missing probe results are not a healthy VIP.'

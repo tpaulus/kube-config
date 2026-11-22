@@ -1,5 +1,55 @@
 Source: https://github.com/techiescamp/kubernetes-prometheus/tree/master
 
+## MetalLB external probes
+
+Install [the HA Blackbox Exporter add-on](https://github.com/tpaulus/ha-blackbox-exporter)
+before deploying the external scrape jobs and alerts. Copy its generic
+`blackbox.yml` to `/share/blackbox_exporter/blackbox.yml` on HA.
+The exporter address is configured once in `prometheus.yml`, shared by the
+probe and exporter scrape jobs. Restrict its unauthenticated TCP 9115 API to
+trusted monitoring clients; do not expose it to the Internet.
+
+Prometheus discovers MetalLB-allocated LoadBalancer services and probes every
+TCP port from HA through the router. VIPs and ports come from Kubernetes, not
+a static inventory. The current IPv4 services are supported; only the first
+IPv4 VIP is probed if a service has multiple ingress addresses.
+Scraping HA's direct LAN address is independent of MetalLB. UDP, application
+semantics and mTLS authentication are not verified by TCP probes.
+`up` means the exporter answered; `probe_success` means the connection worked.
+
+The `metallb-pods` job includes the separate FRR-K8s controller and BGP exporter.
+Graph `frrk8s_bgp_session_up`, `frrk8s_bgp_announced_prefixes_total` (a gauge,
+despite its name), and `metallb_speaker_announced` alongside the external probes.
+Traefik's existing request/latency metrics and JSON access logs show requests
+that reach HTTP ingress; its configured access log currently keeps only HTTP
+errors. Neither HTTP logs nor BGP session health show packets dropped before
+Traefik.
+
+During an outage, preserve evidence before restarting speakers:
+
+1. On OPNsense compare `vtysh -c 'show bgp ipv4 unicast <VIP>/32'`,
+   `vtysh -c 'show ip route <VIP>/32'`, `route -n get <VIP>` and `arp -an`.
+   Established sessions do not prove the kernel FIB matches the BGP RIB.
+2. Compare the selected next hop with ready local EndpointSlices and
+   `metallb_speaker_announced`. Local-policy services must not route to nodes
+   without a ready local endpoint. Check FRRNodeState reload/conversion results
+   and actual advertisements using `vtysh` in the **FRR-K8s** pod, not the speaker.
+3. Capture the same external TCP attempt on the router, selected node and
+   endpoint. SYN missing at the node points upstream; arriving at the node but
+   not the endpoint points to service forwarding; missing replies require
+   return-route, reverse-path filter and firewall-state investigation.
+   Compare a manually discovered NodePort on a node with a local endpoint.
+   Standard Prometheus service discovery does not expose NodePort fields, so
+   no static NodePort controls are installed.
+
+The supplied router export shows graceful restart enabled, no explicit eBGP
+multipath limit, inconsistent neighbor source settings and kernel redistribution.
+These warrant review, not a root-cause claim. The live RIB/FIB during failure
+is still needed. Normalize peer sources to a stable address matching BGPPeer;
+review redistribution and graceful restart if evidence shows stale paths.
+Enable ECMP only after verifying all next hops: it is not a health check.
+Do not automate restarts or tune BFD to mask a still-unidentified forwarding fault.
+
 ## Non-K3s reboot monitoring
 
 Ansible exports `node_reboot_required` through the node-exporter textfile
