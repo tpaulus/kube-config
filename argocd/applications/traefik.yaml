@@ -38,10 +38,8 @@ spec:
                 enabled: true
                 options: traefik-require-client-cert@kubernetescrd
         accessLog:
-          enabled: true
+          enabled: false
           format: json
-          filters:
-            statusCodes: 400-599
           fields:
             headers:
               defaultMode: drop
