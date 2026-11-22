@@ -32,10 +32,12 @@ data:
 
       location = /xmltv.xml {
         default_type application/xml;
+        # Begin Patch for https://github.com/jesmannstl/zap2xml/issues/28
         sub_filter_types application/xml;
         sub_filter_once off;
         sub_filter emby.tmsimg.com zpmc.tmsimg.com;
         sub_filter zap2it.tmsimg.com zpmc.tmsimg.com;
+        # End Patch
         try_files /xmltv.xml =404;
       }
     }
