@@ -28,6 +28,16 @@ spec:
         extraEnv:
           - name: IS_DISABLE_ANONYMOUS_TELEMETRY
             value: "true"
+          - name: SMTP_HOST
+            value: smtp-relay.smtp-relay.svc.cluster.local
+          - name: SMTP_PORT
+            value: "25"
+          - name: SMTP_SECURITY
+            value: none
+          - name: SMTP_FROM
+            value: databasus@whitestar.systems
+          - name: DATABASUS_URL
+            value: https://databasus.ing.k3s.brickyard.whitestar.systems
   syncPolicy:
     automated:
       prune: true
