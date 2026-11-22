@@ -11,6 +11,7 @@ groups:
         annotations:
           summary: 'MetalLB configuration is stale on {{ $labels.kubernetes_node }}'
           description: 'Inspect controller/speaker configuration errors. The last valid configuration remains active; do not restart before collecting evidence.'
+          dashboard: https://grafana.brickyard.whitestar.systems/d/metallb-bgp-vip/metallb-bgp-and-external-vip-reachability
       - alert: MetalLBBGPSessionDown
         expr: frrk8s_bgp_session_up == 0
         for: 2m
@@ -20,6 +21,7 @@ groups:
         annotations:
           summary: 'BGP peer {{ $labels.peer }} is down on {{ $labels.kubernetes_node }}'
           description: 'FRR reports the BGP session down. Check the peer and advertised routes; BFD state is not used as a service-health signal.'
+          dashboard: https://grafana.brickyard.whitestar.systems/d/metallb-bgp-vip/metallb-bgp-and-external-vip-reachability
       - alert: MetalLBMetricsDown
         expr: up{job="metallb-pods"} == 0
         for: 5m
@@ -29,6 +31,7 @@ groups:
         annotations:
           summary: 'MetalLB/FRR metrics unavailable on {{ $labels.kubernetes_node }}'
           description: 'Cannot scrape {{ $labels.kubernetes_pod_name }} / {{ $labels.kubernetes_container_name }}. Missing metrics do not prove BGP or VIP health.'
+          dashboard: https://grafana.brickyard.whitestar.systems/d/metallb-bgp-vip/metallb-bgp-and-external-vip-reachability
       - alert: MetalLBBGPSessionTelemetryMissing
         expr: >-
           up{job="metallb-pods", kubernetes_container_name="frr-metrics"} == 1
@@ -41,6 +44,7 @@ groups:
         annotations:
           summary: 'BGP telemetry missing on {{ $labels.kubernetes_node }}'
           description: 'The FRR exporter is reachable but returns no BGP session metrics. Inspect exporter errors and FRR configuration.'
+          dashboard: https://grafana.brickyard.whitestar.systems/d/metallb-bgp-vip/metallb-bgp-and-external-vip-reachability
   - name: MetalLBExternalPath
     rules:
       - alert: MetalLBExternalVIPProbeFailed
@@ -52,6 +56,7 @@ groups:
         annotations:
           summary: '{{ $labels.namespace }}/{{ $labels.service }} VIP probe failed from {{ $labels.vantage }}'
           description: 'The external TCP probe to {{ $labels.instance }} failed. Compare local endpoints, FRR advertisements, router BGP RIB and kernel FIB, and packet captures before restarting speakers. TCP success alone does not prove application or mTLS health.'
+          dashboard: https://grafana.brickyard.whitestar.systems/d/metallb-bgp-vip/metallb-bgp-and-external-vip-reachability
       - alert: MetalLBExternalProbeMonitoringMissing
         expr: >-
           up{job=~"metallb-external-(exporter|probes)"} == 0
@@ -65,3 +70,4 @@ groups:
         annotations:
           summary: 'External VIP monitoring is unavailable'
           description: 'Check the HA Blackbox Exporter, its tcp_connect module and the direct-IP scrape path. Missing probe results are not a healthy VIP.'
+          dashboard: https://grafana.brickyard.whitestar.systems/d/metallb-bgp-vip/metallb-bgp-and-external-vip-reachability
