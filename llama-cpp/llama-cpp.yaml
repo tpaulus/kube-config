@@ -95,7 +95,7 @@ spec:
             memory: 20Gi
           limits:
             cpu: "8"
-            memory: 22Gi
+            memory: 25Gi
         securityContext: &containerSecurityContext
           allowPrivilegeEscalation: false
           capabilities:
