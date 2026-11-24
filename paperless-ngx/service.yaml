@@ -60,6 +60,8 @@ data:
 
   PAPERLESS_OCR_USER_ARGS: "{\"continue_on_soft_render_error\": true}"
 
+  PAPERLESS_EMAIL_PARSE_DEFAULT_LAYOUT: "2" # HTML, then text
+
   # Chat + embeddings served by the llama-cpp app (CPU-only, OpenAI-compatible API).
   PAPERLESS_AI_ENABLED: "true"
   PAPERLESS_AI_LLM_BACKEND: "openai-like"
