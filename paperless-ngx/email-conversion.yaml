@@ -22,7 +22,7 @@ spec:
         args:
         - "gotenberg"
         - "--chromium-disable-javascript=true"
-        - "--chromium-allow-list=^file:///tmp/.*"
+        - "--chromium-allow-list=^(file:///tmp/|data:image/).*"
         ports:
         - containerPort: 3000
         resources:
