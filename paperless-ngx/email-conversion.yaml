@@ -18,7 +18,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: gotenberg
-        image: gotenberg/gotenberg:8.38
+        image: gotenberg/gotenberg:8.40
         args:
         - "gotenberg"
         - "--chromium-disable-javascript=true"
