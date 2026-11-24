@@ -77,10 +77,10 @@ spec:
               mountPath: /var/lib/postgresql/data
           resources:
             requests:
-              memory: 1024Mi
+              memory: 2048Mi
               cpu: 250m
             limits:
-              memory: 2048Mi
+              memory: 4096Mi
               cpu: '2'
           livenessProbe:
             tcpSocket:
