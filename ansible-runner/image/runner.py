@@ -10,6 +10,7 @@ import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+from github import Auth, Github
 from kubernetes import client, config
 from kubernetes.client.exceptions import ApiException
 
@@ -18,6 +19,36 @@ CRONJOB = "ansible-apply"
 LEASE = "ansible-apply"
 LEASE_SECONDS = 18000
 MAX_JOB_SECONDS = 14400
+
+
+def report_deployment(revision, trigger, token):
+    with Github(
+        auth=Auth.Token(token), timeout=30, retry=0, api_version="2026-03-10"
+    ) as github:
+        repository = github.get_repo("tpaulus/ansible", lazy=True)
+        deployment = repository.create_deployment(
+            ref=revision,
+            auto_merge=False,
+            required_contexts=[],
+            environment="production",
+            description=f"Ansible {trigger} run",
+            payload={"pod_uid": os.environ["POD_UID"], "trigger": trigger},
+        )
+        print(f"GitHub deployment {deployment.id} for {revision}", flush=True)
+        try:
+            deployment.create_status("in_progress", description="Ansible run in progress")
+            apply_playbook()
+        except Exception:
+            try:
+                deployment.create_status(
+                    "failure", description="Ansible run failed; inspect the Kubernetes Job logs"
+                )
+            except Exception as error:
+                print(f"Failed to report GitHub deployment failure: {error}", file=sys.stderr)
+            raise
+        deployment.create_status(
+            "success", description="Ansible run completed; inspect Job logs for per-host results"
+        )
 
 
 def acquire_lock(api, holder, now):
@@ -63,13 +94,16 @@ def command(*args, **kwargs):
         raise
 
 
-def apply():
+def apply(trigger):
     secrets = Path("/secrets")
     for name in ("ssh_key", "vault_password"):
         if not (secrets / name).read_text().strip():
             raise RuntimeError(f"Required credential file is empty: {name}")
     if not os.environ.get("NETBOX_TOKEN") or not os.environ.get("ANSIBLE_REMOTE_USER"):
         raise RuntimeError("NETBOX_TOKEN and ANSIBLE_REMOTE_USER are required")
+    github_token = (secrets / "github_token").read_text().strip()
+    if not github_token:
+        raise RuntimeError("Required credential file is empty: github_token")
 
     ssh = Path("/work/.ssh")
     ssh.mkdir(mode=0o700)
@@ -109,7 +143,16 @@ def apply():
         "/work/repository",
     )
     os.chdir("/work/repository")
-    command("git", "rev-parse", "HEAD")
+    revision = command(
+        "git", "rev-parse", "HEAD", stdout=subprocess.PIPE, text=True
+    ).stdout.strip()
+    if not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError("Invalid checked-out Git revision")
+    print(f"Checked-out Git revision: {revision}", flush=True)
+    report_deployment(revision, trigger, github_token)
+
+
+def apply_playbook():
     command(
         "ansible-galaxy",
         "role",
@@ -148,7 +191,7 @@ def run(trigger):
     holder = os.environ["POD_UID"]
     acquire_lock(api, holder, now)
     try:
-        apply()
+        apply(trigger)
     finally:
         release_lock(api, holder)
 

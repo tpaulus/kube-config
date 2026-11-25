@@ -30,6 +30,17 @@ authoritative. Network provisioning, maintenance, migrations and decommission
 playbooks are **not** added to `site.yml`. The resolved commit is logged.
 Unparseable or empty inventory fails rather than reporting a successful no-op.
 
+After checkout, each run creates a GitHub deployment for the **resolved commit**
+in the `production` environment, then reports `in_progress`, `success` or
+`failure`. Find its timestamp and status in the Ansible repository's
+**Deployments** view. Success means the playbook completed successfully, not
+that every host changed; individual host results remain in the Job logs.
+Failures can occur after some nodes have already changed. Checkout, credential
+and lock failures happen before a deployment is created. If the pod is killed
+or GitHub is unreachable while reporting the final status, a deployment may
+remain in progress; inspect the Job logs. Reporting errors fail the Job, and
+the runner does not apply the playbook if it cannot start reporting.
+
 Both trigger paths acquire the same Kubernetes Lease with an atomic
 resource-version update. A competing run fails visibly rather than running
 concurrently or waiting indefinitely. Jobs have a four-hour total deadline and
@@ -85,7 +96,7 @@ Kured has already started.
 | 1Password item in `K3S` | Fields (exact names) |
 | --- | --- |
 | `Applier SSH Key` | `private key` (operator Secret key: `private-key`) |
-| `Ansible-Runner` | `vault_password`, `NETBOX_TOKEN`, `ANSIBLE_REMOTE_USER` |
+| `Ansible-Runner` | `vault_password`, `NETBOX_TOKEN`, `ANSIBLE_REMOTE_USER`, `GITHUB_DEPLOYMENT_TOKEN` |
 | `Ansible-Webhook` | `WEBHOOK_SECRET` (at least 32 random characters) |
 
 The shared SSH key is projected as `/secrets/ssh_key` and copied with mode
@@ -96,6 +107,15 @@ The shared SSH key is projected as `/secrets/ssh_key` and copied with mode
 interactive 1Password login and preserves the repository's Vault identity.
 The NetBox token should be read-only. The webhook pod does not mount runner
 credentials, and its HMAC secret is not injected into Ansible Jobs.
+
+Create `GITHUB_DEPLOYMENT_TOKEN` as a fine-grained personal access token limited
+to `tpaulus/ansible` with **Deployments: read and write** permission (or use a
+classic token with `repo_deployment` scope). The token owner must have access to
+create deployments in that repository. Store it in the `Ansible-Runner`
+1Password item before syncing the updated CronJob; rotate it before expiry.
+It is mounted only in execution Jobs, not the webhook pod. After this change is
+merged, build the new image and update both pinned image references as described
+above; the existing image cannot report deployments.
 
 Initial provisioning should be supervised: `site.yml` applies real changes
 to **all** inventory hosts, including the existing appliance-protection checks.
@@ -173,7 +193,8 @@ Ansible compatibility. Image builds check `ansible`, `ansible-galaxy` and
 Use the existing manifest/schema, YAML and workflow linters for configuration
 validation. Alert rules and Alertmanager configuration can be checked with
 `promtool check rules` and `amtool check-config`. There is no runner unit-test
-suite. Real SSH, NetBox, Vault and external webhook reachability remain
+suite. Real SSH, NetBox, Vault,
+GitHub deployment permissions and external webhook reachability remain
 deployment-time checks once credentials have been provisioned.
 
 If inventory loading fails with `'netbox-version'`, check the preceding
