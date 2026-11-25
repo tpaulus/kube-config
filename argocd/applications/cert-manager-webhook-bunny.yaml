@@ -12,7 +12,7 @@ spec:
   source:
     chart: cert-manager-webhook-bunny
     repoURL: ghcr.io/aardbol/charts
-    targetRevision: 1.4.2
+    targetRevision: 1.4.3
     helm:
       values: |
         secretAccess:
