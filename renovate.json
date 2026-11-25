@@ -49,7 +49,7 @@
       "patch": {
         "automerge": true
       },
-      "minimumReleaseAge": "1 day",
+      "minimumReleaseAge": "5 days",
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
@@ -71,7 +71,8 @@
       "matchUpdateTypes": [
         "digest"
       ],
-      "automerge": true
+      "automerge": true,
+      "minimumReleaseAge": "0 days"
     },
     {
       "matchPackageNames": [
