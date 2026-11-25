@@ -94,6 +94,8 @@ spec:
                       items:
                         - key: vault_password
                           path: vault_password
+                        - key: GITHUB_DEPLOYMENT_TOKEN
+                          path: github_token
             - name: work
               emptyDir:
                 sizeLimit: 2Gi

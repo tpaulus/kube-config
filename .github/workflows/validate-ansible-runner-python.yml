@@ -1,0 +1,25 @@
+---
+name: Validate Ansible Runner Python
+"on":
+  push:
+    branches: [main]
+    paths:
+      - ansible-runner/image/**/*.py
+      - .github/workflows/validate-ansible-runner-python.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - ansible-runner/image/**/*.py
+      - .github/workflows/validate-ansible-runner-python.yml
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+      - name: Check Python syntax
+        run: |
+          docker run --rm -v "$PWD:/src:ro" -w /src \
+            -e PYTHONPYCACHEPREFIX=/tmp/pycache \
+            python:3.13-slim-trixie python -m compileall -q ansible-runner/image
